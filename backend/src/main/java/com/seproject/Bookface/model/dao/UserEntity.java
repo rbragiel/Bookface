@@ -1,12 +1,14 @@
 package com.seproject.Bookface.model.dao;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.seproject.Bookface.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -37,8 +39,14 @@ public class UserEntity {
 
     @Column(name = "birthday")
     private String birthday; /* later change to proper date */
+/*
+    @Column(name = "role")
+    private Role role;
 
+    @Column(name = "join_date")
+    private LocalDate joinDate;
+*/
     @OneToMany
-    private Set<RelationshipEntity> friends;
+    private Set<RelationshipEntity> relations;
 
 }

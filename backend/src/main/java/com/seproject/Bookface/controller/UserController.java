@@ -6,12 +6,17 @@ import com.seproject.Bookface.model.dto.response.GetUsersResponse;
 import com.seproject.Bookface.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 
 @RestController
-@RequestMapping(path = "/api/v1")
+@RequestMapping(path = "/api/v1/user")
 @Slf4j
 public class UserController {
 
@@ -22,34 +27,47 @@ public class UserController {
         this.userService = userService;
     }
 
+    //WIP
+    //LOGIN (/login)
 
-    @PostMapping(path = "/users", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addUser(@RequestBody CreateUserRequest requestBody) {
-        log.info("calling addUser with params " + requestBody.toString());
+    @PostMapping(path = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> registerUser(@RequestBody CreateUserRequest requestBody) {
         userService.saveUser(requestBody);
+        return new ResponseEntity<>("Account registered", HttpStatus.OK);
     }
 
-    @GetMapping(path = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+    //WIP
+    //PASSWORD CHANGE (/changePassword)
+
+    @GetMapping(path = "/{id}/friends", produces = MediaType.APPLICATION_JSON_VALUE)
+    public GetUsersResponse getAllFriends(@PathVariable Long id) { return userService.getAllFriendsOf(id); }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public User getUser(@PathVariable Long id) { return userService.getUser(id); }
+
+    @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public GetUsersResponse getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping(value = "/users/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public User getUser(@PathVariable Long id) { return userService.getUser(id); }
+    /*
+    @PostMapping("/{userID}/friend/{friendID}")
+    public ResponseEntity<String> addUserToFriends(@PathVariable String userID,
+                                                   @PathVariable String friendID, @RequestBody Map<String, String> json) throws ExecutionException, InterruptedException {
+        userService.addFriend(userID, friendID);
+        return new ResponseEntity<>("Successful added to friends", HttpStatus.OK);
+    }
 
-    @GetMapping(path = "/test")
+        @GetMapping(path = "/test")
     public void addFriend() {
         userService.addRelationship();
     }
 
-/*
     @PostMapping(path = "/users/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addFriend(@PathVariable Long id, @RequestBody AddFriendRequest friendRequestBody) {
         userService.addFriend(friendRequestBody);
 
     }
-*/
+    */
 
-    @GetMapping(value = "/users/{id}/friends", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GetUsersResponse getAllFriends(@PathVariable Long id) { return userService.getAllFriendsOf(id); }
 }

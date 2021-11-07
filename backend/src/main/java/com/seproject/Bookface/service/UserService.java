@@ -1,19 +1,15 @@
 package com.seproject.Bookface.service;
 
-import com.seproject.Bookface.model.dao.RelationshipEntity;
 import com.seproject.Bookface.model.dao.UserEntity;
 import com.seproject.Bookface.model.dto.User;
-import com.seproject.Bookface.model.dto.request.AddFriendRequest;
+import org.mapstruct.factory.Mappers;
 import com.seproject.Bookface.model.dto.request.CreateUserRequest;
 import com.seproject.Bookface.model.dto.response.GetUsersResponse;
 import com.seproject.Bookface.repository.RelationshipRepository;
 import com.seproject.Bookface.repository.UserRepository;
+import com.seproject.Bookface.service.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-
-import javax.management.relation.Relation;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final RelationshipRepository relationshipRepository;
+    private UserMapper mapper = Mappers.getMapper(UserMapper.class);
 
     @Autowired
     public UserService(UserRepository userRepository, RelationshipRepository relationshipRepository){
@@ -30,13 +27,7 @@ public class UserService {
     }
 
     public void saveUser(CreateUserRequest userEntity) {
-        UserEntity toSave = UserEntity.builder()
-                .firstName(userEntity.getFirstName())
-                .lastName(userEntity.getLastName())
-                .email(userEntity.getEmail())
-                .description(userEntity.getDescription())
-                .birthday(userEntity.getBirthday())
-                .build();
+        UserEntity toSave = mapper.mapToUserEntity(userEntity);
 
         userRepository.save(toSave);
     }
@@ -46,13 +37,7 @@ public class UserService {
         return GetUsersResponse
                 .builder()
                     .users(allUsers.stream()
-                        .map(userEntity -> User.builder()
-                            .id(userEntity.getId())
-                            .firstName(userEntity.getFirstName())
-                            .lastName(userEntity.getLastName())
-                            .birthday(userEntity.getBirthday())
-                            .description(userEntity.getDescription())
-                            .build())
+                        .map(userEntity -> mapper.mapToUser(userEntity))
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -60,14 +45,9 @@ public class UserService {
     public User getUser(Long id) {
         UserEntity userEntity = userRepository.getById(id);
 
-        return User.builder()
-                .id(userEntity.getId())
-                .description(userEntity.getDescription())
-                .birthday(userEntity.getBirthday())
-                .lastName(userEntity.getLastName())
-                .firstName(userEntity.getFirstName())
-                .build();
+        return mapper.mapToUser(userEntity);
     }
+    /*
     public void addRelationship() {
         RelationshipEntity relationshipEntity = RelationshipEntity.builder()
                 .date("slsada")
@@ -76,24 +56,16 @@ public class UserService {
                 .status(-1)
                 .build();
         relationshipRepository.save(relationshipEntity);
-    }
+    }*/
 
     public GetUsersResponse getAllFriendsOf(Long id) {
         List<UserEntity> friends = userRepository.findAllById(relationshipRepository.getAllFriendsOf(id));
 
         return GetUsersResponse
                 .builder()
-                .users(friends.stream()
-                        .map(userEntity -> User.builder()
-                                .id(userEntity.getId())
-                                .firstName(userEntity.getFirstName())
-                                .lastName(userEntity.getLastName())
-                                .birthday(userEntity.getBirthday())
-                                .description(userEntity.getDescription())
-                                .build())
-                        .collect(Collectors.toList()))
+                    .users(friends.stream()
+                        .map(userEntity -> mapper.mapToUser(userEntity))
+                    .collect(Collectors.toList()))
                 .build();
-
     }
-
 }
