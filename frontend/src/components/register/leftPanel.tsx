@@ -1,5 +1,5 @@
-import { useColorModeValue, Flex, Heading, Image } from "@chakra-ui/react";
 import React from "react";
+import { useColorModeValue, Flex, Heading, Image } from "@chakra-ui/react";
 import RegisterImage from "../../images/register.svg";
 
 const LeftPanel = () => {

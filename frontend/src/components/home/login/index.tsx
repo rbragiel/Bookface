@@ -1,21 +1,12 @@
 import React from "react";
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  Input,
-  Stack,
-  Heading,
-  Button,
-  Link as StyledLink,
-  FormErrorMessage,
-} from "@chakra-ui/react";
+import { Stack, Heading, Button, Link as StyledLink } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PanelWrapper } from "../../panelWrapper";
+import FormField from "../../forms/formField";
 
 enum LoginFormFields {
   EMAIL = "email",
@@ -47,6 +38,9 @@ const Login = () => {
   });
 
   const handleLoginSubmit = handleSubmit((data) => console.log(data));
+
+  const registerValue = <T extends LoginFormFields>(name: T) => register(name);
+
   return (
     <PanelWrapper>
       <Stack
@@ -60,43 +54,35 @@ const Login = () => {
         <Heading as="h2" textAlign="center">
           {t("Sign in!")}
         </Heading>
-        <FormControl id="email" maxWidth="600px" isInvalid={!!errors.email}>
-          <FormLabel>{t("Email address")}</FormLabel>
-          <Input
-            type="email"
-            placeholder={t("Your email")}
-            {...register(LoginFormFields.EMAIL)}
-          />
-          <FormHelperText>
-            {t("An email given at registration proccess.")}
-          </FormHelperText>
-          <FormErrorMessage>
-            {errors.email && errors.email.message && t(errors.email.message)}
-          </FormErrorMessage>
-        </FormControl>
-        <FormControl
+
+        <FormField
+          id="email"
+          name={LoginFormFields.EMAIL}
+          maxWidth="600px"
+          label="Email address"
+          helperText="An email given at registration proccess."
+          type="email"
+          placeholder={"Your email"}
+          error={errors.email}
+          register={registerValue}
+        />
+
+        <FormField
+          name={LoginFormFields.PASSWORD}
           id="password"
           maxWidth="600px"
-          isInvalid={!!errors.password}
-        >
-          <FormLabel>{t("Password")}</FormLabel>
-          <Input
-            type="password"
-            placeholder={t("Your password")}
-            {...register(LoginFormFields.PASSWORD)}
-          />
-          <FormHelperText>
-            {t("A password given at registration proccess.")}
-          </FormHelperText>
-          <FormErrorMessage>
-            {errors.password &&
-              errors.password.message &&
-              t(errors.password.message)}
-          </FormErrorMessage>
-        </FormControl>
+          label="Email address"
+          helperText="A password given at registration proccess."
+          type="password"
+          placeholder="Your password"
+          error={errors.password}
+          register={registerValue}
+        />
+
         <Button colorScheme="yellow" size="lg" type="submit">
           {t("Click to login!")}
         </Button>
+
         <StyledLink as={Link} to="/register" fontSize="lg">
           {t("Don't have account?")} <b>{t("Register!")}</b>
         </StyledLink>
