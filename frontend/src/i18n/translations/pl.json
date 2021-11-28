@@ -1,0 +1,16 @@
+{
+  "Sign in!": "Zaloguj się!",
+  "Email address": "Adres email",
+  "Password": "Hasło",
+  "Your password": "Twoje hasło",
+  "Your email": "Twój email",
+  "Click to login!": "Kliknij, aby się zalogować",
+  "An email given at registration proccess.": "Adres email podany podczas rejestracji.",
+  "A password given at registration proccess.": "Hasło podane podczas rejestracji.",
+  "This way we can contact you": "W ten sposób możemy się z Tobą skontaktować.",
+  "Please remeber to use safe password": "Pamiętaj, aby użyć bezpiecznego hasła.",
+  "Don't have account?": "Nie masz konta?",
+  "Register!": "Zarejestruj się!",
+  "Passed value is not an email.": "Podana wartość to nie email.",
+  "Password is required.": "Hasło jest wymagane."
+}
