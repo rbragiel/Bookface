@@ -4,7 +4,7 @@ import RegisterImage from "../../images/register.svg";
 
 const LeftPanel = () => {
   const bg = useColorModeValue("yellow.200", "gray.900");
-  const fontColor = useColorModeValue("gray.700", "gray.700");
+
   return (
     <Flex
       w={["50%", "50%", "50%", "50%", "30%"]}
@@ -15,13 +15,7 @@ const LeftPanel = () => {
       p={[1, 2, 4]}
       flexDirection="column"
     >
-      <Heading
-        as="h1"
-        fontSize="6xl"
-        mb="32"
-        fontWeight="700"
-        color={fontColor}
-      >
+      <Heading as="h1" fontSize="6xl" mb="32" fontWeight="700">
         Bookface
       </Heading>
       <Image
