@@ -9,6 +9,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './user/user.model';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { FriendPair } from './friends/friends.model';
 
 @Module({
   imports: [
@@ -31,8 +32,9 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.AUTH_USER,
       password: process.env.AUTH_PASSWORD,
       database: process.env.AUTH_DATABASE,
-      models: [User],
+      models: [User, FriendPair],
       synchronize: true,
+      autoLoadModels: true,
     }),
     UserModule,
     AuthModule,

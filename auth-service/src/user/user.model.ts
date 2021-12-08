@@ -1,5 +1,7 @@
+import { FriendPair } from '../friends/friends.model';
 import {
   AllowNull,
+  BelongsToMany,
   Column,
   CreatedAt,
   DataType,
@@ -8,9 +10,23 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
+import { Exclude } from 'class-transformer';
+
+export interface IUser {
+  userId: string;
+  nickname: string;
+  email: string;
+  password: string;
+  isActivated: boolean;
+  joined: Date;
+  birthday?: Date;
+  avatarURL?: string;
+  description?: string;
+  friends: User[];
+}
 
 @Table
-export class User extends Model {
+export class User extends Model implements IUser {
   @Column({
     primaryKey: true,
     type: DataType.UUID,
@@ -46,4 +62,31 @@ export class User extends Model {
   @AllowNull
   @Column(DataType.TEXT)
   description: string;
+
+  @BelongsToMany(() => User, () => FriendPair, 'userOneId', 'userTwoId')
+  friends: User[];
+}
+
+export class UserModel {
+  userId: string;
+  nickname: string;
+  email: string;
+
+  @Exclude()
+  password: string;
+
+  isActivated: boolean;
+  joined: Date;
+  birthday?: Date;
+  avatarURL?: string;
+  description?: string;
+  friends: User[];
+
+  constructor(partial: Partial<User>) {
+    Object.assign(this, partial);
+  }
+}
+
+export class UserWithToken extends UserModel {
+  token: string;
 }

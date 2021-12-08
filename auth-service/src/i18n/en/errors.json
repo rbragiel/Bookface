@@ -1,1 +1,4 @@
-{}
+{
+  "user_not_found_or_password_not_matching": "Email or password is wrong.",
+  "user_already_exists": "User already exists."
+}
