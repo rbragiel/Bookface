@@ -1,24 +1,64 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { ConfigService } from '@nestjs/config';
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { UserLoginDto, UserRegisterDto } from '../user/user.dto';
 import { TranslationsKeys } from '../contants/i18n';
 import { compare, hash } from 'bcrypt';
-import { UserModel, UserWithToken } from '../user/user.model';
+import { User, UserWithToken } from '../user/user.model';
 import { JwtService } from '@nestjs/jwt';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger('AuthService');
+
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
   ) {}
 
   private readonly salt: number = 10;
   private readonly expireTime: string = '24h';
+
+  private async sendEmail(email: string): Promise<void> {
+    const activationToken = await this.jwtService.signAsync(
+      { email },
+      { expiresIn: this.expireTime },
+    );
+
+    const clientLink = `${this.configService.get<string>('CLIENT_URL')}`;
+
+    const anchor = `<a href="${clientLink}/activate/${activationToken}">Confirm</a>`;
+
+    await this.mailerService.sendMail({
+      to: email,
+      subject: `Email confirmation for ${email}`,
+      html: `
+            <h1>Confirm your email to start using our services!</h1>
+            <p>Here you have a link:</p>
+            ${anchor}
+      `,
+    });
+  }
+
+  private async issueToken(user: User) {
+    const plainUser = user.get({ plain: true });
+    const token = this.jwtService.sign(
+      { ...plainUser },
+      { expiresIn: this.expireTime },
+    );
+
+    return new UserWithToken({ ...plainUser, token });
+  }
 
   async validate({ email, password }: UserLoginDto): Promise<UserWithToken> {
     const user = await this.userService.findByEmail(email);
@@ -37,20 +77,10 @@ export class AuthService {
       });
     }
 
-    const plainUser = user.get({ plain: true });
-    const token = this.jwtService.sign(
-      { ...plainUser },
-      { expiresIn: this.expireTime },
-    );
-
-    return new UserWithToken({ ...plainUser, token });
+    return this.issueToken(user);
   }
 
-  async register({
-    email,
-    password,
-    nickname,
-  }: UserRegisterDto): Promise<UserModel> {
+  async register({ email, password, nickname }: UserRegisterDto) {
     const user = await this.userService.findByEmail(email);
 
     if (user) {
@@ -61,14 +91,57 @@ export class AuthService {
 
     const hashedPassword = await hash(password, this.salt);
 
-    const newUser = await this.userService.create({
+    await this.userService.create({
       email,
       nickname,
       password: hashedPassword,
     });
 
-    const plainUser = newUser.get({ plain: true });
+    this.logger.log(`User has been saved`);
 
-    return new UserModel({ ...plainUser });
+    await this.sendEmail(email);
+
+    this.logger.log(`Email to ${email} was sent.`);
+
+    return { success: true };
+  }
+
+  async activate(token: string) {
+    let email: string | null;
+    try {
+      const {
+        iat: _,
+        exp: __,
+        email: _email,
+      } = await this.jwtService.verifyAsync<{
+        iat: number;
+        exp: number;
+        email: string;
+      }>(token);
+
+      email = _email;
+    } catch (error) {
+      throw new ForbiddenException({
+        message: TranslationsKeys.cannotActivateAccount,
+      });
+    }
+
+    let user = await this.userService.findByEmail(email);
+    if (!user) {
+      throw new ForbiddenException({
+        message: TranslationsKeys.cannotActivateAccount,
+      });
+    }
+
+    if (user.isActivated) {
+      throw new BadRequestException({
+        message: TranslationsKeys.accountAlreadyActivated,
+      });
+    }
+
+    user.isActivated = true;
+    user = await user.save();
+
+    return this.issueToken(user);
   }
 }
