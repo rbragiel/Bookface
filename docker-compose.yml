@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql
+    restart: always
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$AUTH_PASSWORD
+      - MYSQL_DATABASE=$AUTH_DATABASE
+    ports:
+      - $AUTH_PORT:$AUTH_PORT
+    volumes:
+      - database:/var/lib/mysql
+  auth-service:
+    build: "./auth-service"
+    env_file: ./.env
+    volumes:
+      - ./auth-service/src:/app/src
+    ports:
+      - $PORT:$PORT
+    depends_on:
+      - db
+volumes:
+  database:
