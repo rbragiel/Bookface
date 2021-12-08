@@ -11,6 +11,7 @@ import {
   Unique,
 } from 'sequelize-typescript';
 import { Exclude } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export interface IUser {
   userId: string;
@@ -22,7 +23,10 @@ export interface IUser {
   birthday?: Date;
   avatarURL?: string;
   description?: string;
-  friends: User[];
+}
+
+export interface IUserWithCreatedAt extends IUser {
+  createdAt: Date;
 }
 
 @Table
@@ -67,20 +71,36 @@ export class User extends Model implements IUser {
   friends: User[];
 }
 
-export class UserModel {
+export class UserModel implements IUserWithCreatedAt {
+  @ApiProperty()
   userId: string;
+
+  @ApiProperty()
   nickname: string;
+
+  @ApiProperty()
   email: string;
 
   @Exclude()
   password: string;
 
+  @ApiProperty()
   isActivated: boolean;
+
+  @ApiProperty()
   joined: Date;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiPropertyOptional()
   birthday?: Date;
+
+  @ApiPropertyOptional()
   avatarURL?: string;
+
+  @ApiPropertyOptional()
   description?: string;
-  friends: User[];
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);
@@ -88,5 +108,11 @@ export class UserModel {
 }
 
 export class UserWithToken extends UserModel {
+  @ApiProperty()
   token: string;
+}
+
+export class UserWithFriends extends UserModel {
+  @ApiProperty()
+  friends: User[];
 }

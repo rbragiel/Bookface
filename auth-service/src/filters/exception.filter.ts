@@ -23,6 +23,7 @@ export class I18nExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<I18nRequest>();
     const response = ctx.getResponse<Response>();
+
     const status = exception.getStatus();
     const errorResponse = <ErrorType>exception.getResponse();
 
