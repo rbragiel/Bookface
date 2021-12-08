@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Post,
+  Query,
   Request,
   UseGuards,
   UseInterceptors,
@@ -26,8 +27,9 @@ export class AuthController {
   }
 
   @Post('register')
-  @UseInterceptors(ClassSerializerInterceptor)
-  async register(@Body() userRegisterDto: UserRegisterDto): Promise<UserModel> {
+  async register(
+    @Body() userRegisterDto: UserRegisterDto,
+  ): Promise<{ success: boolean }> {
     return this.authService.register(userRegisterDto);
   }
 
@@ -35,5 +37,11 @@ export class AuthController {
   @UseInterceptors(ClassSerializerInterceptor)
   async login(@Body() userLoginDto: UserLoginDto): Promise<UserWithToken> {
     return this.authService.validate(userLoginDto);
+  }
+
+  @Post('activate')
+  @UseInterceptors(ClassSerializerInterceptor)
+  async activate(@Query('token') token: string): Promise<UserWithToken> {
+    return this.authService.activate(token);
   }
 }

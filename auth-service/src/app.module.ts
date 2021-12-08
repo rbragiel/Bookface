@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as path from 'path';
 import { I18nModule, I18nJsonParser, HeaderResolver } from 'nestjs-i18n';
 import { Languages } from './contants/i18n';
@@ -10,6 +10,7 @@ import { User } from './user/user.model';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { FriendPair } from './friends/friends.model';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -35,6 +36,23 @@ import { FriendPair } from './friends/friends.model';
       models: [User, FriendPair],
       synchronize: true,
       autoLoadModels: true,
+      sync: {
+        force: true,
+      },
+    }),
+    MailerModule.forRootAsync({
+      useFactory: (configService) => {
+        return {
+          transport: {
+            service: 'gmail',
+            auth: {
+              user: configService.get('EMAIL'),
+              pass: configService.get('EMAIL_PASSWORD'),
+            },
+          },
+        };
+      },
+      inject: [ConfigService],
     }),
     UserModule,
     AuthModule,
