@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   return (
-    <Flex minH="100vh" h="100%" flexDir="column" w="100%">
+    <Flex h="100%" flexDir="column" w="100%">
       <Outlet />
     </Flex>
   );
