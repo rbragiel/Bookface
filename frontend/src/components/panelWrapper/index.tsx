@@ -5,7 +5,6 @@ import { Tooltip } from "../tooltip";
 const PanelWrapper: React.FC = ({ children }) => {
   return (
     <Grid
-      flexDir="column"
       w={["50%", "50%", "50%", "50%", "60%"]}
       p={[4, 6, 8, 10]}
       h="100%"

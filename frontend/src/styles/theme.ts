@@ -16,6 +16,16 @@ const theme = extendTheme({
     body: "Inter",
   },
   config,
+  styles: {
+    global: {
+      "html, body": {
+        height: "100%",
+      },
+      "#root": {
+        height: "100%",
+      },
+    },
+  },
 });
 
 export { theme, ColorMode };
