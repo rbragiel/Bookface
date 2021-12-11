@@ -77,6 +77,12 @@ export class AuthService {
       });
     }
 
+    if (!user.isActivated) {
+      throw new ForbiddenException({
+        message: TranslationsKeys.accountNotActivated,
+      });
+    }
+
     return this.issueToken(user);
   }
 
@@ -121,14 +127,14 @@ export class AuthService {
 
       email = _email;
     } catch (error) {
-      throw new ForbiddenException({
+      throw new UnauthorizedException({
         message: TranslationsKeys.cannotActivateAccount,
       });
     }
 
     let user = await this.userService.findByEmail(email);
     if (!user) {
-      throw new ForbiddenException({
+      throw new BadRequestException({
         message: TranslationsKeys.cannotActivateAccount,
       });
     }

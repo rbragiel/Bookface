@@ -9,4 +9,5 @@ export class TranslationsKeys {
   static readonly userAlreadyExists = 'user_already_exists';
   static readonly cannotActivateAccount = 'cannot_activate_account';
   static readonly accountAlreadyActivated = 'account_already_activated';
+  static readonly accountNotActivated = 'account_not_activated';
 }
