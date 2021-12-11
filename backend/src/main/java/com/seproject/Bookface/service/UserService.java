@@ -1,71 +1,77 @@
 package com.seproject.Bookface.service;
 
-import com.seproject.Bookface.model.dao.UserEntity;
-import com.seproject.Bookface.model.dto.User;
-import org.mapstruct.factory.Mappers;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.seproject.Bookface.model.dto.request.ActivateRequest;
 import com.seproject.Bookface.model.dto.request.CreateUserRequest;
-import com.seproject.Bookface.model.dto.response.GetUsersResponse;
-import com.seproject.Bookface.repository.RelationshipRepository;
-import com.seproject.Bookface.repository.UserRepository;
-import com.seproject.Bookface.service.mapper.UserMapper;
+import com.seproject.Bookface.model.dto.request.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Collections;
 
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final RelationshipRepository relationshipRepository;
-    private UserMapper mapper = Mappers.getMapper(UserMapper.class);
+    private final RestTemplate restTemplate;
+    private String authToken;
+
+    public String getAuthToken() {
+        return authToken;
+    }
 
     @Autowired
-    public UserService(UserRepository userRepository, RelationshipRepository relationshipRepository){
-        this.userRepository = userRepository;
-        this.relationshipRepository = relationshipRepository;
+    public UserService(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder.build();
     }
 
-    public void saveUser(CreateUserRequest userEntity) {
-        UserEntity toSave = mapper.mapToUserEntity(userEntity);
+    public void registerUser(CreateUserRequest requestBody) {
+        String url = "http://localhost:5000/api/auth/register";
 
-        userRepository.save(toSave);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        HttpEntity<CreateUserRequest> entity = new HttpEntity<>(requestBody, headers);
+
+        // send POST request
+        restTemplate.postForObject(url, entity, CreateUserRequest.class);
+
     }
 
-    public GetUsersResponse getAllUsers() {
-        List<UserEntity> allUsers = userRepository.findAll();
-        return GetUsersResponse
-                .builder()
-                    .users(allUsers.stream()
-                        .map(userEntity -> mapper.mapToUser(userEntity))
-                        .collect(Collectors.toList()))
-                .build();
+    public void login(LoginRequest requestBody) {
+        Gson gson = new Gson();
+        String url = "http://localhost:5000/api/auth/login";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        HttpEntity<LoginRequest> entity = new HttpEntity<>(requestBody, headers);
+
+        // send POST request
+        ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+
+        JsonObject jsonObject = gson.fromJson(response.getBody(), JsonObject.class);
+        authToken = jsonObject.get("token").getAsString();
+        System.out.println(authToken);
     }
 
-    public User getUser(Long id) {
-        UserEntity userEntity = userRepository.getById(id);
-
-        return mapper.mapToUser(userEntity);
-    }
     /*
-    public void addRelationship() {
-        RelationshipEntity relationshipEntity = RelationshipEntity.builder()
-                .date("slsada")
-                .userOneId(1L)
-                .userTwoId(2L)
-                .status(-1)
-                .build();
-        relationshipRepository.save(relationshipEntity);
-    }*/
+    public void activate(ActivateRequest token) {
+        String url = "http://localhost:5000/api/auth/activate";
 
-    public GetUsersResponse getAllFriendsOf(Long id) {
-        List<UserEntity> friends = userRepository.findAllById(relationshipRepository.getAllFriendsOf(id));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-        return GetUsersResponse
-                .builder()
-                    .users(friends.stream()
-                        .map(userEntity -> mapper.mapToUser(userEntity))
-                    .collect(Collectors.toList()))
-                .build();
+        HttpEntity<ActivateRequest> entity = new HttpEntity<>(token, headers);
+
+        restTemplate.patchForObject(url, entity, String.class);
     }
+    */
 }

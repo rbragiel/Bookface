@@ -7,9 +7,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
-public class LoginRequest {
+public class ActivateRequest {
 
-    private String email;
-    private String password;
+    private String token;
 
 }

@@ -3,13 +3,17 @@ package com.seproject.Bookface.model.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.sql.Date;
+
 @Getter
 @Builder
 public class User {
 
-    private Long id;
     private String firstName;
     private String lastName;
-    private String description;
-    private String birthday;
+    private String profileDescription;
+    private String avatarURL;
+    private Date birthday;
+    private Date joinDate;
+
 }

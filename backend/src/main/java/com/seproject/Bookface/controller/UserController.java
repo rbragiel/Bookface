@@ -1,22 +1,21 @@
 package com.seproject.Bookface.controller;
 
-import com.seproject.Bookface.model.dto.User;
+import com.seproject.Bookface.model.dto.request.ActivateRequest;
 import com.seproject.Bookface.model.dto.request.CreateUserRequest;
-import com.seproject.Bookface.model.dto.response.GetUsersResponse;
+import com.seproject.Bookface.model.dto.request.LoginRequest;
 import com.seproject.Bookface.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
+import org.springframework.web.client.HttpClientErrorException;
 
 
 @RestController
-@RequestMapping(path = "/api/v1/user")
+@RequestMapping(path = "/api/user")
 @Slf4j
 public class UserController {
 
@@ -25,49 +24,50 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+
     }
 
-    //WIP
-    //LOGIN (/login)
+    @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> loginUser(@RequestBody LoginRequest requestBody) {
+        try {
+            userService.login(requestBody);
+        } catch (HttpClientErrorException exception) {
+            System.out.println(exception.getMessage());
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatusCode());
+        }
+
+        return new ResponseEntity<>("Logged in", HttpStatus.OK);
+    }
 
     @PostMapping(path = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> registerUser(@RequestBody CreateUserRequest requestBody) {
-        userService.saveUser(requestBody);
+        try {
+            userService.registerUser(requestBody);
+        } catch (HttpClientErrorException exception) {
+            System.out.println(exception.getMessage());
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatusCode());
+        }
         return new ResponseEntity<>("Account registered", HttpStatus.OK);
     }
+/*
+    @PatchMapping(path = "/activate/{token}")
+    public ResponseEntity<String> activateUser(@Param("token") String token) {
 
-    //WIP
-    //PASSWORD CHANGE (/changePassword)
+        ActivateRequest requestBody = new ActivateRequest(token);
 
-    @GetMapping(path = "/{id}/friends", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GetUsersResponse getAllFriends(@PathVariable Long id) { return userService.getAllFriendsOf(id); }
-
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public User getUser(@PathVariable Long id) { return userService.getUser(id); }
-
-    @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GetUsersResponse getAllUsers() {
-        return userService.getAllUsers();
+        try {
+            userService.activate(requestBody);
+        } catch (HttpClientErrorException exception) {
+            System.out.println(exception.getMessage());
+            return new ResponseEntity<>(exception.getMessage(), exception.getStatusCode());
+        }
+        return new ResponseEntity<>("Account activated", HttpStatus.OK);
     }
+*/
 
-    /*
-    @PostMapping("/{userID}/friend/{friendID}")
-    public ResponseEntity<String> addUserToFriends(@PathVariable String userID,
-                                                   @PathVariable String friendID, @RequestBody Map<String, String> json) throws ExecutionException, InterruptedException {
-        userService.addFriend(userID, friendID);
-        return new ResponseEntity<>("Successful added to friends", HttpStatus.OK);
+    @GetMapping(path = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
+    public String test() {
+        return "test";
     }
-
-        @GetMapping(path = "/test")
-    public void addFriend() {
-        userService.addRelationship();
-    }
-
-    @PostMapping(path = "/users/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addFriend(@PathVariable Long id, @RequestBody AddFriendRequest friendRequestBody) {
-        userService.addFriend(friendRequestBody);
-
-    }
-    */
 
 }
