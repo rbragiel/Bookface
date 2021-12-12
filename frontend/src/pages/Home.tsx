@@ -5,7 +5,7 @@ import { Login } from "../components/home/login";
 
 const Home = () => {
   return (
-    <Flex w="100%" h="100vh" justifyContent="space-between">
+    <Flex w="100%" h="100%" justifyContent="space-between">
       <LeftPanel />
       <Spacer />
       <Login />

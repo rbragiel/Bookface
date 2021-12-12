@@ -21,5 +21,17 @@ services:
       - $PORT:$PORT
     depends_on:
       - db
+  java-db:
+    image: mysql
+    restart: always
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$JAVA_DB_PASSWORD
+      - MYSQL_DATABASE=$JAVA_DATABASE
+    ports:
+      - $JAVA_DB_EXTERNAL_PORT:$JAVA_DB_INTERNAL_PORT
+    volumes:
+      - java-db:/var/lib/mysql
 volumes:
   database:
+  java-db:

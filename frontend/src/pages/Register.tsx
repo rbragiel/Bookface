@@ -5,7 +5,7 @@ import { LeftPanel } from "../components/register/leftPanel";
 
 const Register = () => {
   return (
-    <Flex w="100%" h="100vh" justifyContent="space-between">
+    <Flex w="100%" h="100%" justifyContent="space-between">
       <LeftPanel />
       <Spacer />
       <RegisterForm />

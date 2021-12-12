@@ -10,11 +10,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { UserModel, UserWithToken } from '../user/user.model';
-import { AuthService } from './auth.service';
-import { UserRegisterDto, UserLoginDto } from '../user/user.dto';
-import { AppRequest } from '../types/request';
-import { AuthGuard } from './auth.guard';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -25,6 +20,11 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { UserModel, UserWithToken } from '../user/user.model';
+import { AuthService } from './auth.service';
+import { UserRegisterDto, UserLoginDto } from '../user/user.dto';
+import { AppRequest } from '../types/request';
+import { AuthGuard } from './auth.guard';
 
 class RegisterResponse {
   @ApiProperty()
@@ -34,18 +34,22 @@ class RegisterResponse {
 @ApiTags('auth')
 @ApiHeader({
   name: 'Accept-Language',
-  description: 'Language which all messages will be in',
+  description: 'Language which all messages will be in.',
 })
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiOkResponse({
-    description: 'Currently logged user',
+    description: 'Currently logged user.',
     type: UserModel,
   })
-  @ApiForbiddenResponse({
-    description: 'Unauthorized. User is authorized to access this resource',
+  @ApiUnauthorizedResponse({
+    description: 'Unauthorized. User is authorized to access this resource.',
+  })
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer token required to authorization.',
   })
   @Get('me')
   @UseGuards(AuthGuard)
@@ -55,11 +59,11 @@ export class AuthController {
   }
 
   @ApiCreatedResponse({
-    description: 'User registered successfully',
+    description: 'User registered successfully.',
     type: RegisterResponse,
   })
   @ApiBadRequestResponse({
-    description: 'Account already exists or validation errors',
+    description: 'Account already exists or validation errors.',
   })
   @Post('register')
   async register(
@@ -69,11 +73,15 @@ export class AuthController {
   }
 
   @ApiCreatedResponse({
-    description: 'User is returned',
+    description: 'User is returned.',
     type: UserWithToken,
   })
   @ApiUnauthorizedResponse({
-    description: 'Account does not exist or password is wrong',
+    description: 'Account does not exist or password is wrong.',
+  })
+  @ApiForbiddenResponse({
+    description:
+      "User logged in succesfully, but haven't activated account by an email",
   })
   @Post('login')
   @UseInterceptors(ClassSerializerInterceptor)
@@ -82,11 +90,11 @@ export class AuthController {
   }
 
   @ApiOkResponse({
-    description: 'Account activated successfully',
+    description: 'Account activated successfully.',
     type: UserWithToken,
   })
-  @ApiForbiddenResponse({
-    description: 'Account cannot be found or token expired',
+  @ApiBadRequestResponse({
+    description: 'Account cannot be found or token expired.',
   })
   @Patch('activate')
   @UseInterceptors(ClassSerializerInterceptor)
