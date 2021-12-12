@@ -3,7 +3,6 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  Patch,
   Post,
   Query,
   Request,
@@ -96,7 +95,7 @@ export class AuthController {
   @ApiBadRequestResponse({
     description: 'Account cannot be found or token expired.',
   })
-  @Patch('activate')
+  @Post('activate')
   @UseInterceptors(ClassSerializerInterceptor)
   async activate(@Query('token') token: string): Promise<UserWithToken> {
     return this.authService.activate(token);
