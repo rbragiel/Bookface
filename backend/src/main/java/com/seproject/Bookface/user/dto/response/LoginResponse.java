@@ -2,12 +2,14 @@ package com.seproject.Bookface.user.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 import java.sql.Date;
 import java.util.Optional;
 
 @Data
 @AllArgsConstructor
+@ToString
 public class LoginResponse {
     private String userId;
     private String nickname;

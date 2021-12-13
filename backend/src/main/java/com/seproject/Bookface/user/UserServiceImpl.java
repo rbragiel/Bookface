@@ -1,6 +1,7 @@
 package com.seproject.Bookface.user;
 
 import com.seproject.Bookface.contants.Constants;
+import com.seproject.Bookface.error.ErrorHandler;
 import com.seproject.Bookface.user.dto.request.ActivateRequest;
 import com.seproject.Bookface.user.dto.request.CreateUserRequest;
 import com.seproject.Bookface.user.dto.request.LoginRequest;
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     public UserServiceImpl(RestTemplateBuilder restTemplateBuilder, Constants constants) {
-        this.restTemplate = restTemplateBuilder.build();
+        this.restTemplate = restTemplateBuilder.errorHandler(new ErrorHandler()).build();
         this.constants = constants;
     }
 

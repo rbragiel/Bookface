@@ -33,12 +33,11 @@ public class UserController {
         this.userServiceImpl = userService;
     }
 
-
     @GetMapping("/me")
     public ResponseEntity<MeResponse> me() {
         SecurityContext sc = SecurityContextHolder.getContext();
         MeResponse me = (MeResponse) sc.getAuthentication().getPrincipal();
-
+        log.info(me.toString());
         return new ResponseEntity<>(me, HttpStatus.OK);
     }
 
@@ -46,8 +45,10 @@ public class UserController {
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest requestBody) {
         try {
             LoginResponse loginResponse = userServiceImpl.login(requestBody);
+            log.info("User successfully logged in");
             return new ResponseEntity<>(loginResponse, HttpStatus.OK);
         } catch (HttpClientErrorException exception) {
+            log.info(exception.toString());
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage());
         }
     }
@@ -56,8 +57,10 @@ public class UserController {
     public ResponseEntity<RegisterResponse> registerUser(@RequestBody CreateUserRequest requestBody) {
         try {
             RegisterResponse registerResponse = userServiceImpl.register(requestBody);
+            log.info("User successfully registered");
             return new ResponseEntity<>(registerResponse, HttpStatus.CREATED);
         } catch (HttpClientErrorException exception) {
+            log.info(exception.toString());
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage(), exception);
         }
     }
@@ -67,9 +70,17 @@ public class UserController {
         ActivateRequest requestBody = new ActivateRequest(token);
         try {
             LoginResponse activateResponse = userServiceImpl.activate(requestBody);
+            log.info("User successfully activated by email");
             return new ResponseEntity<>(activateResponse, HttpStatus.OK);
         } catch (HttpClientErrorException exception) {
+            log.info(exception.toString());
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage(), exception);
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        SecurityContextHolder.clearContext();
+        return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
     }
 }
