@@ -1,21 +1,23 @@
+import React from "react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Button, Flex, HStack, useColorMode } from "@chakra-ui/react";
-import React from "react";
 import { Languages } from "../../i18n/languages";
-import { useLanguage } from "../../i18n/store";
+import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { ColorMode } from "../../styles/theme";
+import { switchToEn, switchToPl } from "../../store/i18n";
 
 const Tooltip = () => {
-  const { language, switchToEn, switchToPl } = useLanguage();
+  const { language } = useAppSelector((state) => state.language);
+  const dispatch = useAppDispatch();
   const { colorMode, toggleColorMode } = useColorMode();
 
   const handleLanguageChange = () => {
     switch (language) {
       case Languages.EN:
-        switchToPl();
+        dispatch(switchToPl());
         break;
       case Languages.PL:
-        switchToEn();
+        dispatch(switchToEn());
         break;
       default:
         throw new Error("Language not found");
