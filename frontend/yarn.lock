@@ -2003,6 +2003,13 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
+axios@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
+  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
+  dependencies:
+    follow-redirects "^1.14.4"
+
 babel-jest@^27.3.1:
   version "27.3.1"
   resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-27.3.1.tgz#0636a3404c68e07001e434ac4956d82da8a80022"
@@ -3070,6 +3077,11 @@ focus-lock@^0.9.1:
   integrity sha512-YtHxjX7a0IC0ZACL5wsX8QdncXofWpGPNoVMuI/nZUrPGp6LmNI6+D5j0pPj+v8Kw5EpweA+T5yImK0rnWf7oQ==
   dependencies:
     tslib "^2.0.3"
+
+follow-redirects@^1.14.4:
+  version "1.14.6"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.6.tgz#8cfb281bbc035b3c067d6cd975b0f6ade6e855cd"
+  integrity sha512-fhUl5EwSJbbl8AR+uYL2KQDxLkdSjZGR36xy46AO7cOMTrCMON6Sa28FmAnC2tRTDbd/Uuzz3aJBv7EBN7JH8A==
 
 form-data@^3.0.0:
   version "3.0.1"
@@ -4205,11 +4217,6 @@ kleur@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
-
-ky@^0.28.7:
-  version "0.28.7"
-  resolved "https://registry.yarnpkg.com/ky/-/ky-0.28.7.tgz#10c42be863fb96c1846d6e71e229263ffb72eb15"
-  integrity sha512-a23i6qSr/ep15vdtw/zyEQIDLoUaKDg9Jf04CYl/0ns/wXNYna26zJpI+MeIFaPeDvkrjLPrKtKOiiI3IE53RQ==
 
 leven@^3.1.0:
   version "3.1.0"

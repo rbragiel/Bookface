@@ -5,6 +5,7 @@ const store = configureStore({
   reducer: {
     language,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
