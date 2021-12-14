@@ -7,6 +7,7 @@ import { PanelWrapper } from "../../panelWrapper";
 import { Button, Heading, Link as StyledLink, Stack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import FormField from "../../forms/formField";
+import userApi from "../../../api/user";
 
 enum RegisterFormFields {
   NICKNAME = "nickname",
@@ -36,15 +37,23 @@ const registerFormSchema = z.object({
 
 const RegisterForm = () => {
   const { t } = useTranslation();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerFormSchema),
   });
 
-  const handleRegisterSubmit = handleSubmit((data) => console.log(data));
+  const handleRegisterSubmit = handleSubmit(async (data) => {
+    try {
+      await userApi.register(data);
+      reset();
+    } catch (error) {}
+  });
+
   const registerValue = <T extends RegisterFormFields>(name: T) =>
     register(name);
 
@@ -102,7 +111,7 @@ const RegisterForm = () => {
           name={RegisterFormFields.REPEAT_PASSWORD}
           id="password"
           maxWidth="600px"
-          label="Email address"
+          label="Repeat your password"
           helperText="Pass the same password as given above."
           type="password"
           placeholder="Use +6 characters"

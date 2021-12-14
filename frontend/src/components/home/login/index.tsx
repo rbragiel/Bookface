@@ -7,6 +7,8 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PanelWrapper } from "../../panelWrapper";
 import FormField from "../../forms/formField";
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { login } from "../../../store/auth";
 
 enum LoginFormFields {
   EMAIL = "email",
@@ -28,6 +30,8 @@ const loginSchema = z.object({
 
 const Login = () => {
   const { t } = useTranslation();
+  const loading = useAppSelector((state) => state.auth.loading);
+  const dispatch = useAppDispatch();
 
   const {
     register,
@@ -37,7 +41,11 @@ const Login = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const handleLoginSubmit = handleSubmit((data) => console.log(data));
+  const handleLoginSubmit = handleSubmit(async (data) => {
+    try {
+      await dispatch(login(data));
+    } catch (error) {}
+  });
 
   const registerValue = <T extends LoginFormFields>(name: T) => register(name);
 
@@ -65,6 +73,7 @@ const Login = () => {
           placeholder={"Your email"}
           error={errors.email}
           register={registerValue}
+          isDisabled={loading}
         />
 
         <FormField
@@ -77,9 +86,15 @@ const Login = () => {
           placeholder="Your password"
           error={errors.password}
           register={registerValue}
+          isDisabled={loading}
         />
 
-        <Button colorScheme="yellow" size="lg" type="submit">
+        <Button
+          colorScheme="yellow"
+          size="lg"
+          type="submit"
+          isLoading={loading}
+        >
           {t("Click to login!")}
         </Button>
 

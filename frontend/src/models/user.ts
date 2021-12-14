@@ -9,3 +9,7 @@ export interface User {
   avatarURL?: string;
   description?: string;
 }
+
+export interface UserWithToken extends User {
+  token: string;
+}

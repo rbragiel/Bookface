@@ -14,6 +14,7 @@ import { compare, hash } from 'bcrypt';
 import { User, UserWithToken } from '../user/user.model';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
+import { URL } from 'url';
 
 @Injectable()
 export class AuthService {
@@ -36,8 +37,10 @@ export class AuthService {
     );
 
     const clientLink = `${this.configService.get<string>('CLIENT_URL')}`;
+    const url = new URL(`${clientLink}/activate`);
+    url.searchParams.append('token', activationToken);
 
-    const anchor = `<a href="${clientLink}/activate/${activationToken}">Confirm</a>`;
+    const anchor = `<a href="${url.toString()}">Confirm</a>`;
 
     await this.mailerService.sendMail({
       to: email,

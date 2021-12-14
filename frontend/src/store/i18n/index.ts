@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createSlice } from "@reduxjs/toolkit";
 import i18n from "../../i18n";
 import { Languages } from "../../i18n/languages";

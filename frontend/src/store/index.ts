@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import language from "./i18n";
+import auth from "./auth";
 
 const store = configureStore({
   reducer: {
     language,
+    auth,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

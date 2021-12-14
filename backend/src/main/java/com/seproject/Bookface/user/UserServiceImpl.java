@@ -50,7 +50,6 @@ public class UserServiceImpl implements UserService {
     public LoginResponse login(LoginRequest requestBody) {
         final String url = constants.getLoginUrl();
         HttpHeaders headers = getBasicHeaders();
-
         HttpEntity<LoginRequest> entity = new HttpEntity<>(requestBody, headers);
 
         return restTemplate.postForObject(url, entity, LoginResponse.class);

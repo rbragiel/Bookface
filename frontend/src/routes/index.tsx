@@ -13,7 +13,7 @@ const Routing = () => {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="register" element={<Register />} />
-          <Route path="activate/:token" element={<Activate />} />
+          <Route path="activate" element={<Activate />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
