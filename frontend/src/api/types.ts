@@ -1,4 +1,4 @@
-import { UserWithToken } from "../models/user";
+import { UserWithToken } from "@models/user";
 
 export interface LoginBody {
   email: string;

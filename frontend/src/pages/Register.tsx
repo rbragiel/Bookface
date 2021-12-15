@@ -1,9 +1,10 @@
 import React from "react";
 import { Flex, Spacer } from "@chakra-ui/react";
-import { RegisterForm } from "../components/register/form";
-import { LeftPanel } from "../components/register/leftPanel";
+import { RegisterForm } from "@components/register/form";
+import { LeftPanel } from "@components/register/leftPanel";
+import { withAllAccess } from "@store/auth/withAllAccess";
 
-const Register = () => {
+const _Register = () => {
   return (
     <Flex w="100%" h="100%" justifyContent="space-between">
       <LeftPanel />
@@ -12,5 +13,7 @@ const Register = () => {
     </Flex>
   );
 };
+
+const Register = withAllAccess(_Register);
 
 export { Register };

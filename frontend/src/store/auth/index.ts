@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { LoginBody } from "../../api/types";
-import userApi from "../../api/user";
-import { User } from "../../models/user";
-import axios from "axios";
+import { LoginBody } from "@api/types";
+import userApi from "@api/user";
+import { User } from "@models/user";
+import { handleError } from "@api/error";
 
 interface AuthState {
   token?: string;
@@ -39,22 +39,22 @@ const login = createAsyncThunk(
       saveTokenInLS(userWithToken.token);
       return userWithToken;
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return rejectWithValue(error.response?.data);
-      } else {
-        return rejectWithValue(error);
-      }
+      return rejectWithValue(handleError(error));
     }
   }
 );
 
 const activate = createAsyncThunk(
   `${authSliceName}/activate`,
-  async (token: string, { dispatch }) => {
+  async (token: string, { dispatch, rejectWithValue }) => {
     dispatch(startLoading());
-    const userWithToken = await userApi.activate(token);
-    saveTokenInLS(userWithToken.token);
-    return userWithToken;
+    try {
+      const userWithToken = await userApi.activate(token);
+      saveTokenInLS(userWithToken.token);
+      return userWithToken;
+    } catch (error) {
+      return rejectWithValue(handleError(error));
+    }
   }
 );
 

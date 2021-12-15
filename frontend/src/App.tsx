@@ -1,29 +1,23 @@
 import React from "react";
 import { useEffect } from "react";
-import { AppSpinner } from "./components/spinner";
-import Routing from "./routes";
-import { me } from "./store/auth";
-import { useAppSelector, useAppDispatch } from "./store/hooks";
+import Routing from "@routes";
+import { me } from "@store/auth";
+import { useAppSelector, useAppDispatch } from "@store/hooks";
+import GlobalSpinner from "@components/globalSpinner";
 
 function App() {
   const isLoading = useAppSelector((state) => state.auth.initialLoading);
-  const user = useAppSelector((state) => state.auth.user);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(me());
-  }, []);
+  }, [dispatch]);
 
   if (isLoading) {
-    return <AppSpinner />;
+    return <GlobalSpinner />;
   }
 
-  return (
-    <>
-      {JSON.stringify(user)}
-      <Routing />
-    </>
-  );
+  return <Routing />;
 }
 
 export default App;

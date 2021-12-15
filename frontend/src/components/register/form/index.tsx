@@ -7,7 +7,7 @@ import { PanelWrapper } from "../../panelWrapper";
 import { Button, Heading, Link as StyledLink, Stack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import FormField from "../../forms/formField";
-import userApi from "../../../api/user";
+import { useRegister } from "@hooks/user/useRegister";
 
 enum RegisterFormFields {
   NICKNAME = "nickname",
@@ -47,12 +47,11 @@ const RegisterForm = () => {
     resolver: zodResolver(registerFormSchema),
   });
 
-  const handleRegisterSubmit = handleSubmit(async (data) => {
-    try {
-      await userApi.register(data);
-      reset();
-    } catch (error) {}
+  const { handleRegister, loading } = useRegister({
+    onSuccess: () => reset(),
   });
+
+  const handleRegisterSubmit = handleSubmit(handleRegister);
 
   const registerValue = <T extends RegisterFormFields>(name: T) =>
     register(name);
@@ -81,6 +80,7 @@ const RegisterForm = () => {
           placeholder="Your nickname"
           error={errors.nickname}
           register={registerValue}
+          isDisabled={loading}
         />
 
         <FormField
@@ -93,6 +93,7 @@ const RegisterForm = () => {
           placeholder="Your email"
           error={errors.email}
           register={registerValue}
+          isDisabled={loading}
         />
 
         <FormField
@@ -105,6 +106,7 @@ const RegisterForm = () => {
           placeholder="Use +6 characters"
           error={errors.password}
           register={registerValue}
+          isDisabled={loading}
         />
 
         <FormField
@@ -117,9 +119,15 @@ const RegisterForm = () => {
           placeholder="Use +6 characters"
           error={errors.password}
           register={registerValue}
+          isDisabled={loading}
         />
 
-        <Button colorScheme="yellow" size="lg" type="submit">
+        <Button
+          colorScheme="yellow"
+          size="lg"
+          type="submit"
+          isLoading={loading}
+        >
           {t("Click to register!")}
         </Button>
 

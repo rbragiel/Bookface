@@ -23,5 +23,10 @@
   "Click to register!": "Click to register!",
   "Password length must be at least 6 characters.": "Password length must be at least 6 characters.",
   "Nickname length must be at least 6 characters.": "Nickname length must be at least 6 characters.",
-  "Main page": "Main page"
+  "Main page": "Main page",
+  "Cannot activate account.": "Cannot activate account.",
+  "Error": "Error",
+  "Success": "Success",
+  "Logged in successfully!": "Logged in successfully!",
+  "Registered successfully! We've sent you an email to activate your account.": "Registered successfully! We've sent you an email to activate your account."
 }

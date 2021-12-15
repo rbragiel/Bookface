@@ -23,5 +23,10 @@
   "Password length must be at least 6 characters.": "Hasło musi mieć co najmniej 6 znaków.",
   "Nickname length must be at least 6 characters.": "Nickname musi mieć co najmniej 6 znaków.",
   "Main page": "Strona główna",
-  "Repeat your password": "Powtórz swoje hasło"
+  "Repeat your password": "Powtórz swoje hasło",
+  "Cannot activate account.": "Nie można aktywować konta.",
+  "Error": "Błąd",
+  "Success": "Sukces",
+  "Logged in successfully!": "Zalogowano pomyślnie!",
+  "Registered successfully! We've sent you an email to activate your account.": "Zarejestorwano pomyślnie! Wysłaliśmy Ci link aktywacyjny Twojego konta."
 }

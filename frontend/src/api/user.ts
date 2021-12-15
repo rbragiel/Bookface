@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { AxiosInstance } from "axios";
-import { User, UserWithToken } from "../models/user";
+import { User, UserWithToken } from "@models/user";
 import { IUserApi, LoginBody, RegisterBody, RegisterResponse } from "./types";
 
 class UserApiEndpoints {

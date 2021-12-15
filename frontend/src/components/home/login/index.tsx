@@ -7,8 +7,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PanelWrapper } from "../../panelWrapper";
 import FormField from "../../forms/formField";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { login } from "../../../store/auth";
+import { useLogin } from "@hooks/user/useLogin";
 
 enum LoginFormFields {
   EMAIL = "email",
@@ -30,22 +29,19 @@ const loginSchema = z.object({
 
 const Login = () => {
   const { t } = useTranslation();
-  const loading = useAppSelector((state) => state.auth.loading);
-  const dispatch = useAppDispatch();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
 
-  const handleLoginSubmit = handleSubmit(async (data) => {
-    try {
-      await dispatch(login(data));
-    } catch (error) {}
-  });
+  const { handleLogin, loading } = useLogin({ onSuccess: () => reset() });
+
+  const handleLoginSubmit = handleSubmit(handleLogin);
 
   const registerValue = <T extends LoginFormFields>(name: T) => register(name);
 
