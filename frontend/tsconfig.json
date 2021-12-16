@@ -15,7 +15,32 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["jest"]
+    "types": ["jest"],
+    "baseUrl": "src",
+    "paths": {
+      "@api": ["api"],
+      "@api/*": ["api/*"],
+      "@models": ["models/"],
+      "@models/*": ["models/*"],
+      "@components": ["components"],
+      "@components/*": ["components/*"],
+      "@routes": ["routes"],
+      "@routes/*": ["routes/*"],
+      "@store": ["store/"],
+      "@store/*": ["store/*"],
+      "@toasts": ["toasts/"],
+      "@toasts/*": ["toasts/*"],
+      "@styles": ["styles/"],
+      "@styles/*": ["styles/*"],
+      "@i18n": ["i18n"],
+      "@i18n/*": ["i18n/*"],
+      "@hooks": ["hooks"],
+      "@hooks/*": ["hooks/*"],
+      "@pages": ["pages"],
+      "@pages/*": ["pages/*"],
+      "@contants": ["contants"],
+      "@contants/*": ["contants/*"]
+    }
   },
   "include": ["./src"]
 }

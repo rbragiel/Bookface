@@ -12,6 +12,7 @@ module.exports = {
     "plugin:jest-dom/recommended",
     "plugin:testing-library/react",
     "plugin:jest/recommended",
+    "plugin:react-hooks/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {

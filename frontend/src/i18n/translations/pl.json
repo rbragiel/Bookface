@@ -22,5 +22,14 @@
   "Click to register!": "Kliknij, aby się zarejestrować!",
   "Password length must be at least 6 characters.": "Hasło musi mieć co najmniej 6 znaków.",
   "Nickname length must be at least 6 characters.": "Nickname musi mieć co najmniej 6 znaków.",
-  "Main page": "Strona główna"
+  "Main page": "Strona główna",
+  "Repeat your password": "Powtórz swoje hasło",
+  "Cannot activate account.": "Nie można aktywować konta.",
+  "Error": "Błąd",
+  "Success": "Sukces",
+  "Logged in successfully!": "Zalogowano pomyślnie!",
+  "Registered successfully! We've sent you an email to activate your account.": "Zarejestorwano pomyślnie! Wysłaliśmy Ci link aktywacyjny Twojego konta.",
+  "You will be redirected shortly or you can go to main page now.": "Zostaniesz przekierowany lub możesz teraz iść do strony głównej.",
+  "Email confirmation failed!": "Aktywacja maila nie powiodła się!",
+  "Go to main page now": "Idź do strony głównej teraz"
 }
