@@ -3,10 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import * as z from "zod";
-import { PanelWrapper } from "../../panelWrapper";
+import { PanelWrapper } from "@components/panelWrapper";
 import { Button, Heading, Link as StyledLink, Stack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import FormField from "../../forms/formField";
+import FormField from "@components/forms/formField";
 import { useRegister } from "@hooks/user/useRegister";
 
 enum RegisterFormFields {
