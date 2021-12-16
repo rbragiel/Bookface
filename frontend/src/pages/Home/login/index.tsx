@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PanelWrapper } from "../../panelWrapper";
-import FormField from "../../forms/formField";
+import { PanelWrapper } from "@components/panelWrapper";
+import FormField from "@components/forms/formField";
 import { useLogin } from "@hooks/user/useLogin";
 
 enum LoginFormFields {
