@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class ErrorHandler extends DefaultResponseErrorHandler {
             String httpBodyResponse = reader.lines().collect(Collectors.joining(""));
             log.info(httpBodyResponse);
             AuthErrorResponse authErrorResponse = gson.fromJson(httpBodyResponse, AuthErrorResponse.class);
-            throw HttpClientErrorException.create(authErrorResponse.getMessage(), response.getStatusCode(), response.getStatusText(), response.getHeaders(), null, null);
+            throw HttpClientErrorException.create(authErrorResponse.getMessage().toString(), response.getStatusCode(), response.getStatusText(), response.getHeaders(), null, null);
         }
     }
 

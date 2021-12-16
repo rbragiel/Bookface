@@ -7,7 +7,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Data
 @ToString
-public class AuthErrorResponse {
-    private String message;
+public class AuthErrorResponse<T> {
+    private T message;
     private int statusCode;
 }

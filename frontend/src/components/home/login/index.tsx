@@ -7,6 +7,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PanelWrapper } from "../../panelWrapper";
 import FormField from "../../forms/formField";
+import { useLogin } from "@hooks/user/useLogin";
 
 enum LoginFormFields {
   EMAIL = "email",
@@ -33,11 +34,14 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
 
-  const handleLoginSubmit = handleSubmit((data) => console.log(data));
+  const { handleLogin, loading } = useLogin({ onSuccess: () => reset() });
+
+  const handleLoginSubmit = handleSubmit(handleLogin);
 
   const registerValue = <T extends LoginFormFields>(name: T) => register(name);
 
@@ -65,6 +69,7 @@ const Login = () => {
           placeholder={"Your email"}
           error={errors.email}
           register={registerValue}
+          isDisabled={loading}
         />
 
         <FormField
@@ -77,9 +82,15 @@ const Login = () => {
           placeholder="Your password"
           error={errors.password}
           register={registerValue}
+          isDisabled={loading}
         />
 
-        <Button colorScheme="yellow" size="lg" type="submit">
+        <Button
+          colorScheme="yellow"
+          size="lg"
+          type="submit"
+          isLoading={loading}
+        >
           {t("Click to login!")}
         </Button>
 

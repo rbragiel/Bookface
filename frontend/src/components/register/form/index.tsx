@@ -7,6 +7,7 @@ import { PanelWrapper } from "../../panelWrapper";
 import { Button, Heading, Link as StyledLink, Stack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import FormField from "../../forms/formField";
+import { useRegister } from "@hooks/user/useRegister";
 
 enum RegisterFormFields {
   NICKNAME = "nickname",
@@ -36,15 +37,22 @@ const registerFormSchema = z.object({
 
 const RegisterForm = () => {
   const { t } = useTranslation();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerFormSchema),
   });
 
-  const handleRegisterSubmit = handleSubmit((data) => console.log(data));
+  const { handleRegister, loading } = useRegister({
+    onSuccess: () => reset(),
+  });
+
+  const handleRegisterSubmit = handleSubmit(handleRegister);
+
   const registerValue = <T extends RegisterFormFields>(name: T) =>
     register(name);
 
@@ -72,6 +80,7 @@ const RegisterForm = () => {
           placeholder="Your nickname"
           error={errors.nickname}
           register={registerValue}
+          isDisabled={loading}
         />
 
         <FormField
@@ -84,6 +93,7 @@ const RegisterForm = () => {
           placeholder="Your email"
           error={errors.email}
           register={registerValue}
+          isDisabled={loading}
         />
 
         <FormField
@@ -96,21 +106,28 @@ const RegisterForm = () => {
           placeholder="Use +6 characters"
           error={errors.password}
           register={registerValue}
+          isDisabled={loading}
         />
 
         <FormField
           name={RegisterFormFields.REPEAT_PASSWORD}
           id="password"
           maxWidth="600px"
-          label="Email address"
+          label="Repeat your password"
           helperText="Pass the same password as given above."
           type="password"
           placeholder="Use +6 characters"
           error={errors.password}
           register={registerValue}
+          isDisabled={loading}
         />
 
-        <Button colorScheme="yellow" size="lg" type="submit">
+        <Button
+          colorScheme="yellow"
+          size="lg"
+          type="submit"
+          isLoading={loading}
+        >
           {t("Click to register!")}
         </Button>
 
