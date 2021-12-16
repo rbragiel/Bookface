@@ -20,7 +20,7 @@ export const loginErrorToast = (message: string): UseToastOptions => ({
 export const registerSuccessToast = (): UseToastOptions => ({
   title: i18n.t("Success"),
   description: i18n.t(
-    "Registered successfully!. We've sent you an email to activate your account."
+    "Registered successfully! We've sent you an email to activate your account."
   ),
   status: "success",
   duration: 9000,

@@ -1,3 +1,3 @@
-export class TimoutTimes {
-  static activate = 4000;
+export class TimeoutTimes {
+  static activate = 3500;
 }

@@ -4,7 +4,7 @@ const handleError = (err: unknown) => {
   const catchedError = <AxiosError | Error>err;
   return axios.isAxiosError(catchedError)
     ? catchedError.response?.data
-    : catchedError.message;
+    : catchedError;
 };
 
 export { handleError };

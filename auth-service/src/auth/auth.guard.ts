@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { plainToClass } from 'class-transformer';
+import { UserService } from '../user/user.service';
 import { AppRequest } from '../types/request';
-import { UserModel } from '../user/user.model';
+import { IUserWithCreatedAt, UserModel } from '../user/user.model';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly userService: UserService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = <AppRequest>context.switchToHttp().getRequest();
@@ -31,8 +34,17 @@ export class AuthGuard implements CanActivate {
         ...rest
       } = await this.jwtService.verifyAsync(token);
 
-      const user = plainToClass(UserModel, rest);
-      request.user = user;
+      if (!rest.userId) {
+        return false;
+      }
+
+      const user = await this.userService.findById(rest.userId);
+
+      if (!user) {
+        return false;
+      }
+
+      request.user = <IUserWithCreatedAt>user;
       return true;
     } catch (error) {
       return false;

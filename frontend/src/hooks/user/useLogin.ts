@@ -5,6 +5,7 @@ import { useErrorState } from "@hooks/useErrorState";
 import { useAppSelector, useAppDispatch } from "@store/hooks";
 import { loginSuccessToast, loginErrorToast } from "@toasts";
 import { handleError } from "@api/error";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 interface UseLogin {
   onError?: () => void;
@@ -20,13 +21,14 @@ function useLogin({ onSuccess, onError }: UseLogin) {
   const handleLogin = async (body: LoginBody) => {
     try {
       reset();
-      await dispatch(login(body));
+      const response = await dispatch(login(body));
+      unwrapResult(response);
       onSuccess?.();
       toast(loginSuccessToast());
     } catch (err) {
       handleLoginError(err);
       onError?.();
-      toast(loginErrorToast(handleError(err)));
+      toast(loginErrorToast(handleError(err).message));
     }
   };
 

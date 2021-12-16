@@ -28,5 +28,8 @@
   "Error": "Error",
   "Success": "Success",
   "Logged in successfully!": "Logged in successfully!",
-  "Registered successfully! We've sent you an email to activate your account.": "Registered successfully! We've sent you an email to activate your account."
+  "Registered successfully! We've sent you an email to activate your account.": "Registered successfully! We've sent you an email to activate your account.",
+  "You will be redirected shortly or you can go to main page now.": "You will be redirected shortly or you can go to main page now.",
+  "Email confirmation failed!": "Email confirmation failed!",
+  "Go to main page now": "Go to main page now"
 }
