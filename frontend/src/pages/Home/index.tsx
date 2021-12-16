@@ -1,7 +1,7 @@
 import React from "react";
 import { Flex, Spacer } from "@chakra-ui/react";
-import { LeftPanel } from "@components/home/leftPanel";
-import { Login } from "@components/home/login";
+import { LeftPanel } from "./leftPanel";
+import { Login } from "./login";
 import { withAllAccess } from "@store/auth/withAllAccess";
 
 const _Home = () => {
