@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { FriendPair } from './friends/friends.model';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Invitation } from './invitation/invitation.model';
+import { InvitationModule } from './invitation/invitation.module';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { Invitation } from './invitation/invitation.model';
       parserOptions: {
         path: path.join(__dirname, '/i18n'),
       },
-      resolvers: [new HeaderResolver(['Accept-Language'])],
+      resolvers: [new HeaderResolver(['app-lang'])],
     }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
@@ -35,10 +36,8 @@ import { Invitation } from './invitation/invitation.model';
       password: process.env.AUTH_PASSWORD,
       database: process.env.AUTH_DATABASE,
       models: [Invitation, User, FriendPair],
+      autoLoadModels: true,
       synchronize: true,
-      sync: {
-        force: true,
-      },
     }),
     MailerModule.forRootAsync({
       useFactory: (configService) => {
@@ -56,6 +55,7 @@ import { Invitation } from './invitation/invitation.model';
     }),
     UserModule,
     AuthModule,
+    InvitationModule,
   ],
   controllers: [],
   providers: [

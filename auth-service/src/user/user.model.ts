@@ -79,10 +79,10 @@ export class User extends Model implements IUser {
   friends: User[];
 
   @HasMany(() => Invitation, 'inviterId')
-  invites: Invitation[];
+  reciviedInvites: Invitation[];
 
   @HasMany(() => Invitation, 'inviteeId')
-  sendInvites: Invitation;
+  sendInvites: Invitation[];
 
   @Column({
     type: DataType.ENUM({ values: Object.keys(UserRole) }),

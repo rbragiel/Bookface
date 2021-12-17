@@ -1,32 +1,37 @@
 import {
   BelongsTo,
   Column,
-  CreatedAt,
+  DataType,
   ForeignKey,
   Model,
-  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { User } from '../user/user.model';
 
 @Table({ timestamps: false })
 export class Invitation extends Model {
-  @PrimaryKey
+  @Column({
+    primaryKey: true,
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+  })
+  invitationId: string;
+
   @ForeignKey(() => User)
-  @Column
+  @Column({
+    type: DataType.UUID,
+  })
   inviterId: string;
 
   @BelongsTo(() => User, 'inviterId')
   inviter: User;
 
-  @PrimaryKey
   @ForeignKey(() => User)
-  @Column
+  @Column({
+    type: DataType.UUID,
+  })
   inviteeId: string;
 
   @BelongsTo(() => User, 'inviteeId')
   invitee: User;
-
-  @CreatedAt
-  created: Date;
 }

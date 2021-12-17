@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { FindOptions } from 'sequelize';
 import { UserRegisterDto } from './user.dto';
 import { User, UserRole } from './user.model';
 
@@ -15,8 +16,8 @@ export class UserService {
     return newUser;
   }
 
-  async findById(userId: string) {
-    const user = await this.userModel.findByPk(userId);
+  async findById(userId: string, options?: FindOptions) {
+    const user = await this.userModel.findByPk(userId, options);
     return user;
   }
 
