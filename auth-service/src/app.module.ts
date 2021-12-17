@@ -11,6 +11,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { FriendPair } from './friends/friends.model';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { Invitation } from './invitation/invitation.model';
 
 @Module({
   imports: [
@@ -33,9 +34,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
       username: process.env.AUTH_USER,
       password: process.env.AUTH_PASSWORD,
       database: process.env.AUTH_DATABASE,
-      models: [User, FriendPair],
+      models: [Invitation, User, FriendPair],
       synchronize: true,
-      autoLoadModels: true,
       sync: {
         force: true,
       },

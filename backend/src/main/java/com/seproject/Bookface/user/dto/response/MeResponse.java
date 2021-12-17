@@ -17,6 +17,7 @@ public class MeResponse {
     private String joined;
     private boolean isActivated;
     private String updatedAt;
+    private String role;
     private Optional<String> description;
     private Optional<String> avatarURL;
     private Optional<Date> birthday;
