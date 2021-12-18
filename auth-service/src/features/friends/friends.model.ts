@@ -1,4 +1,4 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, CreatedAt, Model, Table } from 'sequelize-typescript';
 
 @Table
 export class FriendPair extends Model {
@@ -7,4 +7,7 @@ export class FriendPair extends Model {
 
   @Column
   userTwoId: string;
+
+  @CreatedAt
+  created: Date;
 }

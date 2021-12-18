@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { AppRequest } from '../types/request';
+import { AppRequest } from '../../types/request';
 import { IUserWithCreatedAt, UserModel } from '../user/user.model';
 
 @Injectable()
@@ -38,16 +43,20 @@ export class AuthGuard implements CanActivate {
         return false;
       }
 
-      const user = await this.userService.findById(rest.userId);
+      const user = await this.userService.findById(rest.userId, {
+        attributes: { exclude: ['password'] },
+      });
 
       if (!user) {
         return false;
       }
 
-      request.user = <IUserWithCreatedAt>user;
+      request.user = <IUserWithCreatedAt>user.get({ plain: true });
       return true;
     } catch (error) {
       return false;
     }
   }
 }
+
+export const UseAuthGuard = () => UseGuards(AuthGuard);

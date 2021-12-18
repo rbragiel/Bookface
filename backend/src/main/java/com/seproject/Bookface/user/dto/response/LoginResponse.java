@@ -18,6 +18,7 @@ public class LoginResponse {
     private boolean isActivated;
     private String updatedAt;
     private String token;
+    private String role;
     private Optional<String> description;
     private Optional<String> avatarURL;
     private Optional<Date> birthday;

@@ -10,4 +10,6 @@ export class TranslationsKeys {
   static readonly cannotActivateAccount = 'cannot_activate_account';
   static readonly accountAlreadyActivated = 'account_already_activated';
   static readonly accountNotActivated = 'account_not_activated';
+  static readonly userAlreadyInvited = 'user_already_invited';
+  static readonly invitationNotExisting = 'invitation_not_existing';
 }
