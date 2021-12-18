@@ -8,7 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from '../user/user.model';
 
-@Table({ timestamps: false })
+@Table
 export class Invitation extends Model {
   @Column({
     primaryKey: true,

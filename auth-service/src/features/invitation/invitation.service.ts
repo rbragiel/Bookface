@@ -4,35 +4,37 @@ import { Op } from 'sequelize';
 import { UserModel } from '../user/user.model';
 import { Invitation } from './invitation.model';
 import { TranslationsKeys } from '../../contants/i18n';
+import { FriendsService } from '../friends/friends.service';
 
 @Injectable()
 export class InvitationService {
   private readonly logger = new Logger('Invitation service');
   constructor(
     @InjectModel(Invitation) private readonly invitation: typeof Invitation,
+    private readonly friendsService: FriendsService,
   ) {}
 
   private limit = 30;
+  private excludeAttr = [
+    'password',
+    'updatedAt',
+    'role',
+    'description',
+    'isActivated',
+    'birthday',
+  ];
 
   async getAllInvitations(user: UserModel) {
     const invited = await this.invitation.findAll({
       where: { inviterId: user.userId },
       attributes: {
-        include: ['invitationId'],
         exclude: ['inviterId', 'inviteeId'],
       },
       include: [
         {
           association: 'invitee',
           attributes: {
-            exclude: [
-              'password',
-              'updatedAt',
-              'role',
-              'description',
-              'isActivated',
-              'birthday',
-            ],
+            exclude: this.excludeAttr,
           },
         },
       ],
@@ -52,14 +54,7 @@ export class InvitationService {
         {
           association: 'inviter',
           attributes: {
-            exclude: [
-              'password',
-              'updatedAt',
-              'role',
-              'description',
-              'isActivated',
-              'birthday',
-            ],
+            exclude: this.excludeAttr,
           },
         },
       ],
@@ -112,6 +107,11 @@ export class InvitationService {
         message: TranslationsKeys.invitationNotExisting,
       });
     }
+
+    await this.friendsService.createFriends(
+      invitation.inviterId,
+      invitation.inviteeId,
+    );
 
     await invitation.destroy();
 
