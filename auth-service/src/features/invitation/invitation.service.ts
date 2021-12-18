@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { UserModel } from '../user/user.model';
 import { Invitation } from './invitation.model';
-import { TranslationsKeys } from '../contants/i18n';
+import { TranslationsKeys } from '../../contants/i18n';
 
 @Injectable()
 export class InvitationService {

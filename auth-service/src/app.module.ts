@@ -6,13 +6,13 @@ import { Languages } from './contants/i18n';
 import { APP_FILTER } from '@nestjs/core';
 import { I18nExceptionFilter } from './filters/exception.filter';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from './user/user.model';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { FriendPair } from './friends/friends.model';
+import { User } from './features/user/user.model';
+import { UserModule } from './features/user/user.module';
+import { AuthModule } from './features/auth/auth.module';
+import { FriendPair } from './features/friends/friends.model';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { Invitation } from './invitation/invitation.model';
-import { InvitationModule } from './invitation/invitation.module';
+import { Invitation } from './features/invitation/invitation.model';
+import { InvitationModule } from './features/invitation/invitation.module';
 
 @Module({
   imports: [

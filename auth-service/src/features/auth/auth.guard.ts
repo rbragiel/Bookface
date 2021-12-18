@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { AppRequest } from '../types/request';
+import { AppRequest } from '../../types/request';
 import { IUserWithCreatedAt, UserModel } from '../user/user.model';
 
 @Injectable()

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { UserLoginDto, UserRegisterDto } from '../user/user.dto';
-import { TranslationsKeys } from '../contants/i18n';
+import { TranslationsKeys } from '../../contants/i18n';
 import { compare, hash } from 'bcrypt';
 import { User, UserWithToken } from '../user/user.model';
 import { JwtService } from '@nestjs/jwt';
