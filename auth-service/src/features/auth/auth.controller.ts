@@ -5,8 +5,6 @@ import {
   Get,
   Post,
   Query,
-  Request,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -22,8 +20,8 @@ import {
 import { UserModel, UserWithToken } from '../user/user.model';
 import { AuthService } from './auth.service';
 import { UserRegisterDto, UserLoginDto } from '../user/user.dto';
-import { AppRequest } from '../types/request';
-import { AuthGuard } from './auth.guard';
+import { UseAuthGuard } from './auth.guard';
+import { User } from '../user/user.decorator';
 
 class RegisterResponse {
   @ApiProperty()
@@ -32,7 +30,7 @@ class RegisterResponse {
 
 @ApiTags('auth')
 @ApiHeader({
-  name: 'Accept-Language',
+  name: 'app-lang',
   description: 'Language which all messages will be in.',
 })
 @Controller('/auth')
@@ -51,10 +49,10 @@ export class AuthController {
     description: 'Bearer token required to authorization.',
   })
   @Get('me')
-  @UseGuards(AuthGuard)
+  @UseAuthGuard()
   @UseInterceptors(ClassSerializerInterceptor)
-  me(@Request() request: AppRequest): UserModel {
-    return request.user;
+  me(@User() user: UserModel): UserModel {
+    return user;
   }
 
   @ApiCreatedResponse({

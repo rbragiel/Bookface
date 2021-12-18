@@ -1,3 +1,7 @@
+enum UserRole {
+  USER = "USER",
+  ADMIN = "ADMIN",
+}
 export interface User {
   userId: string;
   nickname: string;
@@ -8,6 +12,7 @@ export interface User {
   birthday?: Date;
   avatarURL?: string;
   description?: string;
+  role: UserRole;
 }
 
 export interface UserWithToken extends User {

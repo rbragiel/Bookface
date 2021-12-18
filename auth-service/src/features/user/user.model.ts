@@ -5,6 +5,7 @@ import {
   Column,
   CreatedAt,
   DataType,
+  HasMany,
   IsEmail,
   Model,
   Table,
@@ -12,6 +13,12 @@ import {
 } from 'sequelize-typescript';
 import { Exclude } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Invitation } from '../invitation/invitation.model';
+
+export enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
 
 export interface IUser {
   userId: string;
@@ -23,6 +30,7 @@ export interface IUser {
   birthday?: Date;
   avatarURL?: string;
   description?: string;
+  role: UserRole;
 }
 
 export interface IUserWithCreatedAt extends IUser {
@@ -69,6 +77,17 @@ export class User extends Model implements IUser {
 
   @BelongsToMany(() => User, () => FriendPair, 'userOneId', 'userTwoId')
   friends: User[];
+
+  @HasMany(() => Invitation, 'inviterId')
+  reciviedInvites: Invitation[];
+
+  @HasMany(() => Invitation, 'inviteeId')
+  sendInvites: Invitation[];
+
+  @Column({
+    type: DataType.ENUM({ values: Object.keys(UserRole) }),
+  })
+  role: UserRole;
 }
 
 export class UserModel implements IUserWithCreatedAt {
@@ -101,6 +120,9 @@ export class UserModel implements IUserWithCreatedAt {
 
   @ApiPropertyOptional()
   description?: string;
+
+  @ApiProperty()
+  role: UserRole;
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);

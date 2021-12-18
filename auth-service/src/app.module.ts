@@ -6,11 +6,13 @@ import { Languages } from './contants/i18n';
 import { APP_FILTER } from '@nestjs/core';
 import { I18nExceptionFilter } from './filters/exception.filter';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from './user/user.model';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { FriendPair } from './friends/friends.model';
+import { User } from './features/user/user.model';
+import { UserModule } from './features/user/user.module';
+import { AuthModule } from './features/auth/auth.module';
+import { FriendPair } from './features/friends/friends.model';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { Invitation } from './features/invitation/invitation.model';
+import { InvitationModule } from './features/invitation/invitation.module';
 
 @Module({
   imports: [
@@ -24,7 +26,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
       parserOptions: {
         path: path.join(__dirname, '/i18n'),
       },
-      resolvers: [new HeaderResolver(['Accept-Language'])],
+      resolvers: [new HeaderResolver(['app-lang'])],
     }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
@@ -33,12 +35,9 @@ import { MailerModule } from '@nestjs-modules/mailer';
       username: process.env.AUTH_USER,
       password: process.env.AUTH_PASSWORD,
       database: process.env.AUTH_DATABASE,
-      models: [User, FriendPair],
-      synchronize: true,
+      models: [Invitation, User, FriendPair],
       autoLoadModels: true,
-      sync: {
-        force: true,
-      },
+      synchronize: true,
     }),
     MailerModule.forRootAsync({
       useFactory: (configService) => {
@@ -56,6 +55,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
     UserModule,
     AuthModule,
+    InvitationModule,
   ],
   controllers: [],
   providers: [
