@@ -1,3 +1,4 @@
+import { FriendsService } from './../friends/friends.service';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
@@ -10,9 +11,19 @@ export class InvitationService {
   private readonly logger = new Logger('Invitation service');
   constructor(
     @InjectModel(Invitation) private readonly invitation: typeof Invitation,
+    private readonly friendsService: FriendsService,
   ) {}
 
   private limit = 30;
+
+  private excludeOptions = [
+    'password',
+    'updatedAt',
+    'role',
+    'description',
+    'isActivated',
+    'birthday',
+  ];
 
   async getAllInvitations(user: UserModel) {
     const invited = await this.invitation.findAll({
@@ -25,14 +36,7 @@ export class InvitationService {
         {
           association: 'invitee',
           attributes: {
-            exclude: [
-              'password',
-              'updatedAt',
-              'role',
-              'description',
-              'isActivated',
-              'birthday',
-            ],
+            exclude: this.excludeOptions,
           },
         },
       ],
@@ -52,17 +56,11 @@ export class InvitationService {
         {
           association: 'inviter',
           attributes: {
-            exclude: [
-              'password',
-              'updatedAt',
-              'role',
-              'description',
-              'isActivated',
-              'birthday',
-            ],
+            exclude: this.excludeOptions,
           },
         },
       ],
+      limit: this.limit,
     });
 
     return invitees;
@@ -99,7 +97,7 @@ export class InvitationService {
 
     const invitation = _invitation.get({ plain: true });
 
-    return invitation.id;
+    return invitation.invitationId;
   }
 
   async accept(user: UserModel, invitationId: string) {
@@ -112,6 +110,8 @@ export class InvitationService {
         message: TranslationsKeys.invitationNotExisting,
       });
     }
+
+    await this.friendsService.createFriends(user.userId, invitation.inviterId);
 
     await invitation.destroy();
 

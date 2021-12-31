@@ -1,3 +1,4 @@
+import { FriendsModule } from './../friends/friends.module';
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Invitation } from './invitation.model';
@@ -7,7 +8,12 @@ import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Invitation]), AuthModule, UserModule],
+  imports: [
+    SequelizeModule.forFeature([Invitation]),
+    AuthModule,
+    UserModule,
+    FriendsModule,
+  ],
   controllers: [InvitationController],
   providers: [InvitationService],
 })

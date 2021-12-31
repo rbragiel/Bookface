@@ -82,7 +82,10 @@ export class AuthService {
       });
     }
 
-    if (!user.isActivated) {
+    if (
+      !user.isActivated &&
+      this.configService.get('NODE_ENV') === 'production'
+    ) {
       throw new ForbiddenException({
         message: TranslationsKeys.accountNotActivated,
       });

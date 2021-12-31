@@ -3,6 +3,7 @@ import {
   ExceptionFilter,
   HttpException,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { I18nService } from 'nestjs-i18n';
@@ -17,13 +18,14 @@ type ErrorType =
 
 @Injectable()
 export class I18nExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger('Error filter');
   constructor(private readonly i18n: I18nService) {}
 
   async catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<I18nRequest>();
     const response = ctx.getResponse<Response>();
-
+    this.logger.error(exception);
     const status = exception.getStatus();
     const errorResponse = <ErrorType>exception.getResponse();
 
