@@ -17,6 +17,7 @@ import { User, UserWithToken } from '../user/user.model';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { URL } from 'url';
+import { SuccessResponse } from '../../types/common';
 
 @Injectable()
 export class AuthService {
@@ -82,7 +83,10 @@ export class AuthService {
       });
     }
 
-    if (!user.isActivated) {
+    if (
+      !user.isActivated &&
+      this.configService.get('NODE_ENV') === 'production'
+    ) {
       throw new ForbiddenException({
         message: TranslationsKeys.accountNotActivated,
       });
@@ -91,7 +95,11 @@ export class AuthService {
     return this.issueToken(user);
   }
 
-  async register({ email, password, nickname }: UserRegisterDto) {
+  async register({
+    email,
+    password,
+    nickname,
+  }: UserRegisterDto): Promise<SuccessResponse> {
     const user = await this.userService.findByEmail(email);
 
     if (user) {
