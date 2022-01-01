@@ -33,7 +33,7 @@ export class FriendsService {
 
   async getFriends(userId: string) {
     const friends = await this.user.sequelize.query(
-      `SELECT userId, nickname, email, joined, avatarURL, FriendPairs.created as friendsSince FROM Users 
+      `SELECT userId, nickname, email, joined, avatarURL, joined, FriendPairs.created as friendsSince FROM Users 
        INNER JOIN FriendPairs
        ON Users.userId = FriendPairs.userOneId OR Users.userId = FriendPairs.userTwoId
        WHERE Users.userId != '${userId}' AND (FriendPairs.userOneId = '${userId}' OR FriendPairs.userOneId = '${userId}')`,

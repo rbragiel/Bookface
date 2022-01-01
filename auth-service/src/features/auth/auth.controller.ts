@@ -1,3 +1,4 @@
+import { AuthHeader } from 'src/open-api/decorators';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -11,7 +12,6 @@ import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
-  ApiHeader,
   ApiOkResponse,
   ApiProperty,
   ApiTags,
@@ -22,6 +22,7 @@ import { AuthService } from './auth.service';
 import { UserRegisterDto, UserLoginDto } from '../user/user.dto';
 import { UseAuthGuard } from './auth.guard';
 import { User } from '../user/user.decorator';
+import { LangHeader } from '../../open-api/decorators';
 
 class RegisterResponse {
   @ApiProperty()
@@ -29,10 +30,7 @@ class RegisterResponse {
 }
 
 @ApiTags('auth')
-@ApiHeader({
-  name: 'app-lang',
-  description: 'Language which all messages will be in.',
-})
+@LangHeader()
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -44,10 +42,7 @@ export class AuthController {
   @ApiUnauthorizedResponse({
     description: 'Unauthorized. User is authorized to access this resource.',
   })
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer token required to authorization.',
-  })
+  @AuthHeader()
   @Get('me')
   @UseAuthGuard()
   @UseInterceptors(ClassSerializerInterceptor)

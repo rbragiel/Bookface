@@ -4,8 +4,11 @@ import { User } from '../user/user.decorator';
 import { InvitationService } from './invitation.service';
 import { UserModel } from '../user/user.model';
 import { UseAuthGuard } from '../auth/auth.guard';
+import { LangHeader, AuthHeader } from '../../open-api/decorators';
 
 @ApiTags('invitations')
+@LangHeader()
+@AuthHeader()
 @Controller('invitations')
 @UseAuthGuard()
 export class InvitationController {

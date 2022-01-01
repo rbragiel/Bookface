@@ -4,8 +4,11 @@ import { UserModel } from './../user/user.model';
 import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { UseAuthGuard } from '../auth/auth.guard';
 import { User } from '../user/user.decorator';
+import { AuthHeader, LangHeader } from 'src/open-api/decorators';
 
 @ApiTags('friends')
+@LangHeader()
+@AuthHeader()
 @Controller('friends')
 @UseAuthGuard()
 export class FriendsController {
