@@ -1,20 +1,33 @@
+import { FriendsService } from './../friends/friends.service';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { UserModel } from '../user/user.model';
 import { Invitation } from './invitation.model';
 import { TranslationsKeys } from '../../contants/i18n';
+import { SuccessResponse } from '../../types/common';
+import { IniviteResponse, InvitedResponse, InviteesResponse } from './types';
 
 @Injectable()
 export class InvitationService {
   private readonly logger = new Logger('Invitation service');
   constructor(
     @InjectModel(Invitation) private readonly invitation: typeof Invitation,
+    private readonly friendsService: FriendsService,
   ) {}
 
   private limit = 30;
 
-  async getAllInvitations(user: UserModel) {
+  private excludeOptions = [
+    'password',
+    'updatedAt',
+    'role',
+    'description',
+    'isActivated',
+    'birthday',
+  ];
+
+  async getAllInvited(user: UserModel): Promise<InvitedResponse> {
     const invited = await this.invitation.findAll({
       where: { inviterId: user.userId },
       attributes: {
@@ -25,24 +38,17 @@ export class InvitationService {
         {
           association: 'invitee',
           attributes: {
-            exclude: [
-              'password',
-              'updatedAt',
-              'role',
-              'description',
-              'isActivated',
-              'birthday',
-            ],
+            exclude: this.excludeOptions,
           },
         },
       ],
       limit: this.limit,
     });
 
-    return invited;
+    return { invited } as InvitedResponse;
   }
 
-  async getAllInvitees(user: UserModel) {
+  async getAllInvitees(user: UserModel): Promise<InviteesResponse> {
     const invitees = await this.invitation.findAll({
       where: { inviteeId: user.userId },
       attributes: {
@@ -52,23 +58,23 @@ export class InvitationService {
         {
           association: 'inviter',
           attributes: {
-            exclude: [
-              'password',
-              'updatedAt',
-              'role',
-              'description',
-              'isActivated',
-              'birthday',
-            ],
+            exclude: this.excludeOptions,
           },
         },
       ],
+      limit: this.limit,
     });
 
-    return invitees;
+    return { invitees } as InviteesResponse;
   }
 
-  async invite(user: UserModel, inviteeId: string) {
+  async invite(user: UserModel, inviteeId: string): Promise<IniviteResponse> {
+    if (user.userId === inviteeId) {
+      throw new BadRequestException({
+        message: TranslationsKeys.cannotInviteSelf,
+      });
+    }
+
     const isInviteExisting = await this.invitation.findOne({
       where: {
         [Op.or]: [
@@ -99,10 +105,13 @@ export class InvitationService {
 
     const invitation = _invitation.get({ plain: true });
 
-    return invitation.id;
+    return new IniviteResponse(invitation.invitationId as string);
   }
 
-  async accept(user: UserModel, invitationId: string) {
+  async accept(
+    user: UserModel,
+    invitationId: string,
+  ): Promise<SuccessResponse> {
     const invitation = await this.invitation.findOne({
       where: { invitationId, inviteeId: user.userId },
     });
@@ -113,6 +122,8 @@ export class InvitationService {
       });
     }
 
+    await this.friendsService.createFriends(user.userId, invitation.inviterId);
+
     await invitation.destroy();
 
     this.logger.log('Invitation accepted successfully');
@@ -120,7 +131,10 @@ export class InvitationService {
     return { success: true };
   }
 
-  async reject(user: UserModel, invitationId: string) {
+  async reject(
+    user: UserModel,
+    invitationId: string,
+  ): Promise<SuccessResponse> {
     const invitation = await this.invitation.findOne({
       where: { invitationId, inviteeId: user.userId },
     });
@@ -139,7 +153,10 @@ export class InvitationService {
     return { success: true };
   }
 
-  async deleteInvite(user: UserModel, inviteId: string) {
+  async deleteInvite(
+    user: UserModel,
+    inviteId: string,
+  ): Promise<SuccessResponse> {
     const invitation = await this.invitation.findOne({
       where: { invitationId: inviteId, inviterId: user.userId },
     });
