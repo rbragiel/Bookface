@@ -14,4 +14,5 @@ export class TranslationsKeys {
   static readonly invitationNotExisting = 'invitation_not_existing';
   static readonly friendsNotExisting = 'friends_not_existing';
   static readonly friendsAlreadyExisting = 'friends_already_existing';
+  static readonly cannotInviteSelf = 'invitations_cannot_invite_self';
 }

@@ -5,6 +5,8 @@ import { Op } from 'sequelize';
 import { UserModel } from '../user/user.model';
 import { Invitation } from './invitation.model';
 import { TranslationsKeys } from '../../contants/i18n';
+import { SuccessResponse } from '../../types/common';
+import { IniviteResponse, InvitedResponse, InviteesResponse } from './types';
 
 @Injectable()
 export class InvitationService {
@@ -25,7 +27,7 @@ export class InvitationService {
     'birthday',
   ];
 
-  async getAllInvitations(user: UserModel) {
+  async getAllInvited(user: UserModel): Promise<InvitedResponse> {
     const invited = await this.invitation.findAll({
       where: { inviterId: user.userId },
       attributes: {
@@ -43,10 +45,10 @@ export class InvitationService {
       limit: this.limit,
     });
 
-    return invited;
+    return { invited } as InvitedResponse;
   }
 
-  async getAllInvitees(user: UserModel) {
+  async getAllInvitees(user: UserModel): Promise<InviteesResponse> {
     const invitees = await this.invitation.findAll({
       where: { inviteeId: user.userId },
       attributes: {
@@ -63,10 +65,16 @@ export class InvitationService {
       limit: this.limit,
     });
 
-    return invitees;
+    return { invitees } as InviteesResponse;
   }
 
-  async invite(user: UserModel, inviteeId: string) {
+  async invite(user: UserModel, inviteeId: string): Promise<IniviteResponse> {
+    if (user.userId === inviteeId) {
+      throw new BadRequestException({
+        message: TranslationsKeys.cannotInviteSelf,
+      });
+    }
+
     const isInviteExisting = await this.invitation.findOne({
       where: {
         [Op.or]: [
@@ -97,10 +105,13 @@ export class InvitationService {
 
     const invitation = _invitation.get({ plain: true });
 
-    return invitation.invitationId;
+    return new IniviteResponse(invitation.invitationId as string);
   }
 
-  async accept(user: UserModel, invitationId: string) {
+  async accept(
+    user: UserModel,
+    invitationId: string,
+  ): Promise<SuccessResponse> {
     const invitation = await this.invitation.findOne({
       where: { invitationId, inviteeId: user.userId },
     });
@@ -120,7 +131,10 @@ export class InvitationService {
     return { success: true };
   }
 
-  async reject(user: UserModel, invitationId: string) {
+  async reject(
+    user: UserModel,
+    invitationId: string,
+  ): Promise<SuccessResponse> {
     const invitation = await this.invitation.findOne({
       where: { invitationId, inviteeId: user.userId },
     });
@@ -139,7 +153,10 @@ export class InvitationService {
     return { success: true };
   }
 
-  async deleteInvite(user: UserModel, inviteId: string) {
+  async deleteInvite(
+    user: UserModel,
+    inviteId: string,
+  ): Promise<SuccessResponse> {
     const invitation = await this.invitation.findOne({
       where: { invitationId: inviteId, inviterId: user.userId },
     });

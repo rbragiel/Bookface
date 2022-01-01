@@ -13,7 +13,6 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiOkResponse,
-  ApiProperty,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -23,11 +22,7 @@ import { UserRegisterDto, UserLoginDto } from '../user/user.dto';
 import { UseAuthGuard } from './auth.guard';
 import { User } from '../user/user.decorator';
 import { LangHeader } from '../../open-api/decorators';
-
-class RegisterResponse {
-  @ApiProperty()
-  success: boolean;
-}
+import { SuccessResponse } from '../../types/common';
 
 @ApiTags('auth')
 @LangHeader()
@@ -52,7 +47,7 @@ export class AuthController {
 
   @ApiCreatedResponse({
     description: 'User registered successfully.',
-    type: RegisterResponse,
+    type: SuccessResponse,
   })
   @ApiBadRequestResponse({
     description: 'Account already exists or validation errors.',
@@ -60,7 +55,7 @@ export class AuthController {
   @Post('register')
   async register(
     @Body() userRegisterDto: UserRegisterDto,
-  ): Promise<{ success: boolean }> {
+  ): Promise<SuccessResponse> {
     return this.authService.register(userRegisterDto);
   }
 
