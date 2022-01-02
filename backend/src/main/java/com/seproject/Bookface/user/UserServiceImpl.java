@@ -10,13 +10,14 @@ import com.seproject.Bookface.user.dto.response.MeResponse;
 import com.seproject.Bookface.user.dto.response.RegisterResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.Collections;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,17 +30,10 @@ public class UserServiceImpl implements UserService {
         this.constants = constants;
     }
 
-    private HttpHeaders getBasicHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        return headers;
-    }
-
     @Override
     public RegisterResponse register(CreateUserRequest requestBody) {
         final String url = constants.getRegisterUrl();
-        HttpHeaders headers = getBasicHeaders();
+        HttpHeaders headers = constants.getBasicHeaders();
 
         HttpEntity<CreateUserRequest> entity = new HttpEntity<>(requestBody, headers);
 
@@ -49,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponse login(LoginRequest requestBody) {
         final String url = constants.getLoginUrl();
-        HttpHeaders headers = getBasicHeaders();
+        HttpHeaders headers = constants.getBasicHeaders();
         HttpEntity<LoginRequest> entity = new HttpEntity<>(requestBody, headers);
 
         return restTemplate.postForObject(url, entity, LoginResponse.class);
@@ -61,7 +55,7 @@ public class UserServiceImpl implements UserService {
         UriComponents uriComponents = UriComponentsBuilder.fromUriString(activateUrl)
                 .queryParam("token", token.getToken()).build();
 
-        HttpHeaders headers = getBasicHeaders();
+        HttpHeaders headers = constants.getBasicHeaders();
 
         HttpEntity<ActivateRequest> entity = new HttpEntity<>(token, headers);
 
@@ -71,7 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public MeResponse me(String token) {
         final String meUrl = constants.getMeUrl();
-        HttpHeaders headers = getBasicHeaders();
+        HttpHeaders headers = constants.getBasicHeaders();
         headers.set("Authorization", token);
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<MeResponse> meResponse = restTemplate.exchange(meUrl, HttpMethod.GET, entity, MeResponse.class);
