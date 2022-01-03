@@ -18,5 +18,13 @@ export class Message {
   content!: string;
 
   @Property()
+  userId!: string;
+
+  @Property()
   createdAt = new Date();
+
+  constructor(content: string, userId: string) {
+    this.content = content;
+    this.userId = userId;
+  }
 }

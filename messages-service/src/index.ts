@@ -1,10 +1,10 @@
-import { errorHandler, notFound } from "./middleware/error";
 import express from "express";
 import http from "http";
+import { RequestContext } from "@mikro-orm/core";
 import { Server } from "socket.io";
+import { errorHandler, notFound } from "./middleware/error";
 import { logger } from "./common/logger";
 import { handleSocket } from "./chat";
-import { RequestContext } from "@mikro-orm/core";
 import { createOrm } from "./db";
 
 (async () => {
