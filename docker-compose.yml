@@ -21,6 +21,13 @@ services:
       - $PORT:$PORT
     depends_on:
       - db
+  messages-service:
+    build: "./messages-service"
+    env_file: ./.env
+    volumes:
+      - ./messages-service/src:/app/src
+    ports:
+      - $MESSAGES_PORT:$MESSAGES_PORT
   java-db:
     image: mysql
     restart: always
