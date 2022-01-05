@@ -1,8 +1,8 @@
+import { UserDto } from './../user/user.dto';
 import { FriendsService } from './../friends/friends.service';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
-import { UserModel } from '../user/user.model';
 import { Invitation } from './invitation.model';
 import { TranslationsKeys } from '../../contants/i18n';
 import { SuccessResponse } from '../../types/common';
@@ -27,7 +27,7 @@ export class InvitationService {
     'birthday',
   ];
 
-  async getAllInvited(user: UserModel): Promise<InvitedResponse> {
+  async getAllInvited(user: UserDto): Promise<InvitedResponse> {
     const invited = await this.invitation.findAll({
       where: { inviterId: user.userId },
       attributes: {
@@ -48,7 +48,7 @@ export class InvitationService {
     return { invited } as InvitedResponse;
   }
 
-  async getAllInvitees(user: UserModel): Promise<InviteesResponse> {
+  async getAllInvitees(user: UserDto): Promise<InviteesResponse> {
     const invitees = await this.invitation.findAll({
       where: { inviteeId: user.userId },
       attributes: {
@@ -68,7 +68,7 @@ export class InvitationService {
     return { invitees } as InviteesResponse;
   }
 
-  async invite(user: UserModel, inviteeId: string): Promise<IniviteResponse> {
+  async invite(user: UserDto, inviteeId: string): Promise<IniviteResponse> {
     if (user.userId === inviteeId) {
       throw new BadRequestException({
         message: TranslationsKeys.cannotInviteSelf,
@@ -108,10 +108,7 @@ export class InvitationService {
     return new IniviteResponse(invitation.invitationId as string);
   }
 
-  async accept(
-    user: UserModel,
-    invitationId: string,
-  ): Promise<SuccessResponse> {
+  async accept(user: UserDto, invitationId: string): Promise<SuccessResponse> {
     const invitation = await this.invitation.findOne({
       where: { invitationId, inviteeId: user.userId },
     });
@@ -131,10 +128,7 @@ export class InvitationService {
     return { success: true };
   }
 
-  async reject(
-    user: UserModel,
-    invitationId: string,
-  ): Promise<SuccessResponse> {
+  async reject(user: UserDto, invitationId: string): Promise<SuccessResponse> {
     const invitation = await this.invitation.findOne({
       where: { invitationId, inviteeId: user.userId },
     });
@@ -154,7 +148,7 @@ export class InvitationService {
   }
 
   async deleteInvite(
-    user: UserModel,
+    user: UserDto,
     inviteId: string,
   ): Promise<SuccessResponse> {
     const invitation = await this.invitation.findOne({

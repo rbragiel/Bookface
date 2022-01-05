@@ -14,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/user/post")
+@RequestMapping(path = "/user/posts")
 @Slf4j
 public class PostController {
 

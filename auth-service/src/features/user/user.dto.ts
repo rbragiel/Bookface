@@ -1,5 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { IsEmail, IsNotEmpty, Length } from 'class-validator';
+import { UserWithCreatedAt, UserRole, User } from './user.model';
 
 export class UserRegisterDto {
   @ApiProperty()
@@ -28,4 +30,72 @@ export class UserLoginDto {
   @ApiProperty()
   @IsNotEmpty()
   password: string;
+}
+
+export class UserSearchDto {
+  @ApiProperty()
+  userId: string;
+
+  @ApiProperty()
+  nickname: string;
+
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  avatarURL: string | null;
+}
+
+export class UsersSearchResultDto {
+  @ApiProperty({ type: [UserSearchDto] })
+  users: UserSearchDto[];
+}
+
+export class UserDto implements UserWithCreatedAt {
+  @ApiProperty()
+  userId: string;
+
+  @ApiProperty()
+  nickname: string;
+
+  @ApiProperty()
+  email: string;
+
+  @Exclude()
+  password: string;
+
+  @ApiProperty()
+  isActivated: boolean;
+
+  @ApiProperty()
+  joined: Date;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiPropertyOptional()
+  birthday?: Date;
+
+  @ApiPropertyOptional()
+  avatarURL?: string;
+
+  @ApiPropertyOptional()
+  description?: string;
+
+  @ApiProperty()
+  role: UserRole;
+
+  constructor(partial: Partial<User>) {
+    Object.assign(this, partial);
+  }
+}
+
+export class UserWithTokenDto extends UserDto {
+  @ApiProperty()
+  token: string;
+}
+
+export class UserWithFriendsDto extends UserDto {
+  @ApiProperty()
+  friends: User[];
 }

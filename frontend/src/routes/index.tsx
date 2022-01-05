@@ -6,6 +6,10 @@ import { Home } from "@pages/Home";
 import { NotFound } from "@pages/NotFound";
 import { Register } from "@pages/Register";
 import { Dashboard } from "@pages/Dashboard";
+import { Main } from "@pages/Main";
+import { Invitations } from "@pages/Invitations";
+import { Friends } from "@pages/Friends";
+import { Chat } from "@pages/Chat";
 
 const Routing = () => {
   return (
@@ -15,7 +19,12 @@ const Routing = () => {
           <Route index element={<Home />} />
           <Route path="register" element={<Register />} />
           <Route path="activate" element={<Activate />} />
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />}>
+            <Route index element={<Main />} />
+            <Route path="invitations" element={<Invitations />} />
+            <Route path="friends" element={<Friends />} />
+            <Route path="chat/:id" element={<Chat />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

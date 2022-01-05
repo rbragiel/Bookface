@@ -1,3 +1,4 @@
+import { UserWithCreatedAt } from './../user/user.model';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   CanActivate,
@@ -8,7 +9,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { AppRequest } from '../../types/request';
-import { IUserWithCreatedAt, UserModel } from '../user/user.model';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -25,6 +25,8 @@ export class AuthGuard implements CanActivate {
     if (!authHeader) {
       return false;
     }
+
+    console.log(authHeader);
 
     const [bearer, token] = authHeader.split(' ');
 
@@ -51,7 +53,7 @@ export class AuthGuard implements CanActivate {
         return false;
       }
 
-      request.user = <IUserWithCreatedAt>user.get({ plain: true });
+      request.user = <UserWithCreatedAt>user.get({ plain: true });
       return true;
     } catch (error) {
       return false;
