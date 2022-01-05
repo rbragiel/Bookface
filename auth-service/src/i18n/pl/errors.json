@@ -1,4 +1,5 @@
 {
   "user_not_found_or_password_not_matching": "Email lub hasło są niepoprawne.",
-  "user_already_exists": "Taki użytkownik już istnieje."
+  "user_already_exists_email": "Użytkownik z takim emailem już istnieje.",
+  "user_already_exists_nickname": "Użytkownik z takim nickiem już istnieje."
 }
