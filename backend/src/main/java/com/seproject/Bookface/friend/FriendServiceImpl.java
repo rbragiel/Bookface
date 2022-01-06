@@ -28,7 +28,7 @@ public class FriendServiceImpl implements FriendService{
         this.constants = constants;
     }
 
-    public String getBearerTokenHeader() {
+    private String getBearerTokenHeader() {
         return ((ServletRequestAttributes) RequestContextHolder.
                 getRequestAttributes()).getRequest().getHeader("Authorization");
     }
