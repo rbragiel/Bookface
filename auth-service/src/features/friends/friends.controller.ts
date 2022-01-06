@@ -1,6 +1,6 @@
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { FriendsService } from './friends.service';
-import { UserModel } from './../user/user.model';
+import { UserDto } from './../user/user.dto';
 import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { UseAuthGuard } from '../auth/auth.guard';
 import { User } from '../user/user.decorator';
@@ -21,7 +21,7 @@ export class FriendsController {
     type: GetFriendsResponse,
   })
   @Get('/all')
-  getFriends(@User() user: UserModel): Promise<GetFriendsResponse> {
+  getFriends(@User() user: UserDto): Promise<GetFriendsResponse> {
     return this.friendsService.getFriends(user.userId);
   }
 
@@ -39,7 +39,7 @@ export class FriendsController {
     type: SuccessResponse,
   })
   @Delete('/:id')
-  removeFrind(@User() user: UserModel, @Param('id') id: string) {
+  removeFrind(@User() user: UserDto, @Param('id') id: string) {
     return this.friendsService.removeFriends(user.userId, id);
   }
 }

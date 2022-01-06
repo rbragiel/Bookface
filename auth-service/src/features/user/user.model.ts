@@ -11,8 +11,6 @@ import {
   Table,
   Unique,
 } from 'sequelize-typescript';
-import { Exclude } from 'class-transformer';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Invitation } from '../invitation/invitation.model';
 
 export enum UserRole {
@@ -33,7 +31,7 @@ export interface IUser {
   role: UserRole;
 }
 
-export interface IUserWithCreatedAt extends IUser {
+export interface UserWithCreatedAt extends IUser {
   createdAt: Date;
 }
 
@@ -88,53 +86,4 @@ export class User extends Model implements IUser {
     type: DataType.ENUM({ values: Object.keys(UserRole) }),
   })
   role: UserRole;
-}
-
-export class UserModel implements IUserWithCreatedAt {
-  @ApiProperty()
-  userId: string;
-
-  @ApiProperty()
-  nickname: string;
-
-  @ApiProperty()
-  email: string;
-
-  @Exclude()
-  password: string;
-
-  @ApiProperty()
-  isActivated: boolean;
-
-  @ApiProperty()
-  joined: Date;
-
-  @ApiProperty()
-  createdAt: Date;
-
-  @ApiPropertyOptional()
-  birthday?: Date;
-
-  @ApiPropertyOptional()
-  avatarURL?: string;
-
-  @ApiPropertyOptional()
-  description?: string;
-
-  @ApiProperty()
-  role: UserRole;
-
-  constructor(partial: Partial<User>) {
-    Object.assign(this, partial);
-  }
-}
-
-export class UserWithToken extends UserModel {
-  @ApiProperty()
-  token: string;
-}
-
-export class UserWithFriends extends UserModel {
-  @ApiProperty()
-  friends: User[];
 }

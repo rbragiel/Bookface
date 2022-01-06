@@ -6,6 +6,7 @@ import com.seproject.Bookface.user.dto.request.LoginRequest;
 import com.seproject.Bookface.user.dto.response.LoginResponse;
 import com.seproject.Bookface.user.dto.response.MeResponse;
 import com.seproject.Bookface.user.dto.response.RegisterResponse;
+import com.seproject.Bookface.user.dto.response.SearchResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -82,5 +83,17 @@ public class UserController {
     public ResponseEntity<String> logout() {
         SecurityContextHolder.clearContext();
         return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/search")
+    public ResponseEntity<SearchResponse> search(@RequestParam("query") String query, @RequestParam("page") int page) {
+        try {
+            ResponseEntity<SearchResponse> response = userServiceImpl.search(query, page);
+            log.info("User successfully activated by email");
+            return response;
+        } catch (HttpClientErrorException exception) {
+            log.info(exception.toString());
+            throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage(), exception);
+        }
     }
 }

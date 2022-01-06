@@ -2,7 +2,7 @@ import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../user/user.decorator';
 import { InvitationService } from './invitation.service';
-import { UserModel } from '../user/user.model';
+import { UserDto } from '../user/user.dto';
 import { UseAuthGuard } from '../auth/auth.guard';
 import { LangHeader, AuthHeader } from '../../open-api/decorators';
 import { SuccessResponse } from '../../types/common';
@@ -21,7 +21,7 @@ export class InvitationController {
     type: InvitedResponse,
   })
   @Get('all/invited')
-  getAllInvitations(@User() user: UserModel): Promise<InvitedResponse> {
+  getAllInvitations(@User() user: UserDto): Promise<InvitedResponse> {
     return this.invitationService.getAllInvited(user);
   }
 
@@ -30,7 +30,7 @@ export class InvitationController {
     type: InviteesResponse,
   })
   @Get('all/invitees')
-  getInvitees(@User() user: UserModel): Promise<InviteesResponse> {
+  getInvitees(@User() user: UserDto): Promise<InviteesResponse> {
     return this.invitationService.getAllInvitees(user);
   }
 
@@ -39,13 +39,13 @@ export class InvitationController {
     type: SuccessResponse,
   })
   @Delete('invite/:id')
-  deleteInvite(@User() user: UserModel, @Param('id') id: string) {
+  deleteInvite(@User() user: UserDto, @Param('id') id: string) {
     return this.invitationService.deleteInvite(user, id);
   }
 
   @ApiCreatedResponse({ description: 'Invitation created.' })
   @Post('invite/:id')
-  invite(@User() user: UserModel, @Param('id') id: string) {
+  invite(@User() user: UserDto, @Param('id') id: string) {
     return this.invitationService.invite(user, id);
   }
 
@@ -54,7 +54,7 @@ export class InvitationController {
     type: SuccessResponse,
   })
   @Post('reject/:id')
-  reject(@User() user: UserModel, @Param('id') id: string) {
+  reject(@User() user: UserDto, @Param('id') id: string) {
     return this.invitationService.reject(user, id);
   }
 
@@ -63,7 +63,7 @@ export class InvitationController {
     type: SuccessResponse,
   })
   @Post('accept/:id')
-  accept(@User() user: UserModel, @Param('id') id: string) {
+  accept(@User() user: UserDto, @Param('id') id: string) {
     return this.invitationService.accept(user, id);
   }
 }
