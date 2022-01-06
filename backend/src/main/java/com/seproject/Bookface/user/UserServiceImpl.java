@@ -8,6 +8,7 @@ import com.seproject.Bookface.user.dto.request.LoginRequest;
 import com.seproject.Bookface.user.dto.response.LoginResponse;
 import com.seproject.Bookface.user.dto.response.MeResponse;
 import com.seproject.Bookface.user.dto.response.RegisterResponse;
+import com.seproject.Bookface.user.dto.response.SearchResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -16,8 +17,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,6 +34,11 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(RestTemplateBuilder restTemplateBuilder, Constants constants) {
         this.restTemplate = restTemplateBuilder.errorHandler(new ErrorHandler()).build();
         this.constants = constants;
+    }
+
+    private String getBearerTokenHeader() {
+        return ((ServletRequestAttributes) RequestContextHolder.
+                getRequestAttributes()).getRequest().getHeader("Authorization");
     }
 
     @Override
@@ -70,5 +81,27 @@ public class UserServiceImpl implements UserService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<MeResponse> meResponse = restTemplate.exchange(meUrl, HttpMethod.GET, entity, MeResponse.class);
         return meResponse.getBody();
+    }
+
+    @Override
+    public ResponseEntity<SearchResponse> search(String query, int page) {
+        final String searchUrl = constants.getSearchUrl();
+        HttpHeaders headers = constants.getBasicHeaders();
+        headers.set("Authorization", getBearerTokenHeader());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String urlTemplate = UriComponentsBuilder.fromHttpUrl(searchUrl)
+                .queryParam("query", "{query}")
+                .queryParam("page", "{page}")
+                .encode()
+                .toUriString();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("query", query);
+        params.put("page", page);
+
+        ResponseEntity<SearchResponse> response = restTemplate.exchange(urlTemplate, HttpMethod.GET,
+                entity, SearchResponse.class, params);
+
+        return response;
     }
 }
