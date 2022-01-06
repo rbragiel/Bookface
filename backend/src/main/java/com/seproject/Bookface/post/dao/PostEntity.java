@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,9 +20,10 @@ import java.sql.Timestamp;
 public class PostEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "post_id", nullable = false)
-    private Long postId;
+    private String postId;
 
     @Column(name = "user_id", nullable = false)
     private String userId;
@@ -32,7 +34,7 @@ public class PostEntity {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "timestamp")
+    @Column(name = "timestamp", nullable = false)
     private Timestamp timestamp;
 
 }

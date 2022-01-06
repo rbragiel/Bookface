@@ -11,7 +11,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/posts/{postId}/comments")
+@RequestMapping(path = "/users/{userId}/posts/{postId}/comments") // potencjalnie do zmiany
 @Slf4j
 public class CommentController {
 

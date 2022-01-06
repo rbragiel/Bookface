@@ -6,15 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @ToString
-public class AllPostsFromUserResponse {
+public class PostsResponse {
 
-    Optional<ArrayList<PostEntity>> allPosts;
+    List<PostEntity> allPosts;
 
 }
