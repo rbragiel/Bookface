@@ -13,11 +13,12 @@ import { UserService } from '../user/user.service';
 import { UserLoginDto, UserRegisterDto } from '../user/user.dto';
 import { TranslationsKeys } from '../../contants/i18n';
 import { compare, hash } from 'bcrypt';
-import { User, UserWithToken } from '../user/user.model';
+import { User } from '../user/user.model';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { URL } from 'url';
 import { SuccessResponse } from '../../types/common';
+import { UserWithTokenDto } from './../user/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -63,10 +64,10 @@ export class AuthService {
       { expiresIn: this.expireTime },
     );
 
-    return new UserWithToken({ ...plainUser, token });
+    return new UserWithTokenDto({ ...plainUser, token });
   }
 
-  async validate({ email, password }: UserLoginDto): Promise<UserWithToken> {
+  async validate({ email, password }: UserLoginDto): Promise<UserWithTokenDto> {
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
@@ -100,11 +101,19 @@ export class AuthService {
     password,
     nickname,
   }: UserRegisterDto): Promise<SuccessResponse> {
-    const user = await this.userService.findByEmail(email);
+    let user = await this.userService.findByEmail(email);
 
     if (user) {
       throw new BadRequestException({
-        message: TranslationsKeys.userAlreadyExists,
+        message: TranslationsKeys.userAlreadyExistsEmail,
+      });
+    }
+
+    user = await this.userService.findByNickname(nickname);
+
+    if (user) {
+      throw new BadRequestException({
+        message: TranslationsKeys.userAlreadyExistsNickname,
       });
     }
 

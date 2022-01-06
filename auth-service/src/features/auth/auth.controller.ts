@@ -1,3 +1,4 @@
+import { UserDto, UserWithTokenDto } from './../user/user.dto';
 import { AuthHeader } from 'src/open-api/decorators';
 import {
   Body,
@@ -16,7 +17,6 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { UserModel, UserWithToken } from '../user/user.model';
 import { AuthService } from './auth.service';
 import { UserRegisterDto, UserLoginDto } from '../user/user.dto';
 import { UseAuthGuard } from './auth.guard';
@@ -32,7 +32,7 @@ export class AuthController {
 
   @ApiOkResponse({
     description: 'Currently logged user.',
-    type: UserModel,
+    type: UserDto,
   })
   @ApiUnauthorizedResponse({
     description: 'Unauthorized. User is authorized to access this resource.',
@@ -41,7 +41,7 @@ export class AuthController {
   @Get('me')
   @UseAuthGuard()
   @UseInterceptors(ClassSerializerInterceptor)
-  me(@User() user: UserModel): UserModel {
+  me(@User() user: UserDto): UserDto {
     return user;
   }
 
@@ -61,7 +61,7 @@ export class AuthController {
 
   @ApiCreatedResponse({
     description: 'User is returned.',
-    type: UserWithToken,
+    type: UserWithTokenDto,
   })
   @ApiUnauthorizedResponse({
     description: 'Account does not exist or password is wrong.',
@@ -72,20 +72,20 @@ export class AuthController {
   })
   @Post('login')
   @UseInterceptors(ClassSerializerInterceptor)
-  async login(@Body() userLoginDto: UserLoginDto): Promise<UserWithToken> {
+  async login(@Body() userLoginDto: UserLoginDto): Promise<UserWithTokenDto> {
     return this.authService.validate(userLoginDto);
   }
 
   @ApiOkResponse({
     description: 'Account activated successfully.',
-    type: UserWithToken,
+    type: UserWithTokenDto,
   })
   @ApiBadRequestResponse({
     description: 'Account cannot be found or token expired.',
   })
   @Post('activate')
   @UseInterceptors(ClassSerializerInterceptor)
-  async activate(@Query('token') token: string): Promise<UserWithToken> {
+  async activate(@Query('token') token: string): Promise<UserWithTokenDto> {
     return this.authService.activate(token);
   }
 }

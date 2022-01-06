@@ -23,6 +23,7 @@ const theme = extendTheme({
       },
       "#root": {
         height: "100%",
+        overflow: "hidden",
       },
     },
   },
