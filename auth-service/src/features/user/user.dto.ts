@@ -99,3 +99,31 @@ export class UserWithFriendsDto extends UserDto {
   @ApiProperty()
   friends: User[];
 }
+
+export class GetSingleUser {
+  @ApiProperty()
+  userId: string;
+
+  @ApiProperty()
+  nickname: string;
+
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  joined: Date;
+
+  @ApiPropertyOptional()
+  birthday?: Date;
+
+  @ApiPropertyOptional()
+  avatarURL?: string;
+
+  @ApiPropertyOptional()
+  description?: string;
+}
+
+export class GetUserDto {
+  @ApiProperty({ type: GetSingleUser })
+  user: GetSingleUser;
+}

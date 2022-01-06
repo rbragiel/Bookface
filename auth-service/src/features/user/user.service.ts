@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { FindOptions, Op } from 'sequelize';
+import { TranslationsKeys } from '../../contants/i18n';
 import {
+  GetSingleUser,
   UserRegisterDto,
   UserSearchDto,
   UsersSearchResultDto,
@@ -22,6 +24,12 @@ export class UserService {
     'isActivated',
     'birthday',
     'joined',
+  ];
+
+  private excludeGetSingleUserOptions = [
+    'password',
+    'updatedAt',
+    'isActivated',
   ];
 
   async create(user: UserRegisterDto) {
@@ -52,7 +60,7 @@ export class UserService {
   }
 
   async searchUser(query: string, skip: number): Promise<UsersSearchResultDto> {
-    const likeQuery = `${query}%`;
+    const likeQuery = `%${query}%`;
     const users = await this.userModel.findAll({
       where: {
         [Op.or]: [
@@ -76,5 +84,19 @@ export class UserService {
     });
 
     return { users: users as UserSearchDto[] };
+  }
+
+  async getUser(id: string) {
+    const user = await this.userModel.findByPk(id, {
+      attributes: { exclude: this.excludeGetSingleUserOptions },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        message: TranslationsKeys.cannotFindUser,
+      });
+    }
+
+    return { user: user.get({ plain: true }) as GetSingleUser };
   }
 }
