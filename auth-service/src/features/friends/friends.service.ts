@@ -24,7 +24,7 @@ export class FriendsService {
       Users.userId != '${userId}' AND (FriendPairs.userOneId = '${userId}' OR FriendPairs.userTwoId = '${userId}')`;
   };
 
-  private async findFriendsPair(userId: string, friendId: string) {
+  async findFriendsPair(userId: string, friendId: string) {
     const friendPair = await this.friends.findOne({
       where: {
         [Op.or]: [

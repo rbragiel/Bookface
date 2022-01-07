@@ -5,10 +5,7 @@ import com.seproject.Bookface.error.ErrorHandler;
 import com.seproject.Bookface.user.dto.request.ActivateRequest;
 import com.seproject.Bookface.user.dto.request.CreateUserRequest;
 import com.seproject.Bookface.user.dto.request.LoginRequest;
-import com.seproject.Bookface.user.dto.response.LoginResponse;
-import com.seproject.Bookface.user.dto.response.MeResponse;
-import com.seproject.Bookface.user.dto.response.RegisterResponse;
-import com.seproject.Bookface.user.dto.response.SearchResponse;
+import com.seproject.Bookface.user.dto.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -102,6 +99,17 @@ public class UserServiceImpl implements UserService {
         ResponseEntity<SearchResponse> response = restTemplate.exchange(urlTemplate, HttpMethod.GET,
                 entity, SearchResponse.class, params);
 
+        return response;
+    }
+
+    @Override
+    public ResponseEntity<GetUserResponse> getUser(String userId) {
+        final String getUserUrl = constants.getGetUserUrl() + userId;
+        HttpHeaders headers = constants.getBasicHeaders();
+        headers.set("Authorization", getBearerTokenHeader());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<GetUserResponse> response = restTemplate.exchange(getUserUrl, HttpMethod.GET,
+                entity, GetUserResponse.class);
         return response;
     }
 }

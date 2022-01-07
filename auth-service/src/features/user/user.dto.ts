@@ -121,6 +121,12 @@ export class GetSingleUser {
 
   @ApiPropertyOptional()
   description?: string;
+
+  @ApiProperty()
+  areFriends: boolean;
+
+  @ApiPropertyOptional()
+  friendsSince?: Date;
 }
 
 export class GetUserDto {

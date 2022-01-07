@@ -3,7 +3,8 @@ import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthHeader, LangHeader } from '../../open-api/decorators';
 import { UseAuthGuard } from '../auth/auth.guard';
-import { GetUserDto, UsersSearchResultDto } from './user.dto';
+import { GetUserDto, UserDto, UsersSearchResultDto } from './user.dto';
+import { User } from './user.decorator';
 
 @ApiTags('user')
 @LangHeader()
@@ -30,7 +31,7 @@ export class UserController {
     type: GetUserDto,
   })
   @Get('/:id')
-  getUser(@Param('id') id: string) {
-    return this.userService.getUser(id);
+  getUser(@Param('id') id: string, @User() user: UserDto) {
+    return this.userService.getUser(id, user);
   }
 }

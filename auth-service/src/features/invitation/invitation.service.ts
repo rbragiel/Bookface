@@ -75,6 +75,9 @@ export class InvitationService {
       });
     }
 
+    // TODO
+    // check for user extistance
+
     const isInviteExisting = await this.invitation.findOne({
       where: {
         [Op.or]: [

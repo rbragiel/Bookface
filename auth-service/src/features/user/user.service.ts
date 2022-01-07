@@ -4,15 +4,20 @@ import { FindOptions, Op } from 'sequelize';
 import { TranslationsKeys } from '../../contants/i18n';
 import {
   GetSingleUser,
+  UserDto,
   UserRegisterDto,
   UserSearchDto,
   UsersSearchResultDto,
 } from './user.dto';
 import { User, UserRole } from './user.model';
+import { FriendsService } from '../friends/friends.service';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User) private readonly userModel: typeof User) {}
+  constructor(
+    @InjectModel(User) private readonly userModel: typeof User,
+    private readonly friendsService: FriendsService,
+  ) {}
 
   private searchUsersLimit = 15;
 
@@ -30,6 +35,7 @@ export class UserService {
     'password',
     'updatedAt',
     'isActivated',
+    'role',
   ];
 
   async create(user: UserRegisterDto) {
@@ -86,7 +92,7 @@ export class UserService {
     return { users: users as UserSearchDto[] };
   }
 
-  async getUser(id: string) {
+  async getUser(id: string, userDto: UserDto) {
     const user = await this.userModel.findByPk(id, {
       attributes: { exclude: this.excludeGetSingleUserOptions },
     });
@@ -97,6 +103,20 @@ export class UserService {
       });
     }
 
-    return { user: user.get({ plain: true }) as GetSingleUser };
+    const areFriends = await this.friendsService.findFriendsPair(
+      userDto.userId,
+      id,
+    );
+
+    const response = {
+      ...user.get({ plain: true }),
+      areFriends: !!areFriends,
+    } as GetSingleUser;
+
+    if (!!areFriends) {
+      response.friendsSince = areFriends.created;
+    }
+
+    return { user: response };
   }
 }
