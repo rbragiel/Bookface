@@ -1,11 +1,13 @@
-import { useBoolean } from "@chakra-ui/react";
-import { ContentWrapper } from "@components/contentWrapper";
 import React from "react";
+import { Button, useBoolean } from "@chakra-ui/react";
+import { ContentWrapper } from "@components/contentWrapper";
 import { Invited } from "./invited";
 import { Invitees } from "./invitees";
+import { useTranslation } from "react-i18next";
 
 const Invitations = () => {
-  const [showInvited, { on, off }] = useBoolean(true);
+  const [showInvited, { toggle }] = useBoolean(true);
+  const { t } = useTranslation();
 
   const render = () => {
     if (showInvited) {
@@ -15,7 +17,14 @@ const Invitations = () => {
     }
   };
 
-  return <ContentWrapper>{render()}</ContentWrapper>;
+  return (
+    <ContentWrapper height="100%">
+      <Button onClick={toggle}>
+        {showInvited ? t("Show received invites") : t("Show sent invites")}
+      </Button>
+      {render()}
+    </ContentWrapper>
+  );
 };
 
 export { Invitations };

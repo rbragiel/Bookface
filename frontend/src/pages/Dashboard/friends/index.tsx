@@ -1,13 +1,14 @@
 import React from "react";
-import { Heading, Stack, useColorModeValue } from "@chakra-ui/react";
+import { Box, Heading, useColorModeValue } from "@chakra-ui/react";
 import { SearchBar } from "./searchbar";
 import { FriendsList } from "./list";
+import { useTranslation } from "react-i18next";
 
 const Friends = () => {
   const borderColor = useColorModeValue("gray.200", "yellow.200");
-
+  const { t } = useTranslation();
   return (
-    <Stack
+    <Box
       maxWidth="500"
       w="30%"
       h="100%"
@@ -16,14 +17,13 @@ const Friends = () => {
       borderRightStyle="solid"
       borderRightColor={borderColor}
       overflow="auto"
-      spacing="6"
     >
       <SearchBar />
-      <Heading as="h6" fontSize="xl" textAlign="center">
-        Your friends:
+      <Heading as="h6" fontSize="xl" textAlign="center" mt={6}>
+        {t("Your friends:")}
       </Heading>
       <FriendsList />
-    </Stack>
+    </Box>
   );
 };
 

@@ -10,6 +10,7 @@ import { TooltipWrapper } from "@components/tooltip/wrapper";
 import { SunIcon, MoonIcon } from "@chakra-ui/icons";
 import { ColorMode } from "@styles/theme";
 import { Link as RouterLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface NavbarLink {
   to: string;
@@ -23,11 +24,11 @@ const links: NavbarLink[] = [
   },
   {
     to: "/dashboard/friends",
-    title: "Your friends",
+    title: "Friends",
   },
   {
     to: "/dashboard/invitations",
-    title: "Your invitations",
+    title: "Invites",
   },
 ];
 
@@ -35,7 +36,7 @@ const Navbar = () => {
   const bg = useColorModeValue("yellow.200", "gray.900");
   const borderColor = useColorModeValue("gray.200", "yellow.200");
   const textColor = useColorModeValue("gray.900", "yellow.200");
-
+  const { t } = useTranslation();
   return (
     <Flex
       as={"header"}
@@ -56,14 +57,14 @@ const Navbar = () => {
           fontWeight={500}
           color={textColor}
         >
-          {link.title}
+          {t(link.title)}
         </Link>
       ))}
       <TooltipWrapper>
         {({ colorMode, handleLanguageChange, language, toggleColorMode }) => (
           <HStack spacing="4">
-            <Button onClick={handleLanguageChange} color={textColor}>
-              {language.toLocaleUpperCase()}
+            <Button onClick={handleLanguageChange} colorScheme="teal">
+              {language.toUpperCase()}
             </Button>
             <Button onClick={toggleColorMode} color={textColor}>
               {colorMode === ColorMode.DARK ? <SunIcon /> : <MoonIcon />}

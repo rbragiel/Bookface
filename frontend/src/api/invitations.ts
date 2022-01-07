@@ -1,9 +1,8 @@
 class InvitationApiEndpoints {
-  static baseUrl = "http://localhost:8080/api/invitations";
-  static invitedUrl = "/all/invited";
-  static inviteesUrl = "/all/invitees";
-  static inviteUrl = "/invite";
-  static acceptUrl = "/accept";
-  static rejectUrl = "/reject";
+  static invitedUrl = "/invitations/all/invited";
+  static inviteesUrl = "/invitations/all/invitees";
+  static inviteUrl = "/invitations/invite";
+  static acceptUrl = "/invitations/accept";
+  static rejectUrl = "/invitations/reject";
 }
 export { InvitationApiEndpoints };

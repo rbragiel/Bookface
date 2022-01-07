@@ -16,8 +16,9 @@ import {
 import { useErrorState } from "@hooks/useErrorState";
 import { useAppSelector } from "@store/hooks";
 import axios from "axios";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AppSpinner } from "@components/spinner";
+import { useTranslation } from "react-i18next";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -65,6 +66,7 @@ const SearchModal = ({ isOpen, close }: SearchModalProps) => {
   const [loading, { off, on }] = useBoolean(false);
   const token = useAppSelector((state) => state.auth.token);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     let id: number;
@@ -123,7 +125,7 @@ const SearchModal = ({ isOpen, close }: SearchModalProps) => {
             <Input
               type="text"
               name="search"
-              placeholder="Search for user. Type at least 3 characters."
+              placeholder={t("Search for user. Type at least 3 characters.")}
               size="lg"
               value={search}
               onChange={(e) => setSearch(e.target.value)}

@@ -1,6 +1,5 @@
 class FriendsApiEndpoints {
-  static baseUrl = "/api/friends";
-  static getUrl = "/all";
+  static getUrl = "/friends/all";
 }
 
 export { FriendsApiEndpoints };
