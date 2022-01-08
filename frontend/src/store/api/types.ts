@@ -26,13 +26,29 @@ export interface InviteWithInvitee {
 }
 
 export interface InvitedResponse {
-  invited: InviteWithInviter[];
+  invited: InviteWithInvitee[];
 }
 
 export interface InviteesResponse {
-  invitees: InviteWithInvitee[];
+  invitees: InviteWithInviter[];
 }
 
 export interface GetFriendsResponse {
   friends: Friend[];
+}
+
+export interface GetUserUser {
+  userId: string;
+  nickname: string;
+  email: string;
+  joined: Date;
+  birthday?: Date;
+  avatarURL?: string;
+  description?: string;
+  areFriends: boolean;
+  friendsSince?: Date;
+}
+
+export interface GetUserResponse {
+  user: GetUserUser;
 }

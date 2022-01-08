@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
+@CrossOrigin
 @RestController
 @RequestMapping(path = "/friends")
 @Slf4j
@@ -54,5 +55,4 @@ public class FriendController {
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage());
         }
     }
-
 }

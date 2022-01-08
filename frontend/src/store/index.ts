@@ -2,20 +2,23 @@ import { configureStore } from "@reduxjs/toolkit";
 import language from "./i18n";
 import auth from "./auth";
 import searchbar from "./searchbar";
-import { friendsApi } from "./friends";
+import { api } from "./api";
+import { setupListeners } from "@reduxjs/toolkit/query/react";
 
 const store = configureStore({
   reducer: {
     language,
     auth,
     searchbar,
-    [friendsApi.reducerPath]: friendsApi.reducer,
+    [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(friendsApi.middleware),
+    getDefaultMiddleware().concat(api.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export default store;
+
+setupListeners(store.dispatch);

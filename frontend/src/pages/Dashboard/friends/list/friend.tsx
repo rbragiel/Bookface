@@ -7,15 +7,18 @@ import {
   Link,
   Tooltip,
 } from "@chakra-ui/react";
-import { Friend } from "@store/friends/types";
+import { Friend } from "@store/api/types";
 import { Link as RouterLink } from "react-router-dom";
 import { ChatIcon, DeleteIcon } from "@chakra-ui/icons";
+import { useDeleteFriendMutation } from "@store/api";
 
 interface FriendListElProps {
   friend: Friend;
 }
 
 const FriendListEl = React.memo(({ friend }: FriendListElProps) => {
+  const [deleteFriend, { isLoading }] = useDeleteFriendMutation();
+
   return (
     <Flex
       justifyContent="space-between"
@@ -46,6 +49,8 @@ const FriendListEl = React.memo(({ friend }: FriendListElProps) => {
             aria-label="Add to friends"
             icon={<DeleteIcon />}
             colorScheme="yellow"
+            onClick={() => deleteFriend({ id: friend.userId })}
+            isLoading={isLoading}
           />
         </Tooltip>
       </ButtonGroup>

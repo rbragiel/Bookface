@@ -18,8 +18,8 @@ const Invitations = () => {
   };
 
   return (
-    <ContentWrapper height="100%">
-      <Button onClick={toggle}>
+    <ContentWrapper>
+      <Button onClick={toggle} size="md" minH="40px">
         {showInvited ? t("Show received invites") : t("Show sent invites")}
       </Button>
       {render()}

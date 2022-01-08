@@ -19,6 +19,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AppSpinner } from "@components/spinner";
 import { useTranslation } from "react-i18next";
+import { getTokenFromLS } from "../../../../store/auth/index";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -39,16 +40,14 @@ interface UsersSearchResult {
 const getSearchResults = async ({
   search,
   page = 0,
-  token,
 }: {
   search: string;
   page?: number;
-  token?: string;
 }): Promise<[UsersSearchResult | null, unknown | null]> => {
   try {
     const { data } = await axios.get(
       `/api/user/search?query=${search}&page=${page}`,
-      { headers: { Authorization: token ?? "" } }
+      { headers: { Authorization: getTokenFromLS() ?? "" } }
     );
 
     return [data, null];
@@ -64,7 +63,7 @@ const SearchModal = ({ isOpen, close }: SearchModalProps) => {
   const [search, setSearch] = useState("");
   const { error, reset, handleError } = useErrorState();
   const [loading, { off, on }] = useBoolean(false);
-  const token = useAppSelector((state) => state.auth.token);
+  const { user: loggedUser } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -74,7 +73,7 @@ const SearchModal = ({ isOpen, close }: SearchModalProps) => {
       const handleSearch = async () => {
         reset();
 
-        const [result, error] = await getSearchResults({ search, token });
+        const [result, error] = await getSearchResults({ search });
 
         if (result) {
           setResults(result);
@@ -139,7 +138,11 @@ const SearchModal = ({ isOpen, close }: SearchModalProps) => {
                     key={user.userId}
                     justifyContent="start"
                     onClick={() => {
-                      navigate(`/dashboard/users/${user.userId}`);
+                      if (user.userId == loggedUser?.userId) {
+                        navigate(`/dashboard/profile`);
+                      } else {
+                        navigate(`/dashboard/users/${user.userId}`);
+                      }
                       onClose();
                     }}
                   >

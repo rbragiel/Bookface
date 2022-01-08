@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Center, Stack } from "@chakra-ui/react";
-import { useGetFriendsQuery } from "@store/friends";
+import { useGetFriendsQuery } from "@store/api";
 import { AppSpinner } from "@components/spinner";
 import { FriendListEl } from "./friend";
 import { useTranslation } from "react-i18next";

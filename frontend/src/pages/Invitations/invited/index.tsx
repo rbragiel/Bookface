@@ -1,10 +1,13 @@
 import React from "react";
-import { Center, Wrap, WrapItem, Button, Flex, Text } from "@chakra-ui/react";
+import { Center, Wrap, Button, Flex, Text } from "@chakra-ui/react";
 import { AppSpinner } from "@components/spinner";
-import { useGetAllInvitedQuery } from "@store/friends";
+import { useGetAllInvitedQuery } from "@store/api";
 import { useAppDispatch } from "@store/hooks";
 import { open } from "@store/searchbar";
 import { useTranslation } from "react-i18next";
+import { InvitedCard } from "./invitedCard";
+
+const centerPostQuantity = 2;
 
 const Invited = () => {
   const { data, isLoading, error } = useGetAllInvitedQuery();
@@ -25,10 +28,14 @@ const Invited = () => {
 
   if (data && data.invited.length > 0) {
     return (
-      <Wrap spacing={2}>
-        <WrapItem w="100%" maxW="300px">
-          {JSON.stringify(data)}
-        </WrapItem>
+      <Wrap
+        spacing={2}
+        paddingY={4}
+        justify={data.invited.length > centerPostQuantity ? "center" : "start"}
+      >
+        {data.invited.map((invitation) => (
+          <InvitedCard key={invitation.invitationId} invitation={invitation} />
+        ))}
       </Wrap>
     );
   } else {
