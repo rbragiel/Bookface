@@ -1,7 +1,7 @@
 package com.seproject.Bookface.invitation.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.seproject.Bookface.invitation.dao.InvitedEntity;
+import com.seproject.Bookface.invitation.dao.InviteeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +16,6 @@ import java.util.List;
 public class AllInviteesResponse {
 
     @JsonProperty("invitees")
-    List<InvitedEntity> invitedEntity;
+    List<InviteeEntity> inviteeEntity;
 
 }

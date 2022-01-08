@@ -1,6 +1,5 @@
 package com.seproject.Bookface.invitation.dao;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -13,11 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class InvitedEntity {
-
+public class InviteeEntity {
     @JsonProperty("invitationId")
     String invitationId;
 
-    @JsonProperty("invitee")
-    Invitee invitee;
+    @JsonProperty("inviter")
+    Invitee inviter;
 }

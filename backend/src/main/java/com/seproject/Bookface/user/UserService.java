@@ -3,10 +3,7 @@ package com.seproject.Bookface.user;
 import com.seproject.Bookface.user.dto.request.ActivateRequest;
 import com.seproject.Bookface.user.dto.request.CreateUserRequest;
 import com.seproject.Bookface.user.dto.request.LoginRequest;
-import com.seproject.Bookface.user.dto.response.LoginResponse;
-import com.seproject.Bookface.user.dto.response.MeResponse;
-import com.seproject.Bookface.user.dto.response.RegisterResponse;
-import com.seproject.Bookface.user.dto.response.SearchResponse;
+import com.seproject.Bookface.user.dto.response.*;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
@@ -21,4 +18,5 @@ public interface UserService {
 
     ResponseEntity<SearchResponse> search(String query, int page);
 
+    ResponseEntity<GetUserResponse> getUser(String userId);
 }

@@ -1,16 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { FindOptions, Op } from 'sequelize';
+import { TranslationsKeys } from '../../contants/i18n';
 import {
+  GetSingleUser,
+  UserDto,
   UserRegisterDto,
   UserSearchDto,
   UsersSearchResultDto,
 } from './user.dto';
 import { User, UserRole } from './user.model';
+import { FriendsService } from '../friends/friends.service';
+import { Invitation } from '../invitation/invitation.model';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User) private readonly userModel: typeof User) {}
+  constructor(
+    @InjectModel(User) private readonly userModel: typeof User,
+    @InjectModel(Invitation) private readonly invitation: typeof Invitation,
+    private readonly friendsService: FriendsService,
+  ) {}
 
   private searchUsersLimit = 15;
 
@@ -22,6 +31,13 @@ export class UserService {
     'isActivated',
     'birthday',
     'joined',
+  ];
+
+  private excludeGetSingleUserOptions = [
+    'password',
+    'updatedAt',
+    'isActivated',
+    'role',
   ];
 
   async create(user: UserRegisterDto) {
@@ -52,7 +68,7 @@ export class UserService {
   }
 
   async searchUser(query: string, skip: number): Promise<UsersSearchResultDto> {
-    const likeQuery = `${query}%`;
+    const likeQuery = `%${query}%`;
     const users = await this.userModel.findAll({
       where: {
         [Op.or]: [
@@ -76,5 +92,50 @@ export class UserService {
     });
 
     return { users: users as UserSearchDto[] };
+  }
+
+  async getUser(id: string, userDto: UserDto) {
+    const user = await this.userModel.findByPk(id, {
+      attributes: { exclude: this.excludeGetSingleUserOptions },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        message: TranslationsKeys.cannotFindUser,
+      });
+    }
+
+    const isInvitation = await this.invitation.findOne({
+      where: {
+        [Op.or]: [
+          {
+            inviterId: id,
+            inviteeId: userDto.userId,
+          },
+          {
+            inviterId: userDto.userId,
+            inviteeId: id,
+          },
+        ],
+      },
+    });
+
+    const areFriends = await this.friendsService.findFriendsPair(
+      userDto.userId,
+      id,
+    );
+
+    const response = {
+      ...user.get({ plain: true }),
+      areFriends: !!areFriends,
+      isInviter: isInvitation && isInvitation.inviterId === id,
+      isInvitee: isInvitation && isInvitation.inviteeId === id,
+    } as GetSingleUser;
+
+    if (!!areFriends) {
+      response.friendsSince = areFriends.created;
+    }
+
+    return { user: response };
   }
 }

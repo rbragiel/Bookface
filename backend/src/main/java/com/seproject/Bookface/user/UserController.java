@@ -3,26 +3,18 @@ package com.seproject.Bookface.user;
 import com.seproject.Bookface.user.dto.request.ActivateRequest;
 import com.seproject.Bookface.user.dto.request.CreateUserRequest;
 import com.seproject.Bookface.user.dto.request.LoginRequest;
-import com.seproject.Bookface.user.dto.response.LoginResponse;
-import com.seproject.Bookface.user.dto.response.MeResponse;
-import com.seproject.Bookface.user.dto.response.RegisterResponse;
-import com.seproject.Bookface.user.dto.response.SearchResponse;
+import com.seproject.Bookface.user.dto.response.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
-
+@CrossOrigin
 @RestController
 @RequestMapping(path = "/user")
 @Slf4j
@@ -89,8 +81,20 @@ public class UserController {
     public ResponseEntity<SearchResponse> search(@RequestParam("query") String query, @RequestParam("page") int page) {
         try {
             ResponseEntity<SearchResponse> response = userServiceImpl.search(query, page);
-            log.info("User successfully activated by email");
+            log.info("Users successfully searched");
             return response;
+        } catch (HttpClientErrorException exception) {
+            log.info(exception.toString());
+            throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage(), exception);
+        }
+    }
+
+    @GetMapping(path = "/{userId}")
+    public GetUserResponse getUser(@PathVariable String userId) {
+        try {
+            ResponseEntity<GetUserResponse> response = userServiceImpl.getUser(userId);
+            log.info(String.valueOf(response.getBody()));
+            return response.getBody();
         } catch (HttpClientErrorException exception) {
             log.info(exception.toString());
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage(), exception);

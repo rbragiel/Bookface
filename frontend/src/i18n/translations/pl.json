@@ -31,5 +31,17 @@
   "Registered successfully! We've sent you an email to activate your account.": "Zarejestorwano pomyślnie! Wysłaliśmy Ci link aktywacyjny Twojego konta.",
   "You will be redirected shortly or you can go to main page now.": "Zostaniesz przekierowany lub możesz teraz iść do strony głównej.",
   "Email confirmation failed!": "Aktywacja maila nie powiodła się!",
-  "Go to main page now": "Idź do strony głównej teraz"
+  "Go to main page now": "Idź do strony głównej teraz",
+  "Your friends:": "Twoi znajomi:",
+  "No friends yet. Look for them using searchbar.": "Brak znajomych. Wyszukaj ich używając wyszukiwarki.",
+  "You haven't sent any invites lately.": "Ostatnio nie wysłałeś/aś żadnych zaproszeń.",
+  "Search for new people": "Szukaj nowych osób",
+  "Show received invites": "Pokaż otrzymane zaproszenia",
+  "Show sent invites": "Pokaż wysłane zaproszenia",
+  "Main": "Strona główna",
+  "Friends": "Znajomi",
+  "Invites": "Zaproszenia",
+  "Search for user": "Szukaj użytkownika",
+  "Search for user. Type at least 3 characters.": "Szukaj użytkownika. Podaj przynajmniej 3 znaki.",
+  "You don't have any new invites.": "Nie masz żadnych nowych zaproszeń."
 }
