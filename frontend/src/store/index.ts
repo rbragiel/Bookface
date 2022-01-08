@@ -1,19 +1,24 @@
 import { configureStore } from "@reduxjs/toolkit";
 import language from "./i18n";
 import auth from "./auth";
-import { invitationsApi } from "./invitations";
+import searchbar from "./searchbar";
+import { api } from "./api";
+import { setupListeners } from "@reduxjs/toolkit/query/react";
 
 const store = configureStore({
   reducer: {
     language,
     auth,
-    [invitationsApi.reducerPath]: invitationsApi.reducer,
+    searchbar,
+    [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(invitationsApi.middleware),
+    getDefaultMiddleware().concat(api.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export default store;
+
+setupListeners(store.dispatch);

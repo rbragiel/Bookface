@@ -19,6 +19,7 @@ final public class Constants {
     private String authUrl;
 
     private final String searchUrl = "http://localhost:5000/api/user/search";
+    private final String getUserUrl = "http://localhost:5000/api/user/";
 
     private final String invitedUrl = "/all/invited";
     private final String inviteesUrl = "/all/invitees";
@@ -85,5 +86,9 @@ final public class Constants {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         return headers;
+    }
+
+    public String getGetUserUrl() {
+        return getUserUrl;
     }
 }

@@ -26,7 +26,7 @@ const saveTokenInLS = (token: string) => {
   localStorage.setItem(USER_TOKEN, `Bearer ${token}`);
 };
 
-const getTokenFromLS = () => {
+export const getTokenFromLS = () => {
   return localStorage.getItem(USER_TOKEN);
 };
 
