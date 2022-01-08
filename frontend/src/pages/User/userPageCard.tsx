@@ -26,6 +26,31 @@ const UserCard = ({ user }: UserCardProps) => {
     useDeleteFriendMutation();
   const [invite, { isLoading: isInviteFriendLoading }] = useInviteMutation();
 
+  const renderButtons = () => {
+    if (user.isInviter) {
+      return (
+        <Text maxW="150px" textAlign="center">
+          User has invited you to friends
+        </Text>
+      );
+    }
+    if (user.isInvitee) {
+      return (
+        <Text maxW="150px" textAlign="center">
+          You have invited this user to friends
+        </Text>
+      );
+    }
+    return (
+      <Button
+        onClick={() => invite({ id: user.userId })}
+        isLoading={isInviteFriendLoading}
+      >
+        Add to friends
+      </Button>
+    );
+  };
+
   return (
     <Flex
       backgroundColor={useColorModeValue("gray.100", "gray.900")}
@@ -77,13 +102,7 @@ const UserCard = ({ user }: UserCardProps) => {
                 </Button>
               </>
             ) : (
-              <Button
-                colorScheme="teal"
-                isLoading={isInviteFriendLoading}
-                onClick={() => invite({ id: user.userId })}
-              >
-                Add to friends
-              </Button>
+              renderButtons()
             )}
           </Flex>
         </Flex>

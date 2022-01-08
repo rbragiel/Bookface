@@ -127,6 +127,12 @@ export class GetSingleUser {
 
   @ApiPropertyOptional()
   friendsSince?: Date;
+
+  @ApiProperty()
+  isInviter: boolean;
+
+  @ApiProperty()
+  isInvitee: boolean;
 }
 
 export class GetUserDto {

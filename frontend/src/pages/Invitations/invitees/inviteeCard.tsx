@@ -3,7 +3,7 @@ import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 import { useAcceptMutation, useRejectMutation } from "@store/api";
 import { InviteWithInviter } from "@store/api/types";
-import { ProfileCard } from "../profileCard";
+import { ProfileCard } from "../../../components/profileCard";
 
 const InviteeCard = ({ invitation }: { invitation: InviteWithInviter }) => {
   const [accept, { isLoading: isAcceptLoading }] = useAcceptMutation();

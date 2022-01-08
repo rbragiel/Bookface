@@ -47,6 +47,8 @@ export interface GetUserUser {
   description?: string;
   areFriends: boolean;
   friendsSince?: Date;
+  isInviter: boolean;
+  isInvitee: boolean;
 }
 
 export interface GetUserResponse {

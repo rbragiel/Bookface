@@ -18,6 +18,8 @@ enum InvitationsApiTagTypes {
   INVITEES = "INVITEES",
 }
 
+const UserRootTag = "User";
+
 const baseUrl = "/api";
 
 const api = createApi({
@@ -51,12 +53,16 @@ const api = createApi({
     }),
     getUser: builder.query<GetUserResponse, string>({
       query: (userId) => `/user/${userId}`,
-      providesTags: (result) => [{ type: "User", id: result?.user.userId }],
+      providesTags: (result) =>
+        result
+          ? [UserRootTag, { type: "User", id: result?.user.userId }]
+          : [UserRootTag],
     }),
     accept: builder.mutation<unknown, { id: string }>({
       invalidatesTags: [
         FriendsApiTagTypes.FRIENDS,
         InvitationsApiTagTypes.INVITEES,
+        UserRootTag,
       ],
       query: ({ id }) => ({
         method: "POST",
@@ -64,21 +70,24 @@ const api = createApi({
       }),
     }),
     reject: builder.mutation<unknown, { id: string }>({
-      invalidatesTags: [InvitationsApiTagTypes.INVITEES],
+      invalidatesTags: [InvitationsApiTagTypes.INVITEES, UserRootTag],
       query: ({ id }) => ({
         method: "POST",
         url: `${InvitationApiEndpoints.rejectUrl}/${id}`,
       }),
     }),
     invite: builder.mutation<unknown, { id: string }>({
-      invalidatesTags: [InvitationsApiTagTypes.INVITED],
+      invalidatesTags: (_, __, { id }) => [
+        InvitationsApiTagTypes.INVITED,
+        { type: UserRootTag, id },
+      ],
       query: ({ id }) => ({
         method: "POST",
         url: `${InvitationApiEndpoints.inviteUrl}/${id}`,
       }),
     }),
     deleteInvite: builder.mutation<unknown, { id: string }>({
-      invalidatesTags: [InvitationsApiTagTypes.INVITED],
+      invalidatesTags: [InvitationsApiTagTypes.INVITED, UserRootTag],
       query: ({ id }) => ({
         method: "DELETE",
         url: `${InvitationApiEndpoints.inviteUrl}/${id}`,

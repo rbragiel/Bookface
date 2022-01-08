@@ -1,7 +1,7 @@
 import React from "react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
-import { ProfileCard } from "../profileCard";
+import { ProfileCard } from "../../../components/profileCard";
 import { InviteWithInvitee } from "@store/api/types";
 import { useDeleteInviteMutation } from "@store/api";
 

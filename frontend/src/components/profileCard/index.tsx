@@ -6,12 +6,13 @@ import {
   useColorModeValue,
   Text,
 } from "@chakra-ui/react";
-import { InviteUser } from "@store/api/types";
+import { Friend, InviteUser } from "@store/api/types";
 import React from "react";
 import { Link } from "react-router-dom";
+import dayjs from "dayjs";
 
 interface ProfileCardProps {
-  user: InviteUser;
+  user: InviteUser | Friend;
   children: React.ReactNode;
 }
 
@@ -37,9 +38,16 @@ const ProfileCard = React.memo(({ user, children }: ProfileCardProps) => {
         <Link to={`/dashboard/users/${user.userId}`}>{user.nickname}</Link>
       </Heading>
 
-      <Text fontWeight={600} color="gray.500" mb={4}>
+      <Text fontWeight={600} color="gray.500" mb={2}>
         {user.email}
       </Text>
+
+      {(user as Friend).friendsSince && (
+        <Text fontWeight={600} color="gray.500" mb={2}>
+          Friends since:{" "}
+          {dayjs((user as Friend).friendsSince).format("DD-MM-YYYY")}
+        </Text>
+      )}
 
       <Stack mt={8} direction="row" spacing={4} justify="center">
         {children}

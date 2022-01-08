@@ -11,11 +11,13 @@ import {
 } from './user.dto';
 import { User, UserRole } from './user.model';
 import { FriendsService } from '../friends/friends.service';
+import { Invitation } from '../invitation/invitation.model';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User) private readonly userModel: typeof User,
+    @InjectModel(Invitation) private readonly invitation: typeof Invitation,
     private readonly friendsService: FriendsService,
   ) {}
 
@@ -103,6 +105,21 @@ export class UserService {
       });
     }
 
+    const isInvitation = await this.invitation.findOne({
+      where: {
+        [Op.or]: [
+          {
+            inviterId: id,
+            inviteeId: userDto.userId,
+          },
+          {
+            inviterId: userDto.userId,
+            inviteeId: id,
+          },
+        ],
+      },
+    });
+
     const areFriends = await this.friendsService.findFriendsPair(
       userDto.userId,
       id,
@@ -111,6 +128,8 @@ export class UserService {
     const response = {
       ...user.get({ plain: true }),
       areFriends: !!areFriends,
+      isInviter: isInvitation && isInvitation.inviterId === id,
+      isInvitee: isInvitation && isInvitation.inviteeId === id,
     } as GetSingleUser;
 
     if (!!areFriends) {
