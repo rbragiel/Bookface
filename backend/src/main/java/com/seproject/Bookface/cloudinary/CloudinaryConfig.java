@@ -1,4 +1,4 @@
-package com.seproject.Bookface.utils;
+package com.seproject.Bookface.cloudinary;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
