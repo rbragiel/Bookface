@@ -21,10 +21,22 @@ export class Message {
   userId!: string;
 
   @Property()
+  roomId!: string;
+
+  @Property()
   createdAt = new Date();
 
-  constructor(content: string, userId: string) {
+  constructor({
+    content,
+    userId,
+    roomId,
+  }: {
+    content: string;
+    userId: string;
+    roomId: string;
+  }) {
     this.content = content;
     this.userId = userId;
+    this.roomId = roomId;
   }
 }

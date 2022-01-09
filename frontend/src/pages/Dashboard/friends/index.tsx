@@ -9,7 +9,8 @@ const Friends = () => {
   const { t } = useTranslation();
   return (
     <Box
-      maxWidth="500"
+      maxWidth="500px"
+      minW="300px"
       w="30%"
       h="100%"
       p={[1, 2, 4]}
