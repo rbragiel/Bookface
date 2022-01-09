@@ -7,11 +7,16 @@ import com.seproject.Bookface.resource.ImageRelationServiceImpl;
 import com.seproject.Bookface.user.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -23,32 +28,48 @@ public class CloudinaryServiceImpl {
     private final UserServiceImpl userService;
     private final ImageRelationServiceImpl imageRelationService;
 
-    public String upload(String accessToken, MultipartFile file, String resourceId) {
+    public ResponseEntity<String> upload(String accessToken, MultipartFile file, String resourceId) {
         String user = userService.me(accessToken).getUserId();
         if (user != null) {
             try {
                 Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
                 String publicId = uploadResult.get("public_id").toString();
-                log.info("The user " + user + " successfully uploaded the file: " + publicId);
                 imageRelationService.addImageToResource(resourceId, publicId);
-
-                return publicId;
+                return new ResponseEntity<>(publicId, HttpStatus.OK);
             } catch (Exception ex) {
-                log.error("The user " + user + " failed to load to Cloudinary the image file: " + file.getName());
                 log.error(ex.getMessage());
-                return null;
+                return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
             }
         } else {
-            log.error("Error: a not authenticated user tried to upload a file");
-            return null;
+            log.error("User is not authenticated");
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
         }
     }
 
-    public ResponseEntity<String> downloadImg(String publicId) {
-        String cloudUrl = cloudinary.url().secure(true)
+    public ResponseEntity<ByteArrayResource> downloadImg(String publicId) {
+        String cloudUrl = cloudinary.url().secure(true).format("jpg")
                 .publicId(publicId)
                 .generate();
-        return new ResponseEntity<>(cloudUrl, HttpStatus.OK);
+
+        try {
+            URL url = new URL(cloudUrl);
+            InputStream inputStream = url.openStream();
+            byte[] out = org.apache.commons.io.IOUtils.toByteArray(inputStream);
+            ByteArrayResource resource = new ByteArrayResource(out);
+
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.add("content-disposition", "attachment; filename=image.jpg");
+            responseHeaders.add("Content-Type", "image/jpeg");
+
+            return ResponseEntity.ok()
+                    .headers(responseHeaders)
+                    .contentLength(out.length)
+                    .body(resource);
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
     }
 
 }
