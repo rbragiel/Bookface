@@ -32,6 +32,25 @@ final public class Constants {
     @Value("${friends.url}")
     private String friendsUrl;
 
+    @Value("${cloudinary.cloud_name}")
+    private String cloudinaryCloudName;
+    @Value("${cloudinary.api_key}")
+    private String cloudinaryApiKey;
+    @Value("${cloudinary.api_secret}")
+    private String cloudinaryApiSecret;
+
+    public String getCloudinaryCloudName() {
+        return cloudinaryCloudName;
+    }
+
+    public String getCloudinaryApiKey() {
+        return cloudinaryApiKey;
+    }
+
+    public String getCloudinaryApiSecret() {
+        return cloudinaryApiSecret;
+    }
+
     public String getRegisterUrl() {
         return authUrl.concat(registerUrl);
     }
