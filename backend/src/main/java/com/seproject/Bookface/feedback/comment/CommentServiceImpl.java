@@ -5,6 +5,7 @@ import com.seproject.Bookface.feedback.comment.dto.request.CreateCommentRequest;
 import com.seproject.Bookface.feedback.comment.dto.response.CommentsResponse;
 import com.seproject.Bookface.post.PostRepository;
 import com.seproject.Bookface.user.dto.response.MeResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -79,11 +80,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseEntity<CommentsResponse> getAllCommentsByPostId(String postId) {
-        List<CommentEntity> response = commentRepository
-                .getCommentEntitiesByPostId(postRepository.getPostEntityByPostId(postId));
+    public ResponseEntity<CommentsResponse> getAllCommentsByPostId(String postId, Pageable paging) {
+        CommentsResponse response = new CommentsResponse(commentRepository
+                .findAllByPostIdOrderByDateDateDesc(postRepository.getPostEntityByPostId(postId), paging).getContent());
 
-        return new ResponseEntity<>(new CommentsResponse(response), HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 /*

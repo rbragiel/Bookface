@@ -3,6 +3,7 @@ package com.seproject.Bookface.feedback.comment;
 import com.seproject.Bookface.feedback.comment.dao.CommentEntity;
 import com.seproject.Bookface.feedback.comment.dto.request.CreateCommentRequest;
 import com.seproject.Bookface.feedback.comment.dto.response.CommentsResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 public interface CommentService {
@@ -15,7 +16,7 @@ public interface CommentService {
 
     ResponseEntity<CommentEntity> getCommentByCommentId(String commentId);
 
-    ResponseEntity<CommentsResponse> getAllCommentsByPostId(String postId);
+    ResponseEntity<CommentsResponse> getAllCommentsByPostId(String postId, Pageable paging);
 
     //ResponseEntity<CommentsResponse> getAllCommentsByUserId(String userId);
 }

@@ -4,6 +4,9 @@ import com.seproject.Bookface.feedback.comment.dao.CommentEntity;
 import com.seproject.Bookface.feedback.comment.dto.request.CreateCommentRequest;
 import com.seproject.Bookface.feedback.comment.dto.response.CommentsResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,9 +75,12 @@ public class CommentController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommentsResponse> getPostComments(@PathVariable("postId") String postId) {
+    public ResponseEntity<CommentsResponse> getPostComments(@PathVariable("postId") String postId,
+                                                            @RequestParam("page") int page,
+                                                            @RequestParam("size") int size) {
         try {
-            ResponseEntity<CommentsResponse> response = commentService.getAllCommentsByPostId(postId);
+            Pageable paging = PageRequest.of(page, size);
+            ResponseEntity<CommentsResponse> response = commentService.getAllCommentsByPostId(postId, paging);
             log.info(response.getBody().toString());
             return response;
         } catch (HttpClientErrorException exception) {

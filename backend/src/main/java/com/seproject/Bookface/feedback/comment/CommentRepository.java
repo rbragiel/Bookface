@@ -3,6 +3,8 @@ package com.seproject.Bookface.feedback.comment;
 
 import com.seproject.Bookface.feedback.comment.dao.CommentEntity;
 import com.seproject.Bookface.post.dao.PostEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +14,8 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, String> {
+
+    Page<CommentEntity> findAllByPostIdOrderByDateDateDesc(PostEntity postId, Pageable paging);
 
     @Query("SELECT u FROM CommentEntity u WHERE u.commentId = :commentId")
     CommentEntity getCommentEntityByCommentId(@Param("commentId") String commentId);
