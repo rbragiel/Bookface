@@ -1,19 +1,15 @@
 import React from "react";
-import { Box, Center, Stack } from "@chakra-ui/react";
+import { Box, Stack } from "@chakra-ui/react";
 import { useGetFriendsQuery } from "@store/api";
-import { AppSpinner } from "@components/spinner";
 import { FriendListEl } from "./friend";
 import { useTranslation } from "react-i18next";
+import { FullSpaceLoader } from "@components/fullSpaceLoader";
 
 const FriendsList = () => {
   const { data, isLoading } = useGetFriendsQuery();
   const { t } = useTranslation();
   if (isLoading) {
-    return (
-      <Center flex={1}>
-        <AppSpinner size="lg" />
-      </Center>
-    );
+    return <FullSpaceLoader size="lg" />;
   }
 
   return (

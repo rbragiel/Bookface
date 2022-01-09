@@ -10,7 +10,7 @@ import { HttpErrorStatusCode, HttpStatusCode } from "../common/constants";
 
 const router = Router();
 
-const messageLimit = 20;
+const messageLimit = 15;
 
 router.get(
   "/:receiverId/:skip",

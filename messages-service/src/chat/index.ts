@@ -20,6 +20,7 @@ interface SocketWithUser extends Socket {
 interface Message {
   userId: string;
   content: string;
+  image: string | null;
 }
 
 enum SocketEvents {
@@ -72,12 +73,11 @@ const handleSocket = (io: Server) => {
 
     await socket.join(room.id);
 
-    console.log(socket.rooms);
-
     socket.on(
       SocketEvents.MESSAGE_SEND,
-      async ({ content, userId }: Message) => {
+      async ({ content, userId, image }: Message) => {
         logger.info({ content, userId, roomId: room.id });
+        logger.info({ isImage: !!image });
 
         const message = new MessageRepository({
           content,

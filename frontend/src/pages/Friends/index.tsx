@@ -1,10 +1,10 @@
 import React from "react";
-import { Grid, Center, Box, Button } from "@chakra-ui/react";
+import { Grid, Box, Button } from "@chakra-ui/react";
 import { ProfileCard } from "@components/profileCard";
-import { AppSpinner } from "@components/spinner";
 import { useGetFriendsQuery, useDeleteFriendMutation } from "@store/api";
 import { Link as RouterLink } from "react-router-dom";
 import { ChatIcon, DeleteIcon } from "@chakra-ui/icons";
+import { FullSpaceLoader } from "@components/fullSpaceLoader";
 
 const Friends = () => {
   const { isLoading, data, error } = useGetFriendsQuery();
@@ -12,11 +12,7 @@ const Friends = () => {
     useDeleteFriendMutation();
 
   if (isLoading) {
-    return (
-      <Center flex={1}>
-        <AppSpinner />
-      </Center>
-    );
+    return <FullSpaceLoader />;
   }
 
   if (error) {

@@ -1,11 +1,11 @@
 import React from "react";
 import { Center, Wrap, Button, Flex, Text } from "@chakra-ui/react";
-import { AppSpinner } from "@components/spinner";
 import { useGetAllInvitedQuery } from "@store/api";
 import { useAppDispatch } from "@store/hooks";
 import { open } from "@store/searchbar";
 import { useTranslation } from "react-i18next";
 import { InvitedCard } from "./invitedCard";
+import { FullSpaceLoader } from "@components/fullSpaceLoader";
 
 const centerPostQuantity = 2;
 
@@ -15,11 +15,7 @@ const Invited = () => {
   const { t } = useTranslation();
 
   if (isLoading) {
-    return (
-      <Center flex={1}>
-        <AppSpinner />
-      </Center>
-    );
+    return <FullSpaceLoader />;
   }
 
   if (error) {
