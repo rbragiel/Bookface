@@ -43,5 +43,16 @@
   "Invites": "Invites",
   "Search for user": "Search for user",
   "Search for user. Type at least 3 characters.": "Search for user. Type at least 3 characters.",
-  "You don't have any new invites.": "You don't have any new invites."
+  "You don't have any new invites.": "You don't have any new invites.",
+  "You have been friends since": "You have been friends since",
+  "Friends since": "Friends since",
+  "On Bookface since": "On Bookface since",
+  "You don't have friends yet.": "You don't have friends yet.",
+  "Search for friends": "Search for friends",
+  "Add": "Add",
+  "Delete": "Delete",
+  "Send": "Send",
+  "Add photo": "Add photo",
+  "Type your message here": "Type your message here",
+  "Load more": "Load more"
 }

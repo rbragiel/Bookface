@@ -43,5 +43,16 @@
   "Invites": "Zaproszenia",
   "Search for user": "Szukaj użytkownika",
   "Search for user. Type at least 3 characters.": "Szukaj użytkownika. Podaj przynajmniej 3 znaki.",
-  "You don't have any new invites.": "Nie masz żadnych nowych zaproszeń."
+  "You don't have any new invites.": "Nie masz żadnych nowych zaproszeń.",
+  "You have been friends since": "Jesteście znajomymi od",
+  "Friends since": "Znajomi od",
+  "On Bookface since": "Na Bookface od",
+  "You don't have friends yet.": "Nie masz jeszcze przyjaciół.",
+  "Search for friends": "Szukaj znajomych",
+  "Add": "Dodaj",
+  "Delete": "Usuń",
+  "Send": "Wyślij",
+  "Add photo": "Dodaj zdjęcie",
+  "Type your message here": "Wpisz swoją wiadomość",
+  "Load more": "Załaduj więcej"
 }

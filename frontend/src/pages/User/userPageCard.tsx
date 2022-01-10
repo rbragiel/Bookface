@@ -16,6 +16,7 @@ import {
 import dayjs from "dayjs";
 import { DeleteIcon, SearchIcon, StarIcon, TimeIcon } from "@chakra-ui/icons";
 import { useDeleteFriendMutation, useInviteMutation } from "@store/api";
+import { useTranslation } from "react-i18next";
 
 interface UserCardProps {
   user: GetUserUser;
@@ -25,6 +26,7 @@ const UserCard = ({ user }: UserCardProps) => {
   const [deleteFriend, { isLoading: isDeleteFriendLoading }] =
     useDeleteFriendMutation();
   const [invite, { isLoading: isInviteFriendLoading }] = useInviteMutation();
+  const { t } = useTranslation();
 
   const renderButtons = () => {
     if (user.isInviter) {
@@ -84,7 +86,7 @@ const UserCard = ({ user }: UserCardProps) => {
             {user.areFriends ? (
               <>
                 <Text textAlign="center">
-                  You have been friends since <br />
+                  {t("You have been friends since")} <br />
                   <strong>
                     {dayjs(user.friendsSince).format("DD-MM-YYYY")}
                   </strong>
@@ -122,7 +124,7 @@ const UserCard = ({ user }: UserCardProps) => {
         )}
         <ListItem display="flex" alignItems="center">
           <ListIcon as={TimeIcon} color="green.500" />
-          On Bookface since: {dayjs(user.joined).format("DD-MM-YYYY")}
+          {t("On Bookface since")}: {dayjs(user.joined).format("DD-MM-YYYY")}
         </ListItem>
       </List>
     </Flex>

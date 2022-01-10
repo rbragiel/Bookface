@@ -1,9 +1,9 @@
 import React from "react";
 import { Center, Box, Wrap } from "@chakra-ui/react";
-import { AppSpinner } from "@components/spinner";
 import { useGetAllInviteesQuery } from "@store/api";
 import { useTranslation } from "react-i18next";
 import { InviteeCard } from "./inviteeCard";
+import { FullSpaceLoader } from "@components/fullSpaceLoader";
 
 const centerPostQuantity = 2;
 
@@ -12,11 +12,7 @@ const Invitees = () => {
   const { t } = useTranslation();
 
   if (isLoading) {
-    return (
-      <Center flex={1}>
-        <AppSpinner />
-      </Center>
-    );
+    return <FullSpaceLoader />;
   }
 
   if (error) {

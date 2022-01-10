@@ -3,8 +3,8 @@ import { ContentWrapper } from "@components/contentWrapper";
 import { useGetUserQuery } from "@store/api";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { AppSpinner } from "@components/spinner";
 import { UserCard } from "./userPageCard";
+import { FullSpaceLoader } from "@components/fullSpaceLoader";
 
 const User = () => {
   const { userId } = useParams();
@@ -12,11 +12,7 @@ const User = () => {
   const { data, isLoading, error } = useGetUserQuery(userId ?? "");
 
   if (isLoading) {
-    return (
-      <Center flex={1}>
-        <AppSpinner />
-      </Center>
-    );
+    return <FullSpaceLoader />;
   }
 
   if (error) {

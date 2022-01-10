@@ -30,6 +30,10 @@ export const getTokenFromLS = () => {
   return localStorage.getItem(USER_TOKEN);
 };
 
+export const clearTokenFromLS = () => {
+  return localStorage.removeItem(USER_TOKEN);
+};
+
 const login = createAsyncThunk(
   `${authSliceName}/login`,
   async (login: LoginBody, { dispatch, rejectWithValue }) => {
@@ -65,8 +69,8 @@ const me = createAsyncThunk(
     if (!token) {
       return rejectWithValue("No token");
     }
-    const userWitkToken = await userApi.me(token);
-    return userWitkToken;
+    const userWithToken = await userApi.me(token);
+    return userWithToken;
   }
 );
 
@@ -80,6 +84,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.token = undefined;
       state.user = undefined;
+      clearTokenFromLS();
     },
   },
   extraReducers: (builder) => {
@@ -98,7 +103,7 @@ const authSlice = createSlice({
       const {
         payload: { token, ...user },
       } = action;
-      state.token = token;
+      state.token = `Bearer ${token}`;
       state.user = user;
       state.loading = false;
     });
