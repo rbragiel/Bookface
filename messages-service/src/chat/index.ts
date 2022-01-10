@@ -7,6 +7,9 @@ import { logger } from "../common/logger";
 import { getRoomByUserIds, Room } from "../db/entities/room";
 import { Message as MessageRepository } from "../db/entities/message";
 import { DI } from "../index";
+import { Bucket, storage } from "../common/storage";
+import { nanoid as uuid } from "nanoid";
+import sharp from "sharp";
 
 interface IncomingMessageWithUser extends IncomingMessage {
   user: User;
@@ -84,6 +87,31 @@ const handleSocket = (io: Server) => {
           userId,
           roomId: room.id,
         });
+
+        if (image) {
+          try {
+            const body = await sharp(
+              Buffer.from(image.replace(/.*base64,/, ""), "base64")
+            )
+              .jpeg({ quality: 60 })
+              .toBuffer();
+
+            const { Location: url } = await storage
+              .upload({
+                Key: `${uuid()}.jpeg`,
+                ACL: "public-read",
+                Body: body,
+                Bucket,
+              })
+              .promise();
+
+            message.image = url;
+          } catch (error) {
+            console.log(error);
+            // pass error
+          }
+        }
+
         await DI.em.persistAndFlush(message);
 
         io.to(room!.id).emit(SocketEvents.MESSAGE_RECEIVED, message);

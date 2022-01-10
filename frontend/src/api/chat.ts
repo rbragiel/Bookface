@@ -13,6 +13,7 @@ export interface MessageReceived {
   roomId: string;
   content: string;
   createdAt: Date;
+  image?: string
 }
 
 export interface MessageSend {

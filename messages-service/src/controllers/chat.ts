@@ -37,7 +37,7 @@ router.get(
       {
         limit: messageLimit,
         offset,
-        fields: ["createdAt", "content", "userId"],
+        fields: ["createdAt", "content", "userId", "image"],
         orderBy: { createdAt: QueryOrder.DESC },
       }
     );

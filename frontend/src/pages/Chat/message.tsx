@@ -2,6 +2,7 @@ import { MessageReceived } from "@api/chat";
 import { Box } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
+import { MessageImage } from "./messageImage";
 
 interface MessageProps {
   message: MessageReceived;
@@ -26,7 +27,8 @@ const Message = React.forwardRef<HTMLDivElement, MessageProps>(
         <Box fontWeight={600}>
           {dayjs(message.createdAt).format("DD/MM/YYYY HH:mm")}
         </Box>
-        {message.content}
+        <Box>{message.content}</Box>
+        {message.image && <MessageImage src={message.image} />}
       </Box>
     );
   }
