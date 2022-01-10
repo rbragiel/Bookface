@@ -15,7 +15,9 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, String> {
 
-    Page<CommentEntity> findAllByPostIdOrderByDateDateDesc(PostEntity postId, Pageable paging);
+    Page<CommentEntity> findAllByPostIdOrderByDateDesc(PostEntity postId, Pageable paging);
+
+    int countAllByPostId(PostEntity postId);
 
     @Query("SELECT u FROM CommentEntity u WHERE u.commentId = :commentId")
     CommentEntity getCommentEntityByCommentId(@Param("commentId") String commentId);

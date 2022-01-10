@@ -12,6 +12,8 @@ import java.util.List;
 @Repository
 public interface ReactionRepository extends JpaRepository<ReactionEntity, String> {
 
+    int countAllByPostId(PostEntity postId);
+
     @Query("SELECT u FROM ReactionEntity u WHERE u.reactionId = :reactionId")
     ReactionEntity getReactionEntityByReactionId(@Param("reactionId") String reactionId);
 

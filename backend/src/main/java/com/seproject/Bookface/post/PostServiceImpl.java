@@ -1,9 +1,19 @@
 package com.seproject.Bookface.post;
 
+import com.seproject.Bookface.feedback.comment.CommentRepository;
+import com.seproject.Bookface.feedback.reaction.ReactionRepository;
+import com.seproject.Bookface.friend.FriendServiceImpl;
+import com.seproject.Bookface.friend.dao.FriendshipEntity;
+import com.seproject.Bookface.friend.dto.response.AllFriendsResponse;
 import com.seproject.Bookface.post.dao.PostEntity;
 import com.seproject.Bookface.post.dto.request.CreatePostRequest;
+import com.seproject.Bookface.post.dto.response.PostDto;
 import com.seproject.Bookface.post.dto.response.PostsResponse;
 import com.seproject.Bookface.user.dto.response.MeResponse;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +22,19 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
-
-    public PostServiceImpl(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    private final FriendServiceImpl friendService;
+    private final CommentRepository commentRepository;
+    private final ReactionRepository reactionRepository;
 
     @Override
     public ResponseEntity<String> addPost(CreatePostRequest requestBody, String userId) {
@@ -87,8 +100,34 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostsResponse findAllPostsFromUser(String userId, Pageable paging) {
-        PostsResponse allPosts = new PostsResponse(postRepository
-                .findAllByUserIdOrderByTimestampDesc(userId, paging).getContent());
-        return allPosts;
+        List<PostEntity> postEntityPage = postRepository.findAllByUserIdOrderByTimestampDesc(userId, paging).getContent();
+        return createPostDto(postEntityPage);
     }
+
+    @Override
+    public PostsResponse findAllPostsFromFriends(String userId, Pageable paging) {
+        AllFriendsResponse allFriends = friendService.getAllFriendsOf(userId);
+        List<String> friendIds = new ArrayList<>();
+        for (FriendshipEntity friendship : allFriends.getFriendships()) {
+            friendIds.add(friendship.getUserId());
+        }
+
+        List<PostEntity> postEntityPage = postRepository.findAllByUserIdIn(friendIds, paging).getContent();
+        return createPostDto(postEntityPage);
+    }
+
+    private PostsResponse createPostDto(List<PostEntity> postEntityPage) {
+        List<PostDto> postDtoList = new ArrayList<>();
+
+        for (PostEntity post : postEntityPage) {
+            postDtoList.add(PostDto.builder()
+                    .postEntity(post)
+                    .comments(commentRepository.countAllByPostId(post))
+                    .reactions(reactionRepository.countAllByPostId(post))
+                    .build());
+        }
+
+        return new PostsResponse(postDtoList);
+    }
+
 }

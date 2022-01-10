@@ -14,7 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/users/{userId}/posts")
+@RequestMapping(path = "/posts")
 @Slf4j
 public class PostController {
 
@@ -24,9 +24,9 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addPost(@RequestBody CreatePostRequest requestBody,
-                                          @PathVariable("userId") String userId) {
+                                          @PathVariable(value = "userId") String userId) {
         try {
             ResponseEntity<String> responseEntity = postService.addPost(requestBody, userId);
             log.info(responseEntity.getBody());
@@ -37,9 +37,9 @@ public class PostController {
         }
     }
 
-    @DeleteMapping(path = "/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deletePost(@PathVariable("postId") String postId,
-                                             @PathVariable("userId") String userId) {
+                                             @PathVariable(value = "userId") String userId) {
         try {
             ResponseEntity<String> responseEntity = postService.removePost(postId, userId);
             log.info(responseEntity.getBody());
@@ -50,10 +50,10 @@ public class PostController {
         }
     }
 
-    @PutMapping(path = "/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> modifyPost(@PathVariable("postId") String postId,
                                              @RequestBody CreatePostRequest requestBody,
-                                             @PathVariable("userId") String userId) {
+                                             @PathVariable(value = "userId") String userId) {
         try {
             ResponseEntity<String> responseEntity = postService
                     .modifyPost(postId, requestBody.getTitle(), requestBody.getContent(), userId);
@@ -65,25 +65,38 @@ public class PostController {
         }
     }
 
-    @GetMapping(value = "/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PostEntity> getPost(@PathVariable("userId") String userId,
+    @GetMapping(value = "/{userId}/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PostEntity> getPost(@PathVariable(value = "userId") String userId,
                                               @PathVariable("postId") String postId) {
         try {
-            ResponseEntity<PostEntity> responseEntity = postService.getPost(userId, postId);
-            return responseEntity;
+            return postService.getPost(userId, postId);
         } catch (HttpClientErrorException exception) {
             log.info(exception.toString());
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage());
         }
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PostsResponse> allPostsFromUser(@PathVariable String userId,
-                                                          @RequestParam("page") int page,
-                                                          @RequestParam("size") int size) {
+    @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PostsResponse> allPostsFromUser( @PathVariable(value = "userId") String userId,
+                                                          @RequestParam(value = "page", defaultValue = "0") int page,
+                                                          @RequestParam(value = "size", defaultValue = "20") int size) {
         try {
             Pageable paging = PageRequest.of(page, size);
             PostsResponse allPosts = postService.findAllPostsFromUser(userId, paging);
+            return new ResponseEntity<>(allPosts, HttpStatus.OK);
+        } catch (HttpClientErrorException exception) {
+            log.info(exception.toString());
+            throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage());
+        }
+    }
+
+    @GetMapping(path = "/{userId}/friends", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PostsResponse> allPostsFromFriends(@PathVariable(value = "userId") String userId,
+                                                           @RequestParam(value = "page", defaultValue = "0") int page,
+                                                           @RequestParam(value = "size", defaultValue = "20") int size) {
+        try {
+            Pageable paging = PageRequest.of(page, size);
+            PostsResponse allPosts = postService.findAllPostsFromFriends(userId, paging);
             return new ResponseEntity<>(allPosts, HttpStatus.OK);
         } catch (HttpClientErrorException exception) {
             log.info(exception.toString());

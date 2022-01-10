@@ -82,7 +82,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public ResponseEntity<CommentsResponse> getAllCommentsByPostId(String postId, Pageable paging) {
         CommentsResponse response = new CommentsResponse(commentRepository
-                .findAllByPostIdOrderByDateDateDesc(postRepository.getPostEntityByPostId(postId), paging).getContent());
+                .findAllByPostIdOrderByDateDesc(postRepository.getPostEntityByPostId(postId), paging).getContent());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

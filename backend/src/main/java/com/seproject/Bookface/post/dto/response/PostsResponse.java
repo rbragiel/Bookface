@@ -14,6 +14,7 @@ import java.util.List;
 @ToString
 public class PostsResponse {
 
-    List<PostEntity> allPosts;
+    List<PostDto> allPosts;
+
 
 }

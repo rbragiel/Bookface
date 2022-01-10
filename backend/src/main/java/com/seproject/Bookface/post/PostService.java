@@ -19,4 +19,6 @@ public interface PostService {
 
     PostsResponse findAllPostsFromUser(String userId, Pageable paging);
 
+    PostsResponse findAllPostsFromFriends(String userId, Pageable paging);
+
 }

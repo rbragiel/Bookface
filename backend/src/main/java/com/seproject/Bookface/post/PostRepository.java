@@ -10,11 +10,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface PostRepository extends JpaRepository<PostEntity, String> {
 
     Page<PostEntity> findAllByUserIdOrderByTimestampDesc(String userId, Pageable paging);
+    Page<PostEntity> findAllByUserIdIn(List<String> userId, Pageable paging);
 
     @Transactional
     @Modifying
