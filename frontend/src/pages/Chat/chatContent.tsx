@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { MessageReceived } from "@api/chat";
 import { AddIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Flex, Input, Button, Tooltip } from "@chakra-ui/react";
@@ -6,6 +6,8 @@ import { ContentWrapper } from "@components/contentWrapper";
 import { MessageDisplay } from "./messageDisplay";
 import { useMessages } from "@hooks/useMessages";
 import { FullSpaceLoader } from "@components/fullSpaceLoader";
+import { useGetFriendsQuery } from "@store/api";
+import { useTranslation } from "react-i18next";
 
 interface ChatContentProps {
   messages: MessageReceived[];
@@ -41,8 +43,10 @@ const ChatContent = ({
   const [image, setImage] = useState<string | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const addImageInputRef = useRef<HTMLInputElement>(null);
+  const { data, isLoading: friendsLoading } = useGetFriendsQuery();
 
   const { isLoading, loadMore, hasMore } = useMessages(id, updateMessages);
+  const { t } = useTranslation();
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target;
@@ -54,6 +58,13 @@ const ChatContent = ({
       setImage(result);
     }
   };
+
+  const isDisabled = useMemo(
+    () => !data?.friends.find((friend) => friend.userId === id),
+    [data?.friends, id]
+  );
+
+  const emptyMessage = message.length === 0;
 
   if (isLoading && messages.length === 0) {
     return <FullSpaceLoader />;
@@ -80,7 +91,8 @@ const ChatContent = ({
           }}
           size="lg"
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message here"
+          placeholder={t("Type your message here")}
+          isDisabled={isDisabled}
         />
         <Tooltip label="Add photo">
           <Button
@@ -89,6 +101,8 @@ const ChatContent = ({
             onClick={() => {
               addImageInputRef.current?.click();
             }}
+            isLoading={friendsLoading}
+            isDisabled={isDisabled}
           >
             <AddIcon />
           </Button>
@@ -99,6 +113,7 @@ const ChatContent = ({
           type="file"
           accept="image/*"
           onChange={handleChange}
+          isDisabled={isDisabled}
         />
         <Button
           rightIcon={<ChevronRightIcon />}
@@ -112,8 +127,10 @@ const ChatContent = ({
           type="button"
           colorScheme="teal"
           ref={btnRef}
+          isLoading={friendsLoading}
+          isDisabled={isDisabled || emptyMessage}
         >
-          Send
+          {t("Send")}
         </Button>
       </Flex>
     </ContentWrapper>

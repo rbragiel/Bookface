@@ -10,6 +10,7 @@ import { Friend, InviteUser } from "@store/api/types";
 import React from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 interface ProfileCardProps {
   user: InviteUser | Friend;
@@ -17,6 +18,7 @@ interface ProfileCardProps {
 }
 
 const ProfileCard = React.memo(({ user, children }: ProfileCardProps) => {
+  const { t } = useTranslation();
   return (
     <Box
       maxW="350px"
@@ -44,7 +46,7 @@ const ProfileCard = React.memo(({ user, children }: ProfileCardProps) => {
 
       {(user as Friend).friendsSince && (
         <Text fontWeight={600} color="gray.500" mb={2}>
-          Friends since:{" "}
+          {t("Friends since")}:{" "}
           {dayjs((user as Friend).friendsSince).format("DD-MM-YYYY")}
         </Text>
       )}

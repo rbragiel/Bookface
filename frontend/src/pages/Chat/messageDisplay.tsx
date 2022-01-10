@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { MessageReceived } from "@api/chat";
 import { Stack, useColorModeValue, Button } from "@chakra-ui/react";
 import { Message } from "./message";
+import { useTranslation } from "react-i18next";
 
 interface MessageDisplayProps {
   messages: MessageReceived[];
@@ -19,7 +20,7 @@ const MessageDisplay = ({
   hasMore,
 }: MessageDisplayProps) => {
   const bgMessColor = useColorModeValue("gray.100", "gray.900");
-
+  const { t } = useTranslation();
   const lastElRef = useCallback((node: HTMLDivElement) => {
     if (node) {
       node.scrollIntoView({
@@ -37,7 +38,7 @@ const MessageDisplay = ({
           isLoading={isLoading}
           isDisabled={isLoading}
         >
-          Load more
+          {t("Load more")}
         </Button>
       )}
       {messages.map((mess, i) =>

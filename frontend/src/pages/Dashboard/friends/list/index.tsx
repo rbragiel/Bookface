@@ -8,6 +8,7 @@ import { FullSpaceLoader } from "@components/fullSpaceLoader";
 const FriendsList = () => {
   const { data, isLoading } = useGetFriendsQuery();
   const { t } = useTranslation();
+
   if (isLoading) {
     return <FullSpaceLoader size="lg" />;
   }

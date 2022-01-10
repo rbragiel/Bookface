@@ -4,11 +4,12 @@ import { Button } from "@chakra-ui/react";
 import { useAcceptMutation, useRejectMutation } from "@store/api";
 import { InviteWithInviter } from "@store/api/types";
 import { ProfileCard } from "../../../components/profileCard";
+import { useTranslation } from "react-i18next";
 
 const InviteeCard = ({ invitation }: { invitation: InviteWithInviter }) => {
   const [accept, { isLoading: isAcceptLoading }] = useAcceptMutation();
   const [reject, { isLoading: isRejectLoading }] = useRejectMutation();
-
+  const { t } = useTranslation();
   return (
     <ProfileCard user={invitation.inviter}>
       <Button
@@ -17,7 +18,7 @@ const InviteeCard = ({ invitation }: { invitation: InviteWithInviter }) => {
         onClick={() => accept({ id: invitation.invitationId })}
         isLoading={isAcceptLoading && isRejectLoading}
       >
-        Add
+        {t("Add")}
       </Button>
       <Button
         colorScheme="red"
@@ -26,7 +27,7 @@ const InviteeCard = ({ invitation }: { invitation: InviteWithInviter }) => {
         onClick={() => reject({ id: invitation.invitationId })}
         isLoading={isAcceptLoading && isRejectLoading}
       >
-        Delete
+        {t("Delete")}
       </Button>
     </ProfileCard>
   );
