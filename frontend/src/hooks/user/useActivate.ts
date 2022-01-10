@@ -16,7 +16,7 @@ function useActivate() {
   const query = useQuery();
   const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
-  const mounted = useMounted();
+  const isMounted = useMounted();
   const navigate = useNavigate();
   const timoutRef = useRef<number | null>(null);
   const { error, handleError } = useErrorState();
@@ -40,7 +40,7 @@ function useActivate() {
   );
 
   useDidMount(() => {
-    if (mounted.current) {
+    if (isMounted()) {
       const token = query.get("token");
       if (!token || !!auth.user) {
         setTimeout(() => navigate(RoutingPaths.dashboard), 0);
