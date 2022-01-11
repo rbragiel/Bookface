@@ -1,5 +1,6 @@
 package com.seproject.Bookface.feedback.reaction.dao;
 
+import com.seproject.Bookface.feedback.reaction.Choice;
 import com.seproject.Bookface.post.dao.PostEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,6 @@ public class ReactionEntity {
     private String userId;
 
     @Column(name = "choice", nullable = false)
-    private String choice;
+    private Choice choice;
 
 }

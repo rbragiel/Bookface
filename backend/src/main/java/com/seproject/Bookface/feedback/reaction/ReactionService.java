@@ -2,8 +2,11 @@ package com.seproject.Bookface.feedback.reaction;
 
 import com.seproject.Bookface.feedback.reaction.dao.ReactionEntity;
 import com.seproject.Bookface.feedback.reaction.dto.request.CreateReactionRequest;
-import com.seproject.Bookface.feedback.reaction.dto.response.ReactionsResponse;
+import com.seproject.Bookface.feedback.reaction.dto.response.PostReactionsDto;
+import com.seproject.Bookface.feedback.reaction.dto.response.ReactionsResponseDto;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface ReactionService {
 
@@ -15,6 +18,6 @@ public interface ReactionService {
 
     ResponseEntity<ReactionEntity> getReactionByReactionId(String reactionId);
 
-    ResponseEntity<ReactionsResponse> getAllReactionsByPostId(String postId);
+    ResponseEntity<List<PostReactionsDto>> getAllReactionsByPostId(String postId);
 
 }

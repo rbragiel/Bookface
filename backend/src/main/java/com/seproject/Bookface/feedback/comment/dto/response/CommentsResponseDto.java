@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @ToString
-public class CommentsResponse {
+public class CommentsResponseDto {
 
     List<CommentEntity> comments;
 

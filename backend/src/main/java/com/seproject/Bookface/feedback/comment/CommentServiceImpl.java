@@ -2,7 +2,8 @@ package com.seproject.Bookface.feedback.comment;
 
 import com.seproject.Bookface.feedback.comment.dao.CommentEntity;
 import com.seproject.Bookface.feedback.comment.dto.request.CreateCommentRequest;
-import com.seproject.Bookface.feedback.comment.dto.response.CommentsResponse;
+import com.seproject.Bookface.feedback.comment.dto.response.CommentsResponseDto;
+import com.seproject.Bookface.feedback.comment.dto.response.PostCommentsDto;
 import com.seproject.Bookface.post.PostRepository;
 import com.seproject.Bookface.user.dto.response.MeResponse;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -80,21 +82,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseEntity<CommentsResponse> getAllCommentsByPostId(String postId, Pageable paging) {
-        CommentsResponse response = new CommentsResponse(commentRepository
-                .findAllByPostIdOrderByDateDesc(postRepository.getPostEntityByPostId(postId), paging).getContent());
-
+    public ResponseEntity<List<PostCommentsDto>> getAllCommentsByPostId(String postId, Pageable paging) {
+        List<PostCommentsDto> response = new ArrayList<>();
+        List<CommentEntity> commentEntityList = commentRepository
+                .findAllByPostIdOrderByDateDesc(postRepository.getPostEntityByPostId(postId), paging).getContent();
+        for (CommentEntity commentEntity: commentEntityList) {
+            response.add(new PostCommentsDto(commentEntity.getCommentId(), commentEntity.getUserId(), commentEntity.getContent(), commentEntity.getDate()));
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-/*
-    @Override
-    public ResponseEntity<CommentsResponse> getAllCommentsByUserId(String userId) {
-        List<CommentEntity> response = commentRepository
-                .getCommentEntitiesByUserId(userId);
-
-        return new ResponseEntity<>(new CommentsResponse(response), HttpStatus.OK);
-    }
-
- */
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @ToString
-public class ReactionsResponse {
+public class ReactionsResponseDto {
 
     List<ReactionEntity> reactions;
 

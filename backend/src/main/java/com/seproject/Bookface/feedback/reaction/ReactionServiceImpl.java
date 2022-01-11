@@ -2,7 +2,8 @@ package com.seproject.Bookface.feedback.reaction;
 
 import com.seproject.Bookface.feedback.reaction.dao.ReactionEntity;
 import com.seproject.Bookface.feedback.reaction.dto.request.CreateReactionRequest;
-import com.seproject.Bookface.feedback.reaction.dto.response.ReactionsResponse;
+import com.seproject.Bookface.feedback.reaction.dto.response.PostReactionsDto;
+import com.seproject.Bookface.feedback.reaction.dto.response.ReactionsResponseDto;
 import com.seproject.Bookface.post.PostRepository;
 import com.seproject.Bookface.user.dto.response.MeResponse;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,8 +31,8 @@ public class ReactionServiceImpl implements ReactionService {
             ReactionEntity reactionEntity = reactionRepository
                     .getReactionEntityByPostIdAndUserId(postRepository.getPostEntityByPostId(postId), me);
 
-            if (!Objects.equals(reactionEntity.getChoice(), requestBody.getChoice())) {
-                reactionEntity.setChoice(requestBody.getChoice());
+            if (!Objects.equals(reactionEntity.getChoice(), Choice.valueOf(requestBody.getChoice()))) {
+                reactionEntity.setChoice(Choice.valueOf(requestBody.getChoice()));
                 reactionRepository.save(reactionEntity);
                 return new ResponseEntity<>("Reaction successfully saved", HttpStatus.OK);
             } else {
@@ -40,7 +42,7 @@ public class ReactionServiceImpl implements ReactionService {
             reactionRepository.save(ReactionEntity.builder()
                     .postId(postRepository.getPostEntityByPostId(postId))
                     .userId(me)
-                    .choice(requestBody.getChoice())
+                    .choice(Choice.valueOf(requestBody.getChoice()))
                     .build());
 
             return new ResponseEntity<>("Reaction successfully saved", HttpStatus.OK);
@@ -58,26 +60,6 @@ public class ReactionServiceImpl implements ReactionService {
         }
     }
 
-/*
-    @Override
-    public ResponseEntity<String> modifyReaction(String reactionId, CreateReactionRequest requestBody) {
-
-        if (reactionRepository.existsById(reactionId)) {
-
-            ReactionEntity reactionEntity = reactionRepository.getReactionEntityByReactionId(reactionId);
-
-            if (requestBody.getChoice() != null)
-                reactionEntity.setChoice(requestBody.getChoice());
-
-            reactionRepository.save(reactionEntity);
-
-            return new ResponseEntity<>("Reaction successfully modified", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Reaction not found", HttpStatus.BAD_REQUEST);
-        }
-    }
-*/
-
     @Override
     public ResponseEntity<ReactionEntity> getReactionByReactionId(String reactionId) {
         if (reactionRepository.existsById(reactionId)) {
@@ -89,11 +71,13 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public ResponseEntity<ReactionsResponse> getAllReactionsByPostId(String postId) {
-        List<ReactionEntity> response = reactionRepository
+    public ResponseEntity<List<PostReactionsDto>> getAllReactionsByPostId(String postId) {
+        List<PostReactionsDto> response = new ArrayList<>();
+        List<ReactionEntity> reactionList = reactionRepository
                 .getReactionEntitiesByPostId(postRepository.getPostEntityByPostId(postId));
-
-        return new ResponseEntity<>(new ReactionsResponse(response), HttpStatus.OK);
+        for (ReactionEntity reaction: reactionList) {
+            response.add(new PostReactionsDto(reaction.getReactionId(), reaction.getUserId(), reaction.getChoice()));
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 }

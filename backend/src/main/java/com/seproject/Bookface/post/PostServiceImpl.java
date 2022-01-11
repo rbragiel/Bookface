@@ -1,18 +1,17 @@
 package com.seproject.Bookface.post;
 
 import com.seproject.Bookface.feedback.comment.CommentRepository;
+import com.seproject.Bookface.feedback.reaction.Choice;
 import com.seproject.Bookface.feedback.reaction.ReactionRepository;
+import com.seproject.Bookface.feedback.reaction.dto.response.ReactionDto;
 import com.seproject.Bookface.friend.FriendServiceImpl;
 import com.seproject.Bookface.friend.dao.FriendshipEntity;
 import com.seproject.Bookface.friend.dto.response.AllFriendsResponse;
 import com.seproject.Bookface.post.dao.PostEntity;
 import com.seproject.Bookface.post.dto.request.CreatePostRequest;
 import com.seproject.Bookface.post.dto.response.PostDto;
-import com.seproject.Bookface.post.dto.response.PostsResponse;
+import com.seproject.Bookface.post.dto.response.PostsResponseDto;
 import com.seproject.Bookface.user.dto.response.MeResponse;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -99,13 +97,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostsResponse findAllPostsFromUser(String userId, Pageable paging) {
+    public PostsResponseDto findAllPostsFromUser(String userId, Pageable paging) {
         List<PostEntity> postEntityPage = postRepository.findAllByUserIdOrderByTimestampDesc(userId, paging).getContent();
         return createPostDto(postEntityPage);
     }
 
     @Override
-    public PostsResponse findAllPostsFromFriends(String userId, Pageable paging) {
+    public PostsResponseDto findAllPostsFromFriends(String userId, Pageable paging) {
         AllFriendsResponse allFriends = friendService.getAllFriendsOf(userId);
         List<String> friendIds = new ArrayList<>();
         for (FriendshipEntity friendship : allFriends.getFriendships()) {
@@ -116,18 +114,25 @@ public class PostServiceImpl implements PostService {
         return createPostDto(postEntityPage);
     }
 
-    private PostsResponse createPostDto(List<PostEntity> postEntityPage) {
+    private PostsResponseDto createPostDto(List<PostEntity> postEntityPage) {
         List<PostDto> postDtoList = new ArrayList<>();
+        List<ReactionDto> reactionDtoList = new ArrayList<>();
 
         for (PostEntity post : postEntityPage) {
+            reactionDtoList.clear();
+
+            for (Choice choice : Choice.values()) {
+                reactionDtoList.add(new ReactionDto(choice, reactionRepository.countAllByPostIdAndChoice(post, choice)));
+            }
+
             postDtoList.add(PostDto.builder()
                     .postEntity(post)
                     .comments(commentRepository.countAllByPostId(post))
-                    .reactions(reactionRepository.countAllByPostId(post))
+                    .reactions(reactionDtoList)
                     .build());
         }
 
-        return new PostsResponse(postDtoList);
+        return new PostsResponseDto(postDtoList);
     }
 
 }

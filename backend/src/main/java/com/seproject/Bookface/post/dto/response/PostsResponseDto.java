@@ -1,6 +1,5 @@
 package com.seproject.Bookface.post.dto.response;
 
-import com.seproject.Bookface.post.dao.PostEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @ToString
-public class PostsResponse {
+public class PostsResponseDto {
 
     List<PostDto> allPosts;
-
 
 }

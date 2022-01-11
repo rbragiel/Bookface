@@ -2,7 +2,7 @@ package com.seproject.Bookface.post;
 
 import com.seproject.Bookface.post.dao.PostEntity;
 import com.seproject.Bookface.post.dto.request.CreatePostRequest;
-import com.seproject.Bookface.post.dto.response.PostsResponse;
+import com.seproject.Bookface.post.dto.response.PostsResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -77,12 +77,12 @@ public class PostController {
     }
 
     @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PostsResponse> allPostsFromUser( @PathVariable(value = "userId") String userId,
-                                                          @RequestParam(value = "page", defaultValue = "0") int page,
-                                                          @RequestParam(value = "size", defaultValue = "20") int size) {
+    public ResponseEntity<PostsResponseDto> allPostsFromUser(@PathVariable(value = "userId") String userId,
+                                                             @RequestParam(value = "page", defaultValue = "0") int page,
+                                                             @RequestParam(value = "size", defaultValue = "20") int size) {
         try {
             Pageable paging = PageRequest.of(page, size);
-            PostsResponse allPosts = postService.findAllPostsFromUser(userId, paging);
+            PostsResponseDto allPosts = postService.findAllPostsFromUser(userId, paging);
             return new ResponseEntity<>(allPosts, HttpStatus.OK);
         } catch (HttpClientErrorException exception) {
             log.info(exception.toString());
@@ -91,12 +91,12 @@ public class PostController {
     }
 
     @GetMapping(path = "/{userId}/friends", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PostsResponse> allPostsFromFriends(@PathVariable(value = "userId") String userId,
-                                                           @RequestParam(value = "page", defaultValue = "0") int page,
-                                                           @RequestParam(value = "size", defaultValue = "20") int size) {
+    public ResponseEntity<PostsResponseDto> allPostsFromFriends(@PathVariable(value = "userId") String userId,
+                                                                @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                @RequestParam(value = "size", defaultValue = "20") int size) {
         try {
             Pageable paging = PageRequest.of(page, size);
-            PostsResponse allPosts = postService.findAllPostsFromFriends(userId, paging);
+            PostsResponseDto allPosts = postService.findAllPostsFromFriends(userId, paging);
             return new ResponseEntity<>(allPosts, HttpStatus.OK);
         } catch (HttpClientErrorException exception) {
             log.info(exception.toString());

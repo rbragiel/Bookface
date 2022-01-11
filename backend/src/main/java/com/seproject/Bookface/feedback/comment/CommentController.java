@@ -2,9 +2,9 @@ package com.seproject.Bookface.feedback.comment;
 
 import com.seproject.Bookface.feedback.comment.dao.CommentEntity;
 import com.seproject.Bookface.feedback.comment.dto.request.CreateCommentRequest;
-import com.seproject.Bookface.feedback.comment.dto.response.CommentsResponse;
+import com.seproject.Bookface.feedback.comment.dto.response.CommentsResponseDto;
+import com.seproject.Bookface.feedback.comment.dto.response.PostCommentsDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
-@RequestMapping(path = "/users/posts/{postId}/comments") // potencjalnie do zmiany
+@RequestMapping(path = "/comments")
 @Slf4j
 public class CommentController {
 
@@ -24,7 +26,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path="/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addComment(@RequestBody CreateCommentRequest requestBody,
                                              @PathVariable("postId") String postId) {
         try {
@@ -37,7 +39,7 @@ public class CommentController {
         }
     }
 
-    @GetMapping(path = "/{commentId}")
+    @GetMapping(path = "/{postId}/{commentId}")
     public ResponseEntity<CommentEntity> getComment(@PathVariable("commentId") String commentId) {
         try {
             ResponseEntity<CommentEntity> response = commentService.getCommentByCommentId(commentId);
@@ -49,7 +51,7 @@ public class CommentController {
         }
     }
 
-    @DeleteMapping(path = "/{commentId}")
+    @DeleteMapping(path = "/{postId}/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable("commentId") String commentId) {
         try {
             ResponseEntity<String> response = commentService.removeComment(commentId);
@@ -61,7 +63,7 @@ public class CommentController {
         }
     }
 
-    @PutMapping(path = "/{commentId}")
+    @PutMapping(path = "/{postId}/{commentId}")
     public ResponseEntity<String> updateComment(@PathVariable("commentId") String commentId,
                                                 @RequestBody CreateCommentRequest requestBody) {
         try {
@@ -74,13 +76,13 @@ public class CommentController {
         }
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommentsResponse> getPostComments(@PathVariable("postId") String postId,
-                                                            @RequestParam("page") int page,
-                                                            @RequestParam("size") int size) {
+    @GetMapping(path = "/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PostCommentsDto>> getPostComments(@PathVariable("postId") String postId,
+                                                                 @RequestParam("page") int page,
+                                                                 @RequestParam("size") int size) {
         try {
             Pageable paging = PageRequest.of(page, size);
-            ResponseEntity<CommentsResponse> response = commentService.getAllCommentsByPostId(postId, paging);
+            ResponseEntity<List<PostCommentsDto>> response = commentService.getAllCommentsByPostId(postId, paging);
             log.info(response.getBody().toString());
             return response;
         } catch (HttpClientErrorException exception) {
