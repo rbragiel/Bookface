@@ -1,6 +1,6 @@
 package com.seproject.Bookface.post;
 
-import com.seproject.Bookface.post.dao.PostEntity;
+import com.seproject.Bookface.post.dao.PostData;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,21 +11,20 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
 
 @Repository
-public interface PostRepository extends JpaRepository<PostEntity, String> {
+public interface PostRepository extends JpaRepository<PostData, String> {
 
-    Page<PostEntity> findAllByUserIdOrderByTimestampDesc(String userId, Pageable paging);
-    Page<PostEntity> findAllByUserIdIn(List<String> userId, Pageable paging);
+    Page<PostData> findAllByUserIdOrderByTimestampDesc(String userId, Pageable paging);
+    Page<PostData> findAllByUserIdIn(List<String> userId, Pageable paging);
 
     @Transactional
     @Modifying
-    @Query("UPDATE PostEntity post SET post.title = ?2, post.content = ?3 WHERE post.postId = ?1")
+    @Query("UPDATE PostData post SET post.title = ?2, post.content = ?3 WHERE post.postId = ?1")
     void setUserInfoById(String postId, String title, String content);
 
 
-    @Query("SELECT u FROM PostEntity u WHERE u.postId = :postId")
-    PostEntity getPostEntityByPostId(@Param("postId") String postId);
+    @Query("SELECT u FROM PostData u WHERE u.postId = :postId")
+    PostData getPostEntityByPostId(@Param("postId") String postId);
 
 }

@@ -34,7 +34,7 @@ public class UserController {
         return new ResponseEntity<>(me, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest requestBody) {
         try {
             LoginResponse loginResponse = userServiceImpl.login(requestBody);
@@ -46,7 +46,7 @@ public class UserController {
         }
     }
 
-    @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RegisterResponse> registerUser(@RequestBody CreateUserRequest requestBody) {
         try {
             RegisterResponse registerResponse = userServiceImpl.register(requestBody);
@@ -58,7 +58,7 @@ public class UserController {
         }
     }
 
-    @PostMapping(path = "/activate/{token}")
+    @PostMapping(path = "/activate/{token}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LoginResponse> activate(@PathVariable String token) {
         ActivateRequest requestBody = new ActivateRequest(token);
         try {
@@ -71,10 +71,10 @@ public class UserController {
         }
     }
 
-    @PostMapping("/logout")
+    @PostMapping(path ="/logout", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> logout() {
         SecurityContextHolder.clearContext();
-        return new ResponseEntity<>("Logged out successfully", HttpStatus.OK);
+        return new ResponseEntity<>("{\"message\": \"Logged out successfully\"}", HttpStatus.OK);
     }
 
     @GetMapping(path = "/search")
@@ -89,7 +89,7 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "/{userId}")
+    @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public GetUserResponse getUser(@PathVariable String userId) {
         try {
             ResponseEntity<GetUserResponse> response = userServiceImpl.getUser(userId);

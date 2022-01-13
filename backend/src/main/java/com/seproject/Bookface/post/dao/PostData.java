@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostEntity {
+public class PostData {
 
     @Id
     @GeneratedValue(generator = "system-uuid")

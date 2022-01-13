@@ -1,8 +1,7 @@
 package com.seproject.Bookface.feedback.comment;
 
-import com.seproject.Bookface.feedback.comment.dao.CommentEntity;
+import com.seproject.Bookface.feedback.comment.dao.CommentData;
 import com.seproject.Bookface.feedback.comment.dto.request.CreateCommentRequest;
-import com.seproject.Bookface.feedback.comment.dto.response.CommentsResponseDto;
 import com.seproject.Bookface.feedback.comment.dto.response.PostCommentsDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +25,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping(path="/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path="/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addComment(@RequestBody CreateCommentRequest requestBody,
                                              @PathVariable("postId") String postId) {
         try {
@@ -39,10 +38,10 @@ public class CommentController {
         }
     }
 
-    @GetMapping(path = "/{postId}/{commentId}")
-    public ResponseEntity<CommentEntity> getComment(@PathVariable("commentId") String commentId) {
+    @GetMapping(path = "/{postId}/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CommentData> getComment(@PathVariable("commentId") String commentId) {
         try {
-            ResponseEntity<CommentEntity> response = commentService.getCommentByCommentId(commentId);
+            ResponseEntity<CommentData> response = commentService.getCommentByCommentId(commentId);
             log.info(response.getBody().toString());
             return response;
         } catch (HttpClientErrorException exception) {
@@ -51,7 +50,7 @@ public class CommentController {
         }
     }
 
-    @DeleteMapping(path = "/{postId}/{commentId}")
+    @DeleteMapping(path = "/{postId}/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteComment(@PathVariable("commentId") String commentId) {
         try {
             ResponseEntity<String> response = commentService.removeComment(commentId);
@@ -63,7 +62,7 @@ public class CommentController {
         }
     }
 
-    @PutMapping(path = "/{postId}/{commentId}")
+    @PutMapping(path = "/{postId}/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateComment(@PathVariable("commentId") String commentId,
                                                 @RequestBody CreateCommentRequest requestBody) {
         try {

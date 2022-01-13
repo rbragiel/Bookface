@@ -1,6 +1,6 @@
 package com.seproject.Bookface.feedback.reaction.dto.response;
 
-import com.seproject.Bookface.feedback.reaction.dao.ReactionEntity;
+import com.seproject.Bookface.feedback.reaction.dao.ReactionData;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
@@ -12,6 +12,6 @@ import java.util.List;
 @ToString
 public class ReactionsResponseDto {
 
-    List<ReactionEntity> reactions;
+    List<ReactionData> reactions;
 
 }

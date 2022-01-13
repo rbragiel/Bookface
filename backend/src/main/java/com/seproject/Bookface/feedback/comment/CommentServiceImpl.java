@@ -1,8 +1,7 @@
 package com.seproject.Bookface.feedback.comment;
 
-import com.seproject.Bookface.feedback.comment.dao.CommentEntity;
+import com.seproject.Bookface.feedback.comment.dao.CommentData;
 import com.seproject.Bookface.feedback.comment.dto.request.CreateCommentRequest;
-import com.seproject.Bookface.feedback.comment.dto.response.CommentsResponseDto;
 import com.seproject.Bookface.feedback.comment.dto.response.PostCommentsDto;
 import com.seproject.Bookface.post.PostRepository;
 import com.seproject.Bookface.user.dto.response.MeResponse;
@@ -32,14 +31,14 @@ public class CommentServiceImpl implements CommentService {
         MeResponse myUserDetails = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String me = myUserDetails.getUserId();
 
-        commentRepository.save(CommentEntity.builder()
+        commentRepository.save(CommentData.builder()
                 .postId(postRepository.getPostEntityByPostId(postId))
                 .userId(me)
                 .content(requestBody.getContent())
                 .date(Timestamp.valueOf(LocalDateTime.now()))
                 .build());
 
-        return new ResponseEntity<>("Comment successfully saved", HttpStatus.OK);
+        return new ResponseEntity<>("{\"message\": \"Comment successfully saved\"}", HttpStatus.OK);
     }
 
     @Override
@@ -47,9 +46,9 @@ public class CommentServiceImpl implements CommentService {
 
         if (commentRepository.existsById(commentId)) {
             commentRepository.deleteById(commentId);
-            return new ResponseEntity<>("Comment successfully removed", HttpStatus.OK);
+            return new ResponseEntity<>("{\"message\": \"Comment successfully removed\"}", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Comment not found", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("{\"message\": \"Comment not found\"}", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -58,23 +57,23 @@ public class CommentServiceImpl implements CommentService {
 
         if (commentRepository.existsById(commentId)) {
 
-            CommentEntity commentEntity = commentRepository.getCommentEntityByCommentId(commentId);
+            CommentData commentEntity = commentRepository.getCommentEntityByCommentId(commentId);
 
             if (requestBody.getContent() != null)
                 commentEntity.setContent(requestBody.getContent());
 
             commentRepository.save(commentEntity);
 
-            return new ResponseEntity<>("Comment successfully modified", HttpStatus.OK);
+            return new ResponseEntity<>("{\"message\": \"Comment successfully modified\"}", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Comment not found", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("{\"message\": \"Comment not found\"}", HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
-    public ResponseEntity<CommentEntity> getCommentByCommentId(String commentId) {
+    public ResponseEntity<CommentData> getCommentByCommentId(String commentId) {
         if (commentRepository.existsById(commentId)) {
-            CommentEntity response = commentRepository.getCommentEntityByCommentId(commentId);
+            CommentData response = commentRepository.getCommentEntityByCommentId(commentId);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -84,9 +83,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public ResponseEntity<List<PostCommentsDto>> getAllCommentsByPostId(String postId, Pageable paging) {
         List<PostCommentsDto> response = new ArrayList<>();
-        List<CommentEntity> commentEntityList = commentRepository
+        List<CommentData> commentEntityList = commentRepository
                 .findAllByPostIdOrderByDateDesc(postRepository.getPostEntityByPostId(postId), paging).getContent();
-        for (CommentEntity commentEntity: commentEntityList) {
+        for (CommentData commentEntity: commentEntityList) {
             response.add(new PostCommentsDto(commentEntity.getCommentId(), commentEntity.getUserId(), commentEntity.getContent(), commentEntity.getDate()));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);

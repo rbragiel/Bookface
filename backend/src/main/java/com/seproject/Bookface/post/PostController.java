@@ -1,6 +1,5 @@
 package com.seproject.Bookface.post;
 
-import com.seproject.Bookface.post.dao.PostEntity;
 import com.seproject.Bookface.post.dto.request.CreatePostRequest;
 import com.seproject.Bookface.post.dto.response.PostsResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +23,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping(path = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addPost(@RequestBody CreatePostRequest requestBody,
                                           @PathVariable(value = "userId") String userId) {
         try {
@@ -37,7 +36,7 @@ public class PostController {
         }
     }
 
-    @DeleteMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deletePost(@PathVariable("postId") String postId,
                                              @PathVariable(value = "userId") String userId) {
         try {
@@ -50,7 +49,7 @@ public class PostController {
         }
     }
 
-    @PutMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> modifyPost(@PathVariable("postId") String postId,
                                              @RequestBody CreatePostRequest requestBody,
                                              @PathVariable(value = "userId") String userId) {
@@ -66,8 +65,8 @@ public class PostController {
     }
 
     @GetMapping(value = "/{userId}/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PostEntity> getPost(@PathVariable(value = "userId") String userId,
-                                              @PathVariable("postId") String postId) {
+    public ResponseEntity<com.seproject.Bookface.post.dao.PostData> getPost(@PathVariable(value = "userId") String userId,
+                                                                            @PathVariable("postId") String postId) {
         try {
             return postService.getPost(userId, postId);
         } catch (HttpClientErrorException exception) {

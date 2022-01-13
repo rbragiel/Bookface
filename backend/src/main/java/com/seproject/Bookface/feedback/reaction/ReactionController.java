@@ -1,9 +1,8 @@
 package com.seproject.Bookface.feedback.reaction;
 
-import com.seproject.Bookface.feedback.reaction.dao.ReactionEntity;
+import com.seproject.Bookface.feedback.reaction.dao.ReactionData;
 import com.seproject.Bookface.feedback.reaction.dto.request.CreateReactionRequest;
 import com.seproject.Bookface.feedback.reaction.dto.response.PostReactionsDto;
-import com.seproject.Bookface.feedback.reaction.dto.response.ReactionsResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -23,7 +22,7 @@ public class ReactionController {
 
     private final ReactionServiceImpl reactionService;
 
-    @PostMapping(path="/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path="/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addReaction(@RequestBody CreateReactionRequest requestBody,
                                              @PathVariable("postId") String postId) {
         try {
@@ -36,10 +35,10 @@ public class ReactionController {
         }
     }
 
-    @GetMapping(path = "/{postId}/{reactionId}")
-    public ResponseEntity<ReactionEntity> getReaction(@PathVariable("reactionId") String reactionId) {
+    @GetMapping(path = "/{postId}/{reactionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReactionData> getReaction(@PathVariable("reactionId") String reactionId) {
         try {
-            ResponseEntity<ReactionEntity> response = reactionService.getReactionByReactionId(reactionId);
+            ResponseEntity<ReactionData> response = reactionService.getReactionByReactionId(reactionId);
             log.info(Objects.requireNonNull(response.getBody()).toString());
             return response;
         } catch (HttpClientErrorException exception) {
@@ -48,7 +47,7 @@ public class ReactionController {
         }
     }
 
-    @DeleteMapping(path = "/{postId}/{reactionId}")
+    @DeleteMapping(path = "/{postId}/{reactionId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteReaction(@PathVariable("reactionId") String reactionId) {
         try {
             ResponseEntity<String> response = reactionService.removeReaction(reactionId);

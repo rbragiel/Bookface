@@ -7,7 +7,7 @@ import com.seproject.Bookface.feedback.reaction.dto.response.ReactionDto;
 import com.seproject.Bookface.friend.FriendServiceImpl;
 import com.seproject.Bookface.friend.dao.FriendshipEntity;
 import com.seproject.Bookface.friend.dto.response.AllFriendsResponse;
-import com.seproject.Bookface.post.dao.PostEntity;
+import com.seproject.Bookface.post.dao.PostData;
 import com.seproject.Bookface.post.dto.request.CreatePostRequest;
 import com.seproject.Bookface.post.dto.response.PostDto;
 import com.seproject.Bookface.post.dto.response.PostsResponseDto;
@@ -40,15 +40,15 @@ public class PostServiceImpl implements PostService {
         String auth = me.getUserId();
 
         if (Objects.equals(userId, auth)) {
-            postRepository.save(PostEntity.builder()
+            postRepository.save(PostData.builder()
                     .userId(userId)
                     .title(requestBody.getTitle())
                     .content(requestBody.getContent())
                     .timestamp(Timestamp.valueOf(LocalDateTime.now()))
                     .build());
-            return new ResponseEntity<>("Post successfully added", HttpStatus.OK);
+            return new ResponseEntity<>("{\"message\": \"Post successfully added\"}", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("{\"message\": \"Unauthorized access\"}", HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -60,12 +60,12 @@ public class PostServiceImpl implements PostService {
         if (Objects.equals(userId, auth)) {
             if (postRepository.existsById(postId)) {
                 postRepository.deleteById(postId);
-                return new ResponseEntity<>("Post successfully deleted", HttpStatus.OK);
+                return new ResponseEntity<>("{\"message\": \"Post successfully deleted\"}", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Post not found", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("{\"message\": \"Post not found\"}", HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("{\"message\": \"Unauthorized access\"}", HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -77,17 +77,17 @@ public class PostServiceImpl implements PostService {
         if (Objects.equals(userId, auth)) {
             if (postRepository.existsById(postId)) {
                 postRepository.setUserInfoById(postId, title, content);
-                return new ResponseEntity<>("Post successfully modified", HttpStatus.OK);
+                return new ResponseEntity<>("{\"message\": \"Post successfully modified\"}", HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Post not found", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("{\"message\": \"Post not found\"}", HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity<>("Unauthorized access", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("{\"message\": \"Unauthorized access\"}", HttpStatus.UNAUTHORIZED);
         }
     }
 
     @Override
-    public ResponseEntity<PostEntity> getPost(String userId, String postId) {
+    public ResponseEntity<PostData> getPost(String userId, String postId) {
         if (postRepository.existsById(postId)) {
             if (Objects.equals(postRepository.getPostEntityByPostId(postId).getUserId(), userId)) {
                 return new ResponseEntity<>(postRepository.getPostEntityByPostId(postId), HttpStatus.OK);
@@ -98,8 +98,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostsResponseDto findAllPostsFromUser(String userId, Pageable paging) {
-        List<PostEntity> postEntityPage = postRepository.findAllByUserIdOrderByTimestampDesc(userId, paging).getContent();
-        return createPostDto(postEntityPage);
+        List<PostData> postDataPage = postRepository.findAllByUserIdOrderByTimestampDesc(userId, paging).getContent();
+        return createPostDto(postDataPage);
     }
 
     @Override
@@ -113,15 +113,15 @@ public class PostServiceImpl implements PostService {
             friendIds.add(friendship.getUserId());
         }
 
-        List<PostEntity> postEntityPage = postRepository.findAllByUserIdIn(friendIds, paging).getContent();
-        return createPostDto(postEntityPage);
+        List<PostData> postDataPage = postRepository.findAllByUserIdIn(friendIds, paging).getContent();
+        return createPostDto(postDataPage);
     }
 
-    private PostsResponseDto createPostDto(List<PostEntity> postEntityPage) {
+    private PostsResponseDto createPostDto(List<PostData> postDataPage) {
         List<PostDto> postDtoList = new ArrayList<>();
         List<ReactionDto> reactionDtoList = new ArrayList<>();
 
-        for (PostEntity post : postEntityPage) {
+        for (PostData post : postDataPage) {
             reactionDtoList.clear();
 
             for (Choice choice : Choice.values()) {
@@ -129,7 +129,7 @@ public class PostServiceImpl implements PostService {
             }
 
             postDtoList.add(PostDto.builder()
-                    .postEntity(post)
+                    .postData(post)
                     .comments(commentRepository.countAllByPostId(post))
                     .reactions(reactionDtoList)
                     .build());
