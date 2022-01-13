@@ -90,13 +90,12 @@ public class PostController {
         }
     }
 
-    @GetMapping(path = "/{userId}/friends", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PostsResponseDto> allPostsFromFriends(@PathVariable(value = "userId") String userId,
-                                                                @RequestParam(value = "page", defaultValue = "0") int page,
+    @GetMapping(path = "/friends", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PostsResponseDto> allPostsFromFriends(@RequestParam(value = "page", defaultValue = "0") int page,
                                                                 @RequestParam(value = "size", defaultValue = "20") int size) {
         try {
             Pageable paging = PageRequest.of(page, size);
-            PostsResponseDto allPosts = postService.findAllPostsFromFriends(userId, paging);
+            PostsResponseDto allPosts = postService.findAllPostsFromFriends(paging);
             return new ResponseEntity<>(allPosts, HttpStatus.OK);
         } catch (HttpClientErrorException exception) {
             log.info(exception.toString());
