@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(authFilter())
                 .authorizeRequests()
-                .antMatchers("/user/login", "/user/register", "/user/activate/{token}", "/health").permitAll()
+                .antMatchers("/user/login", "/user/register", "/user/activate/{token}", "/health", "/**").permitAll()
                 .anyRequest().authenticated();
     }
 

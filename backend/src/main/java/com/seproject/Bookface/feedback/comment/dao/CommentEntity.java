@@ -1,15 +1,14 @@
-package com.seproject.Bookface.post.dao;
+package com.seproject.Bookface.feedback.comment.dao;
 
+import com.seproject.Bookface.post.dao.PostEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
@@ -17,13 +16,18 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostEntity {
+@DynamicUpdate
+public class CommentEntity {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    @Column(name = "post_id", nullable = false)
-    private String postId;
+    @Column(name = "comment_id", nullable = false)
+    private String commentId;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private PostEntity postId;
 
     @Column(name = "user_id", nullable = false)
     private String userId;
@@ -31,10 +35,7 @@ public class PostEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "title", nullable = false)
-    private String title;
-
-    @Column(name = "timestamp", nullable = false)
-    private Timestamp timestamp;
-
+    @Column(name = "date", nullable = false)
+    private Timestamp date;
 }
+
