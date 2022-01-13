@@ -9,7 +9,7 @@ import React from "react";
 import { TooltipWrapper } from "@components/tooltip/wrapper";
 import { SunIcon, MoonIcon } from "@chakra-ui/icons";
 import { ColorMode } from "@styles/theme";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 interface NavbarLink {
@@ -37,6 +37,8 @@ const Navbar = () => {
   const borderColor = useColorModeValue("gray.200", "yellow.200");
   const textColor = useColorModeValue("gray.900", "yellow.200");
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   return (
     <Flex
       as={"header"}
@@ -68,6 +70,12 @@ const Navbar = () => {
             </Button>
             <Button onClick={toggleColorMode} color={textColor}>
               {colorMode === ColorMode.DARK ? <SunIcon /> : <MoonIcon />}
+            </Button>
+            <Button
+              color={textColor}
+              onClick={() => navigate("/dashboard/create")}
+            >
+              Create new post
             </Button>
           </HStack>
         )}
