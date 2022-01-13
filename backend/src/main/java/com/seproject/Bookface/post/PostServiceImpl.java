@@ -103,7 +103,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostsResponseDto findAllPostsFromFriends(String userId, Pageable paging) {
+    public PostsResponseDto findAllPostsFromFriends(Pageable paging) {
+        MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userId = me.getUserId();
+
         AllFriendsResponse allFriends = friendService.getAllFriendsOf(userId);
         List<String> friendIds = new ArrayList<>();
         for (FriendshipEntity friendship : allFriends.getFriendships()) {
