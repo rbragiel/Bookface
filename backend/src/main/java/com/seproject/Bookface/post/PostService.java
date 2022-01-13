@@ -3,20 +3,22 @@ package com.seproject.Bookface.post;
 
 import com.seproject.Bookface.post.dao.PostEntity;
 import com.seproject.Bookface.post.dto.request.CreatePostRequest;
-import com.seproject.Bookface.post.dto.response.AllPostsFromUserResponse;
-
-import java.util.Optional;
+import com.seproject.Bookface.post.dto.response.PostsResponseDto;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 public interface PostService {
 
-    void addPost(CreatePostRequest requestBody);
+    ResponseEntity<String> addPost(CreatePostRequest requestBody, String userId);
 
-    void removePost(Long postId);
+    ResponseEntity<String> removePost(String postId, String userId);
 
-    Optional<PostEntity> findPost(Long postId);
+    ResponseEntity<PostEntity> getPost(String userId, String postId);
 
-    Optional<PostEntity> modifyPost(Long postId, String title, String content);
+    ResponseEntity<String> modifyPost(String postId, String title, String content, String userId);
 
-    AllPostsFromUserResponse findAllPostsFromUser(String userId);
+    PostsResponseDto findAllPostsFromUser(String userId, Pageable paging);
+
+    PostsResponseDto findAllPostsFromFriends(String userId, Pageable paging);
 
 }
