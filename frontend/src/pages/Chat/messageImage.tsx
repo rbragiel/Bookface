@@ -10,7 +10,7 @@ const MessageImage = ({ src }: MessageImageProps) => {
 
   return (
     <>
-      {loaded ? null : <Box w="100%" minH="250px" />}
+      {loaded ? null : <Box w="100%" minH="300px" />}
       <Image
         src={src}
         onLoad={() => on()}

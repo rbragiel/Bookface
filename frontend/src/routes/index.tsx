@@ -12,6 +12,7 @@ import { Friends } from "@pages/Friends";
 import { Chat } from "@pages/Chat";
 import { User } from "@pages/User";
 import { Profile } from "@pages/Profile";
+import { Create } from "@pages/Create";
 
 const Routing = () => {
   return (
@@ -26,6 +27,7 @@ const Routing = () => {
             <Route path="invitations" element={<Invitations />} />
             <Route path="friends" element={<Friends />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="create" element={<Create />} />
             <Route path="chat/:id" element={<Chat />} />
             <Route path="users/:userId" element={<User />} />
           </Route>

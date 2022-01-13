@@ -8,6 +8,7 @@ import {
   InviteesResponse,
 } from "./types";
 import { getTokenFromLS } from "@store/auth";
+import { PostsApiEndpoints } from "@api/posts";
 
 enum FriendsApiTagTypes {
   FRIENDS = "FRIENDS",
@@ -50,6 +51,15 @@ const api = createApi({
     getAllInvited: builder.query<InvitedResponse, void>({
       query: () => InvitationApiEndpoints.invitedUrl,
       providesTags: [InvitationsApiTagTypes.INVITED],
+    }),
+    getPaginatedPosts: builder.query<unknown, { userId: string; page: number }>(
+      {
+        query: ({ userId, page }) =>
+          `${PostsApiEndpoints.postsUrl}/${userId}/?page=${page}`,
+      }
+    ),
+    getPaginatedFriendsPosts: builder.query<unknown, { page: number }>({
+      query: ({ page }) => `${PostsApiEndpoints.friendsPostsUrl}/?page=${page}`,
     }),
     getUser: builder.query<GetUserResponse, string>({
       query: (userId) => `/user/${userId}`,
@@ -116,6 +126,7 @@ export const {
   useRejectMutation,
   useDeleteFriendMutation,
   useInviteMutation,
+  useGetPaginatedPostsQuery,
 } = api;
 
 export { api };
