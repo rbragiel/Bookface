@@ -6,6 +6,7 @@ import {
   GetUserResponse,
   InvitedResponse,
   InviteesResponse,
+  Post,
 } from "./types";
 import { getTokenFromLS } from "@store/auth";
 import { PostsApiEndpoints } from "@api/posts";
@@ -19,6 +20,11 @@ enum InvitationsApiTagTypes {
   INVITEES = "INVITEES",
 }
 
+enum PostApiTagTypes {
+  POST = "POST",
+  POSTS = "POSTS",
+}
+
 const UserRootTag = "User";
 
 const baseUrl = "/api";
@@ -29,7 +35,6 @@ const api = createApi({
     baseUrl,
     prepareHeaders: (headers) => {
       const token = getTokenFromLS();
-
       if (token) {
         headers.set("Authorization", token);
       }
@@ -52,12 +57,32 @@ const api = createApi({
       query: () => InvitationApiEndpoints.invitedUrl,
       providesTags: [InvitationsApiTagTypes.INVITED],
     }),
-    getPaginatedPosts: builder.query<unknown, { userId: string; page: number }>(
-      {
-        query: ({ userId, page }) =>
-          `${PostsApiEndpoints.postsUrl}/${userId}/?page=${page}`,
-      }
-    ),
+    addPost: builder.mutation<
+      unknown,
+      { id: string; data: { title: string; content: string } }
+    >({
+      query: ({ data, id }) => ({
+        method: "POST",
+        url: `/posts/${id}`,
+        body: data,
+      }),
+    }),
+    getPaginatedUserProfilePosts: builder.query<
+      { allPosts: Post[] },
+      { userId: string; page: number }
+    >({
+      query: ({ userId, page }) =>
+        `${PostsApiEndpoints.postsUrl}/${userId}/?page=${page}`,
+      providesTags: [PostApiTagTypes.POSTS],
+    }),
+    getUserPaginatedPosts: builder.query<
+      { allPosts: Post[] },
+      { userId: string; page: number }
+    >({
+      query: ({ userId, page }) =>
+        `${PostsApiEndpoints.postsUrl}/${userId}/?page=${page}`,
+      providesTags: [PostApiTagTypes.POSTS],
+    }),
     getPaginatedFriendsPosts: builder.query<unknown, { page: number }>({
       query: ({ page }) => `${PostsApiEndpoints.friendsPostsUrl}/?page=${page}`,
     }),
@@ -126,7 +151,9 @@ export const {
   useRejectMutation,
   useDeleteFriendMutation,
   useInviteMutation,
-  useGetPaginatedPostsQuery,
+  useGetPaginatedFriendsPostsQuery,
+  useAddPostMutation,
+  useGetPaginatedUserProfilePostsQuery,
 } = api;
 
 export { api };

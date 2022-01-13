@@ -54,3 +54,27 @@ export interface GetUserUser {
 export interface GetUserResponse {
   user: GetUserUser;
 }
+
+export interface Post {
+  postData: PostData;
+  comments: number;
+  reactions: Reaction[];
+}
+
+export interface PostData {
+  postId: string;
+  userId: string;
+  content: string;
+  title: string;
+  timestamp: string;
+}
+
+enum Choice {
+  LIKE = "LIKE",
+  DISLIKE = "DISLIKE",
+}
+
+export interface Reaction {
+  choice: Choice;
+  quantity: number;
+}
