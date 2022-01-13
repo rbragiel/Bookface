@@ -1,9 +1,8 @@
 package com.seproject.Bookface.feedback.reaction;
 
-import com.seproject.Bookface.feedback.reaction.dao.ReactionEntity;
+import com.seproject.Bookface.feedback.reaction.dao.ReactionData;
 import com.seproject.Bookface.feedback.reaction.dto.request.CreateReactionRequest;
 import com.seproject.Bookface.feedback.reaction.dto.response.PostReactionsDto;
-import com.seproject.Bookface.feedback.reaction.dto.response.ReactionsResponseDto;
 import com.seproject.Bookface.post.PostRepository;
 import com.seproject.Bookface.user.dto.response.MeResponse;
 import lombok.AllArgsConstructor;
@@ -28,24 +27,24 @@ public class ReactionServiceImpl implements ReactionService {
         String me = myUserDetails.getUserId();
 
         if (reactionRepository.existsByPostIdAndUserId(postRepository.getPostEntityByPostId(postId), me)) {
-            ReactionEntity reactionEntity = reactionRepository
+            ReactionData reactionEntity = reactionRepository
                     .getReactionEntityByPostIdAndUserId(postRepository.getPostEntityByPostId(postId), me);
 
             if (!Objects.equals(reactionEntity.getChoice(), Choice.valueOf(requestBody.getChoice()))) {
                 reactionEntity.setChoice(Choice.valueOf(requestBody.getChoice()));
                 reactionRepository.save(reactionEntity);
-                return new ResponseEntity<>("Reaction successfully saved", HttpStatus.OK);
+                return new ResponseEntity<>("{\"message\": \"Reaction successfully saved\"}", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            reactionRepository.save(ReactionEntity.builder()
+            reactionRepository.save(ReactionData.builder()
                     .postId(postRepository.getPostEntityByPostId(postId))
                     .userId(me)
                     .choice(Choice.valueOf(requestBody.getChoice()))
                     .build());
 
-            return new ResponseEntity<>("Reaction successfully saved", HttpStatus.OK);
+            return new ResponseEntity<>("{\"message\": \"Reaction successfully saved\"}", HttpStatus.OK);
         }
     }
 
@@ -54,16 +53,16 @@ public class ReactionServiceImpl implements ReactionService {
 
         if (reactionRepository.existsById(reactionId)) {
             reactionRepository.deleteById(reactionId);
-            return new ResponseEntity<>("Reaction successfully removed", HttpStatus.OK);
+            return new ResponseEntity<>("{\"message\": \"Reaction successfully removed\"}", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Reaction not found", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("{\"message\": \"Reaction not found\"}", HttpStatus.BAD_REQUEST);
         }
     }
 
     @Override
-    public ResponseEntity<ReactionEntity> getReactionByReactionId(String reactionId) {
+    public ResponseEntity<ReactionData> getReactionByReactionId(String reactionId) {
         if (reactionRepository.existsById(reactionId)) {
-            ReactionEntity response = reactionRepository.getReactionEntityByReactionId(reactionId);
+            ReactionData response = reactionRepository.getReactionEntityByReactionId(reactionId);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -73,9 +72,9 @@ public class ReactionServiceImpl implements ReactionService {
     @Override
     public ResponseEntity<List<PostReactionsDto>> getAllReactionsByPostId(String postId) {
         List<PostReactionsDto> response = new ArrayList<>();
-        List<ReactionEntity> reactionList = reactionRepository
+        List<ReactionData> reactionList = reactionRepository
                 .getReactionEntitiesByPostId(postRepository.getPostEntityByPostId(postId));
-        for (ReactionEntity reaction: reactionList) {
+        for (ReactionData reaction: reactionList) {
             response.add(new PostReactionsDto(reaction.getReactionId(), reaction.getUserId(), reaction.getChoice()));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);

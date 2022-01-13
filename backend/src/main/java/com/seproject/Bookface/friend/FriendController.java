@@ -3,6 +3,7 @@ package com.seproject.Bookface.friend;
 import com.seproject.Bookface.friend.dto.response.AllFriendsResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -20,7 +21,7 @@ public class FriendController {
         this.friendServiceImpl = friendService;
     }
 
-    @GetMapping(path = "/all")
+    @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AllFriendsResponse> allFriends() {
         try {
             AllFriendsResponse allFriendsResponse = friendServiceImpl.getAllFriends();
@@ -32,7 +33,7 @@ public class FriendController {
         }
     }
 
-    @GetMapping(path = "/all/{id}")
+    @GetMapping(path = "/all/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AllFriendsResponse> allFriendsOf(@PathVariable String id) {
         try {
             AllFriendsResponse allFriendsResponse = friendServiceImpl.getAllFriendsOf(id);
@@ -44,7 +45,7 @@ public class FriendController {
         }
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> removeFriend(@PathVariable String id) {
         try {
             ResponseEntity<String> responseEntity = friendServiceImpl.removeFriend(id);

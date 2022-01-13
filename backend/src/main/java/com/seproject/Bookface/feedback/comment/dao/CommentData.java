@@ -1,7 +1,6 @@
-package com.seproject.Bookface.feedback.reaction.dao;
+package com.seproject.Bookface.feedback.comment.dao;
 
-import com.seproject.Bookface.feedback.reaction.Choice;
-import com.seproject.Bookface.post.dao.PostEntity;
+import com.seproject.Bookface.post.dao.PostData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,6 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Builder
@@ -17,22 +17,25 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
-public class ReactionEntity {
+public class CommentData {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    @Column(name = "reaction_id", nullable = false)
-    private String reactionId;
+    @Column(name = "comment_id", nullable = false)
+    private String commentId;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
-    private PostEntity postId;
+    private PostData postId;
 
     @Column(name = "user_id", nullable = false)
     private String userId;
 
-    @Column(name = "choice", nullable = false)
-    private Choice choice;
+    @Column(name = "content", nullable = false)
+    private String content;
 
+    @Column(name = "date", nullable = false)
+    private Timestamp date;
 }
+

@@ -1,9 +1,7 @@
 package com.seproject.Bookface.post.dto.response;
 
-import com.seproject.Bookface.feedback.comment.dao.CommentEntity;
-import com.seproject.Bookface.feedback.reaction.dao.ReactionEntity;
 import com.seproject.Bookface.feedback.reaction.dto.response.ReactionDto;
-import com.seproject.Bookface.post.dao.PostEntity;
+import com.seproject.Bookface.post.dao.PostData;
 import lombok.*;
 
 import java.util.List;
@@ -15,7 +13,7 @@ import java.util.List;
 @Builder
 public class PostDto {
 
-    PostEntity postEntity;
+    PostData postData;
     int comments;
     List<ReactionDto> reactions;
 

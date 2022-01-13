@@ -4,6 +4,7 @@ import com.seproject.Bookface.invitation.dto.response.AllInvitedResponse;
 import com.seproject.Bookface.invitation.dto.response.AllInviteesResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -21,7 +22,7 @@ public class InvitationController {
         this.invitationServiceImpl = invitationService;
     }
 
-    @GetMapping(path = "/all/invited")
+    @GetMapping(path = "/all/invited", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AllInvitedResponse> allInvited() {
         try {
             AllInvitedResponse allInvitedResponse = invitationServiceImpl.getAllInvited();
@@ -33,7 +34,7 @@ public class InvitationController {
         }
     }
 
-    @GetMapping(path = "/all/invitees")
+    @GetMapping(path = "/all/invitees", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AllInviteesResponse> allInvitees() {
         try {
             AllInviteesResponse allInviteesResponse = invitationServiceImpl.getAllInvitees();
@@ -45,7 +46,7 @@ public class InvitationController {
         }
     }
 
-    @PostMapping(path = "/invite/{id}")
+    @PostMapping(path = "/invite/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> invite(@PathVariable String id) {
         try {
             invitationServiceImpl.invite(id);
@@ -57,7 +58,7 @@ public class InvitationController {
         }
     }
 
-    @DeleteMapping(path = "/invite/{id}")
+    @DeleteMapping(path = "/invite/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> delete(@PathVariable String id) {
         try {
             ResponseEntity<String> responseEntity = invitationServiceImpl.deleteInvitation(id);
@@ -69,7 +70,7 @@ public class InvitationController {
         }
     }
 
-    @PostMapping(path = "/accept/{id}")
+    @PostMapping(path = "/accept/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> accept(@PathVariable String id) {
         try {
             ResponseEntity<String> responseEntity = invitationServiceImpl.accept(id);
@@ -81,7 +82,7 @@ public class InvitationController {
         }
     }
 
-    @PostMapping(path = "/reject/{id}")
+    @PostMapping(path = "/reject/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> reject(@PathVariable String id) {
         try {
             ResponseEntity<String> responseEntity = invitationServiceImpl.reject(id);
