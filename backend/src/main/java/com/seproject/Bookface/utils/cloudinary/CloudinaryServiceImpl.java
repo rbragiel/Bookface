@@ -35,30 +35,30 @@ public class CloudinaryServiceImpl {
             }
     }
 
-    public ResponseEntity<ByteArrayResource> downloadImg(String publicId) {
-        String cloudUrl = cloudinary.url().secure(true).format("jpg")
-                .publicId(publicId)
-                .generate();
-
-        try {
-            URL url = new URL(cloudUrl);
-            InputStream inputStream = url.openStream();
-            byte[] out = org.apache.commons.io.IOUtils.toByteArray(inputStream);
-            ByteArrayResource resource = new ByteArrayResource(out);
-
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.add("content-disposition", "attachment; filename=image.jpg");
-            responseHeaders.add("Content-Type", "image/jpeg");
-
-            return ResponseEntity.ok()
-                    .headers(responseHeaders)
-                    .contentLength(out.length)
-                    .body(resource);
-
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            return null;
-        }
-    }
+//    public ResponseEntity<ByteArrayResource> downloadImg(String publicId) {
+//        String cloudUrl = cloudinary.url().secure(true).format("jpg")
+//                .publicId(publicId)
+//                .generate();
+//
+//        try {
+//            URL url = new URL(cloudUrl);
+//            InputStream inputStream = url.openStream();
+//            byte[] out = org.apache.commons.io.IOUtils.toByteArray(inputStream);
+//            ByteArrayResource resource = new ByteArrayResource(out);
+//
+//            HttpHeaders responseHeaders = new HttpHeaders();
+//            responseHeaders.add("content-disposition", "attachment; filename=image.jpg");
+//            responseHeaders.add("Content-Type", "image/jpeg");
+//
+//            return ResponseEntity.ok()
+//                    .headers(responseHeaders)
+//                    .contentLength(out.length)
+//                    .body(resource);
+//
+//        } catch (Exception ex) {
+//            log.error(ex.getMessage());
+//            return null;
+//        }
+//    }
 
 }
