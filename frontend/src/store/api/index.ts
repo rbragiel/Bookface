@@ -21,6 +21,8 @@ enum InvitationsApiTagTypes {
 }
 
 enum PostApiTagTypes {
+  USER_POSTS = "USER_POSTS",
+  USER_POST = "USER_POST",
   POST = "POST",
   POSTS = "POSTS",
 }
@@ -66,6 +68,7 @@ const api = createApi({
         url: `/posts/${id}`,
         body: data,
       }),
+      invalidatesTags: [PostApiTagTypes.USER_POSTS],
     }),
     getPaginatedUserProfilePosts: builder.query<
       { allPosts: Post[] },
@@ -73,7 +76,19 @@ const api = createApi({
     >({
       query: ({ userId, page }) =>
         `${PostsApiEndpoints.postsUrl}/${userId}/?page=${page}`,
-      providesTags: [PostApiTagTypes.POSTS],
+      providesTags: (result) => {
+        if (result) {
+          return [
+            ...result.allPosts.map((post) => ({
+              id: post.postData.postId,
+              type: PostApiTagTypes.USER_POST,
+            })),
+            PostApiTagTypes.USER_POSTS,
+          ];
+        } else {
+          return [PostApiTagTypes.USER_POSTS];
+        }
+      },
     }),
     getUserPaginatedPosts: builder.query<
       { allPosts: Post[] },
@@ -138,6 +153,38 @@ const api = createApi({
         url: `${FriendsApiEndpoints.deleteUrl}/${id}`,
       }),
     }),
+    modifyPost: builder.mutation<
+      unknown,
+      {
+        userId: string;
+        postId: string;
+        data: { title: string; content: string };
+      }
+    >({
+      query: ({ userId, postId, data }) => ({
+        method: "PUT",
+        url: `${PostsApiEndpoints.postsUrl}/${userId}/${postId}`,
+        body: data,
+      }),
+      invalidatesTags: (_, __, { postId }) => [
+        { id: postId, type: PostApiTagTypes.USER_POST },
+      ],
+    }),
+    deletePost: builder.mutation<
+      unknown,
+      {
+        userId: string;
+        postId: string;
+      }
+    >({
+      query: ({ userId, postId }) => ({
+        method: "DELETE",
+        url: `${PostsApiEndpoints.postsUrl}/${userId}/${postId}`,
+      }),
+      invalidatesTags: (_, __, { postId }) => [
+        { id: postId, type: PostApiTagTypes.USER_POST },
+      ],
+    }),
   }),
 });
 
@@ -154,6 +201,8 @@ export const {
   useGetPaginatedFriendsPostsQuery,
   useAddPostMutation,
   useGetPaginatedUserProfilePostsQuery,
+  useModifyPostMutation,
+  useDeletePostMutation,
 } = api;
 
 export { api };

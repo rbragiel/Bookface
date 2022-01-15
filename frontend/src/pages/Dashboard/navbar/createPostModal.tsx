@@ -21,6 +21,8 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@chakra-ui/react";
 import { addPostErrorToast, addPostSuccessToast } from "@toasts";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { postSchema } from "@common/schema";
 
 interface CreatePostModalProps {
   close: () => void;
@@ -38,7 +40,9 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormState>();
+  } = useForm<FormState>({
+    resolver: zodResolver(postSchema),
+  });
   const { t } = useTranslation();
   const userId = useAppSelector((state) => state.auth.user?.userId);
   const toast = useToast();
@@ -80,7 +84,7 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
         <ModalHeader>Create new post</ModalHeader>
         <ModalBody>
           <Flex as={"form"} flexDir="column" width="100%">
-            <FormControl>
+            <FormControl isInvalid={!!errors.title?.message}>
               <FormLabel>{t("Title")}</FormLabel>
               <Input
                 required
@@ -88,11 +92,11 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
                 {...register("title")}
                 isDisabled={isLoading}
               />
-              <FormErrorMessage>
-                {errors.title?.message && t(errors.title.message)}
-              </FormErrorMessage>
+              {errors.title?.message && (
+                <FormErrorMessage>{t(errors.title.message)}</FormErrorMessage>
+              )}
             </FormControl>
-            <FormControl mt={4}>
+            <FormControl mt={4} isInvalid={!!errors.title?.message}>
               <FormLabel>{t("Content")}</FormLabel>
               <Textarea
                 placeholder={t("Content of your post")}
@@ -101,9 +105,9 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
                 {...register("content")}
                 isDisabled={isLoading}
               />
-              <FormErrorMessage>
-                {errors.content?.message && t(errors.content.message)}
-              </FormErrorMessage>
+              {errors.content?.message && (
+                <FormErrorMessage>{t(errors.content.message)}</FormErrorMessage>
+              )}
             </FormControl>
             <FormControl mt={4} display="flex" alignItems="center">
               <FormLabel>{t("Image")}</FormLabel>

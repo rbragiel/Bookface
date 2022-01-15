@@ -50,3 +50,19 @@ export const addPostErrorToast = (): UseToastOptions => ({
   duration: 5000,
   isClosable: true,
 });
+
+export const modifyPostSuccessToast = (): UseToastOptions => ({
+  title: i18n.t("Success"),
+  description: i18n.t("Post modifed successfully!"),
+  status: "success",
+  duration: 5000,
+  isClosable: true,
+});
+
+export const modifyPostErrorToast = (): UseToastOptions => ({
+  title: i18n.t("Error"),
+  description: i18n.t("Error occured while modifed the post."),
+  status: "error",
+  duration: 5000,
+  isClosable: true,
+});
