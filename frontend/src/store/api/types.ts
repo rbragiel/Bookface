@@ -59,6 +59,7 @@ export interface Post {
   postData: PostData;
   comments: number;
   reactions: Reaction[];
+  choice: Choice | null;
 }
 
 export interface PostData {
@@ -67,9 +68,10 @@ export interface PostData {
   content: string;
   title: string;
   timestamp: string;
+  imageUrl: string | null;
 }
 
-enum Choice {
+export enum Choice {
   LIKE = "LIKE",
   DISLIKE = "DISLIKE",
 }

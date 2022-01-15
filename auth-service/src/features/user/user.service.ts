@@ -94,6 +94,10 @@ export class UserService {
     return { users: users as UserSearchDto[] };
   }
 
+  async deleteById(id: string) {
+    return this.userModel.destroy({ where: { userId: id } });
+  }
+
   async getUser(id: string, userDto: UserDto) {
     const user = await this.userModel.findByPk(id, {
       attributes: { exclude: this.excludeGetSingleUserOptions },

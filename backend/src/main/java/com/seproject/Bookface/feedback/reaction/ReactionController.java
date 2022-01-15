@@ -47,10 +47,10 @@ public class ReactionController {
         }
     }
 
-    @DeleteMapping(path = "/{postId}/{reactionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteReaction(@PathVariable("reactionId") String reactionId) {
+    @DeleteMapping(path = "/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteReaction(@PathVariable("postId") String postId) {
         try {
-            ResponseEntity<String> response = reactionService.removeReaction(reactionId);
+            ResponseEntity<String> response = reactionService.removeReaction(postId);
             log.info(response.getBody());
             return response;
         } catch (HttpClientErrorException exception) {

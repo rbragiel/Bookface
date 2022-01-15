@@ -1,16 +1,24 @@
 import { UserService } from './user.service';
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthHeader, LangHeader } from '../../open-api/decorators';
-import { UseAuthGuard } from '../auth/auth.guard';
+import { AuthGuard, UseAuthGuard } from '../auth/auth.guard';
 import { GetUserDto, UserDto, UsersSearchResultDto } from './user.dto';
 import { User } from './user.decorator';
+import { RolesGuard } from '../auth/roles/roles.guard';
 
 @ApiTags('user')
 @LangHeader()
 @AuthHeader()
 @Controller('user')
-@UseAuthGuard()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -18,6 +26,7 @@ export class UserController {
     description: 'List of searched users.',
     type: UsersSearchResultDto,
   })
+  @UseAuthGuard()
   @Get('/search')
   searchUser(
     @Query('query') query: string,
@@ -30,8 +39,15 @@ export class UserController {
     description: 'User by id.',
     type: GetUserDto,
   })
+  @UseAuthGuard()
   @Get('/:id')
   getUser(@Param('id') id: string, @User() user: UserDto) {
     return this.userService.getUser(id, user);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete('/:id')
+  deleteUser(@Param('id') id: string) {
+    return this.userService.deleteById(id);
   }
 }

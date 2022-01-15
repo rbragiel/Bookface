@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { FriendsApiEndpoints } from "@api/friends";
 import { InvitationApiEndpoints } from "@api/invitations";
 import {
+  Choice,
   GetFriendsResponse,
   GetUserResponse,
   InvitedResponse,
@@ -10,6 +11,7 @@ import {
 } from "./types";
 import { getTokenFromLS } from "@store/auth";
 import { PostsApiEndpoints } from "@api/posts";
+import { ReactionsApiEndpoints } from "@api/reactions";
 
 enum FriendsApiTagTypes {
   FRIENDS = "FRIENDS",
@@ -182,6 +184,45 @@ const api = createApi({
         { id: postId, type: PostApiTagTypes.USER_POST },
       ],
     }),
+    like: builder.mutation<
+      unknown,
+      {
+        postId: string;
+      }
+    >({
+      query: ({ postId }) => ({
+        method: "POST",
+        url: `${ReactionsApiEndpoints.reactionsUrl}/${postId}`,
+        body: {
+          choice: Choice.LIKE,
+        },
+      }),
+    }),
+    dislike: builder.mutation<
+      unknown,
+      {
+        postId: string;
+      }
+    >({
+      query: ({ postId }) => ({
+        method: "POST",
+        url: `${ReactionsApiEndpoints.reactionsUrl}/${postId}`,
+        body: {
+          choice: Choice.DISLIKE,
+        },
+      }),
+    }),
+    undoRection: builder.mutation<
+      unknown,
+      {
+        postId: string;
+      }
+    >({
+      query: ({ postId }) => ({
+        method: "DELETE",
+        url: `${ReactionsApiEndpoints.reactionsUrl}/${postId}`,
+      }),
+    }),
   }),
 });
 
@@ -200,6 +241,9 @@ export const {
   useGetPaginatedUserProfilePostsQuery,
   useModifyPostMutation,
   useDeletePostMutation,
+  useDislikeMutation,
+  useLikeMutation,
+  useUndoRectionMutation,
 } = api;
 
 export { api };

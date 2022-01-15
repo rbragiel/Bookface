@@ -27,6 +27,7 @@ interface PostEditProps {
 const PostEdit = ({ post, stopEditing, userId }: PostEditProps) => {
   const toast = useToast();
   const [modify, { isLoading, isSuccess, isError }] = useModifyPostMutation();
+
   const inputBg = useColorModeValue("white", "gray.800");
   const {
     formState: { errors },

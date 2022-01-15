@@ -23,6 +23,7 @@ const Message = React.forwardRef<HTMLDivElement, MessageProps>(
         maxWidth="800px"
         alignSelf={message.userId !== userId ? "start" : "end"}
         key={message.id}
+        marginTop={4}
       >
         <Box fontWeight={600}>
           {dayjs(message.createdAt).format("DD/MM/YYYY HH:mm")}
