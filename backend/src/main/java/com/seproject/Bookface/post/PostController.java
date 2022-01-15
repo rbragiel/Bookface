@@ -46,7 +46,7 @@ public class PostController {
 //        return cloudinaryService.downloadImg(publicId);
 //    }
 
-        @DeleteMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+        @DeleteMapping(path = "/{userId}/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deletePost(@PathVariable("postId") String postId,
                                              @PathVariable(value = "userId") String userId) {
         try {
@@ -91,8 +91,7 @@ public class PostController {
                                                              @RequestParam(value = "size", defaultValue = "20") int size) {
         try {
             Pageable paging = PageRequest.of(page, size);
-            PostsResponseDto allPosts = postService.findAllPostsFromUser(userId, paging);
-            return new ResponseEntity<>(allPosts, HttpStatus.OK);
+            return postService.findAllPostsFromUser(userId, paging);
         } catch (HttpClientErrorException exception) {
             log.info(exception.toString());
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage());

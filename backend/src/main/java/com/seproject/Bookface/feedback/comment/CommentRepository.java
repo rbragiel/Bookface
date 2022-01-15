@@ -15,15 +15,17 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<CommentData, String> {
 
-    Page<CommentData> findAllByPostIdOrderByDateDesc(PostData postId, Pageable paging);
+    void deleteAllByPostId(String postId);
 
-    int countAllByPostId(PostData postId);
+    Page<CommentData> findAllByPostIdOrderByDateDesc(String postId, Pageable paging);
+
+    int countAllByPostId(String postId);
 
     @Query("SELECT u FROM CommentData u WHERE u.commentId = :commentId")
     CommentData getCommentEntityByCommentId(@Param("commentId") String commentId);
 
     @Query("SELECT u FROM CommentData u WHERE u.postId = :postId")
-    List<CommentData> getCommentEntitiesByPostId(@Param("postId") PostData postId);
+    List<CommentData> getCommentEntitiesByPostId(@Param("postId") String postId);
 /*
     @Query("SELECT u FROM CommentEntity u WHERE u.userId = :userId")
     List<CommentEntity> getCommentEntitiesByUserId(@Param("postId") String userId);
