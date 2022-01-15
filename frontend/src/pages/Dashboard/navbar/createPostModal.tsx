@@ -15,7 +15,6 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useAddPostMutation } from "@store/api";
-import { useAppSelector } from "@store/hooks";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -44,7 +43,6 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
     resolver: zodResolver(postSchema),
   });
   const { t } = useTranslation();
-  const userId = useAppSelector((state) => state.auth.user?.userId);
   const toast = useToast();
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -57,8 +55,15 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
     }
   };
 
-  const onSubmit = handleSubmit(async (data) => {
-    await update({ id: userId || "", data });
+  const onSubmit = handleSubmit(async ({ title, content }) => {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    if (image) {
+      formData.append("file", image);
+    }
+
+    await update({ data: formData });
   });
 
   const handleClose = () => {
@@ -81,7 +86,7 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
     <Modal onClose={handleClose} isOpen={isOpen} size="xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create new post</ModalHeader>
+        <ModalHeader>{t("Create new post")}</ModalHeader>
         <ModalBody>
           <Flex as={"form"} flexDir="column" width="100%">
             <FormControl isInvalid={!!errors.title?.message}>
@@ -130,7 +135,11 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
                 {t("Upload file")}
               </Button>
             </FormControl>
-            {image && <Text mt={2}>File name: {image.name}</Text>}
+            {image && (
+              <Text mt={2}>
+                {t("Filename")}: {image.name}
+              </Text>
+            )}
           </Flex>
         </ModalBody>
         <ModalFooter>
@@ -140,7 +149,7 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
             onClick={close}
             isLoading={isLoading}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             colorScheme="yellow"
@@ -150,7 +159,7 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
             isLoading={isLoading}
             onClick={onSubmit}
           >
-            Create
+            {t("Create")}
           </Button>
         </ModalFooter>
       </ModalContent>

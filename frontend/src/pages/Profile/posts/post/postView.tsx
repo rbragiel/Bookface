@@ -15,6 +15,7 @@ import {
 } from "react-icons/ai";
 import { Post } from "@store/api/types";
 import { useDeletePostMutation } from "@store/api";
+import { useTranslation } from "react-i18next";
 
 interface PostViewProps {
   post: Post;
@@ -24,6 +25,7 @@ interface PostViewProps {
 
 const PostView = ({ post, startEdit, userId }: PostViewProps) => {
   const [deletePost, { isLoading }] = useDeletePostMutation();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -42,7 +44,7 @@ const PostView = ({ post, startEdit, userId }: PostViewProps) => {
             onClick={startEdit}
             isDisabled={isLoading}
           >
-            Edit
+            {t("Edit")}
           </Button>
           <Button
             colorScheme="red"
@@ -53,7 +55,7 @@ const PostView = ({ post, startEdit, userId }: PostViewProps) => {
               deletePost({ userId, postId: post.postData.postId });
             }}
           >
-            Delete
+            {t("Delete")}
           </Button>
         </Flex>
       </Flex>

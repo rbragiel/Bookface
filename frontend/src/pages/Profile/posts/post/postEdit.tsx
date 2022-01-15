@@ -91,7 +91,7 @@ const PostEdit = ({ post, stopEditing, userId }: PostEditProps) => {
           {t("Cancel")}
         </Button>
         <Button colorScheme="teal" onClick={onSubmit}>
-          Save
+          {t("Save")}
         </Button>
       </Flex>
     </Flex>

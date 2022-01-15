@@ -47,7 +47,7 @@ const Posts = ({ userId }: PostsProps) => {
       alignSelf="center"
       height="100%"
     >
-      <Heading size="lg">Your posts:</Heading>
+      <Heading size="lg">{t("Your posts")}:</Heading>
       {data && data.allPosts.length > 0 ? (
         <>
           {data.allPosts.map((post) => (

@@ -41,7 +41,7 @@ public class PostController {
     }
 
 
-    @DeleteMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/{userId}/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deletePost(@PathVariable("postId") String postId,
                                              @PathVariable(value = "userId") String userId) {
         try {

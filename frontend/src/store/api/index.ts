@@ -59,13 +59,10 @@ const api = createApi({
       query: () => InvitationApiEndpoints.invitedUrl,
       providesTags: [InvitationsApiTagTypes.INVITED],
     }),
-    addPost: builder.mutation<
-      unknown,
-      { id: string; data: { title: string; content: string } }
-    >({
-      query: ({ data, id }) => ({
+    addPost: builder.mutation<unknown, { data: FormData }>({
+      query: ({ data }) => ({
         method: "POST",
-        url: `/posts/${id}`,
+        url: `/posts`,
         body: data,
       }),
       invalidatesTags: [PostApiTagTypes.USER_POSTS],

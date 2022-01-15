@@ -95,7 +95,7 @@ const Navbar = () => {
                 dispatch(open());
               }}
             >
-              Create new post
+              {t("Create new post")}
             </Button>
           </HStack>
         )}
