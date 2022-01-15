@@ -12,12 +12,14 @@ import com.seproject.Bookface.post.dto.request.CreatePostRequest;
 import com.seproject.Bookface.post.dto.response.PostDto;
 import com.seproject.Bookface.post.dto.response.PostsResponseDto;
 import com.seproject.Bookface.user.dto.response.MeResponse;
+import com.seproject.Bookface.utils.cloudinary.CloudinaryServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -33,24 +35,24 @@ public class PostServiceImpl implements PostService {
     private final FriendServiceImpl friendService;
     private final CommentRepository commentRepository;
     private final ReactionRepository reactionRepository;
+    private final CloudinaryServiceImpl cloudinaryService;
 
     @Override
-    public ResponseEntity<String> addPost(CreatePostRequest requestBody, String userId) {
+    public ResponseEntity<String> addPost(CreatePostRequest requestBody, MultipartFile file) {
         MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String auth = me.getUserId();
+        String userId = me.getUserId();
 
-        if (Objects.equals(userId, auth)) {
+
+            String publicId = cloudinaryService.upload(file);
             postRepository.save(PostData.builder()
                     .userId(userId)
                     .title(requestBody.getTitle())
                     .content(requestBody.getContent())
                     .timestamp(Timestamp.valueOf(LocalDateTime.now()))
+                    .publicId(publicId)
                     .build());
             return new ResponseEntity<>("{\"message\": \"Post successfully added\"}", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("{\"message\": \"Unauthorized access\"}", HttpStatus.UNAUTHORIZED);
         }
-    }
 
     @Override
     public ResponseEntity<String> removePost(String postId, String userId) {
@@ -121,6 +123,9 @@ public class PostServiceImpl implements PostService {
         List<PostDto> postDtoList = new ArrayList<>();
         List<ReactionDto> reactionDtoList = new ArrayList<>();
 
+        MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userId = me.getUserId();
+
         for (PostData post : postDataPage) {
             reactionDtoList.clear();
 
@@ -132,6 +137,7 @@ public class PostServiceImpl implements PostService {
                     .postData(post)
                     .comments(commentRepository.countAllByPostId(post))
                     .reactions(reactionDtoList)
+                    .choice(reactionRepository.getReactionEntityByPostIdAndUserId(post, userId).getChoice())
                     .build());
         }
 

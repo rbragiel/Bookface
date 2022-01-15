@@ -2,7 +2,10 @@ package com.seproject.Bookface.post;
 
 import com.seproject.Bookface.post.dto.request.CreatePostRequest;
 import com.seproject.Bookface.post.dto.response.PostsResponseDto;
+import com.seproject.Bookface.utils.cloudinary.CloudinaryServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -10,24 +13,25 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(path = "/posts")
 @Slf4j
+@RequiredArgsConstructor
 public class PostController {
 
     private final PostServiceImpl postService;
+    private final CloudinaryServiceImpl cloudinaryService;
 
-    public PostController(PostServiceImpl postService) {
-        this.postService = postService;
-    }
-
-    @PostMapping(path = "/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addPost(@RequestBody CreatePostRequest requestBody,
-                                          @PathVariable(value = "userId") String userId) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> addPost(@RequestPart(name="title") String title,
+                                          @RequestPart(name="content") String content,
+                                          @RequestPart(name="file") MultipartFile file) {
         try {
-            ResponseEntity<String> responseEntity = postService.addPost(requestBody, userId);
+            CreatePostRequest requestBody = new CreatePostRequest(title, content);
+            ResponseEntity<String> responseEntity = postService.addPost(requestBody, file);
             log.info(responseEntity.getBody());
             return responseEntity;
         } catch (HttpClientErrorException exception) {
@@ -36,7 +40,13 @@ public class PostController {
         }
     }
 
-    @DeleteMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path="/image/{publicId}", consumes=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ByteArrayResource>  download(@PathVariable("publicId") String publicId) {
+
+        return cloudinaryService.downloadImg(publicId);
+    }
+
+        @DeleteMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deletePost(@PathVariable("postId") String postId,
                                              @PathVariable(value = "userId") String userId) {
         try {
