@@ -15,6 +15,7 @@ import com.seproject.Bookface.post.dto.response.PostsResponseDto;
 import com.seproject.Bookface.user.dto.response.MeResponse;
 import com.seproject.Bookface.utils.cloudinary.CloudinaryServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +23,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
@@ -59,6 +60,7 @@ public class PostServiceImpl implements PostService {
         }
 
     @Override
+    @Transactional
     public ResponseEntity<String> removePost(String postId, String userId) {
         MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String auth = me.getUserId();
@@ -66,6 +68,8 @@ public class PostServiceImpl implements PostService {
         if (Objects.equals(userId, auth)) {
             if (postRepository.existsById(postId)) {
                 postRepository.deleteById(postId);
+                reactionRepository.deleteAllByPostId(postId);
+                commentRepository.deleteAllByPostId(postId);
                 return new ResponseEntity<>("{\"message\": \"Post successfully deleted\"}", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("{\"message\": \"Post not found\"}", HttpStatus.BAD_REQUEST);
@@ -103,9 +107,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostsResponseDto findAllPostsFromUser(String userId, Pageable paging) {
+    public ResponseEntity<PostsResponseDto> findAllPostsFromUser(String userId, Pageable paging) {
         List<PostData> postDataPage = postRepository.findAllByUserIdOrderByTimestampDesc(userId, paging).getContent();
-        return createPostDto(postDataPage);
+
+        return ResponseEntity.ok()
+                .body(createPostDto(postDataPage));
     }
 
     @Override
@@ -126,30 +132,32 @@ public class PostServiceImpl implements PostService {
     private PostsResponseDto createPostDto(List<PostData> postDataPage) {
         List<PostDto> postDtoList = new ArrayList<>();
         List<ReactionDto> reactionDtoList = new ArrayList<>();
+        Map<PostData, List<ReactionDto>> xd = new HashMap<>();
 
         MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = me.getUserId();
 
-        for (PostData post : postDataPage) {
-            reactionDtoList.clear();
+        Choice userChoice = null;
 
+        for (PostData post : postDataPage) {
+            xd.put(post, new ArrayList<ReactionDto>());
             for (Choice choice : Choice.values()) {
-                reactionDtoList.add(new ReactionDto(choice, reactionRepository.countAllByPostIdAndChoice(post, choice)));
+                xd.get(post).add(new ReactionDto(choice, reactionRepository.getAllByPostIdAndChoice(post.getPostId(), choice).size()));
             }
 
-            Choice choice = null;
-
-            if (reactionRepository.getReactionEntityByPostIdAndUserId(post, userId) != null
-                        && reactionRepository.getReactionEntityByPostIdAndUserId(post, userId).getChoice() != null) {
-                   choice = reactionRepository.getReactionEntityByPostIdAndUserId(post, userId).getChoice();
+            if (reactionRepository.getReactionEntityByPostIdAndUserId(post.getPostId(), userId) != null
+                        && reactionRepository.getReactionEntityByPostIdAndUserId(post.getPostId(), userId).getChoice() != null) {
+                userChoice = reactionRepository.getReactionEntityByPostIdAndUserId(post.getPostId(), userId).getChoice();
                 }
 
-            postDtoList.add(PostDto.builder()
+            PostDto wtf = PostDto.builder()
                     .postData(post)
-                    .comments(commentRepository.countAllByPostId(post))
-                    .reactions(reactionDtoList)
-                    .choice(choice)
-                    .build());
+                    .comments(commentRepository.countAllByPostId(post.getPostId()))
+                    .reactions(xd.get(post))
+                    .choice(userChoice)
+                    .build();
+
+            postDtoList.add(wtf);
         }
 
         return new PostsResponseDto(postDtoList);

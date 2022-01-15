@@ -32,7 +32,7 @@ public class CommentServiceImpl implements CommentService {
         String me = myUserDetails.getUserId();
 
         commentRepository.save(CommentData.builder()
-                .postId(postRepository.getPostEntityByPostId(postId))
+                .postId(postId)
                 .userId(me)
                 .content(requestBody.getContent())
                 .date(Timestamp.valueOf(LocalDateTime.now()))
@@ -84,7 +84,7 @@ public class CommentServiceImpl implements CommentService {
     public ResponseEntity<List<PostCommentsDto>> getAllCommentsByPostId(String postId, Pageable paging) {
         List<PostCommentsDto> response = new ArrayList<>();
         List<CommentData> commentEntityList = commentRepository
-                .findAllByPostIdOrderByDateDesc(postRepository.getPostEntityByPostId(postId), paging).getContent();
+                .findAllByPostIdOrderByDateDesc(postId, paging).getContent();
         for (CommentData commentEntity: commentEntityList) {
             response.add(new PostCommentsDto(commentEntity.getCommentId(), commentEntity.getUserId(), commentEntity.getContent(), commentEntity.getDate()));
         }

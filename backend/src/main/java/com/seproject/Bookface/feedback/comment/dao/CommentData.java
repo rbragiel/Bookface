@@ -25,9 +25,8 @@ public class CommentData {
     @Column(name = "comment_id", nullable = false)
     private String commentId;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    private PostData postId;
+    @Column(name = "post_id", nullable = false)
+    private String postId;
 
     @Column(name = "user_id", nullable = false)
     private String userId;

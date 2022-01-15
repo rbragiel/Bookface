@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -25,14 +27,14 @@ public class ReactionData {
     @Column(name = "reaction_id", nullable = false)
     private String reactionId;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
-    private PostData postId;
+    @Column(name = "post_id", nullable = false)
+    private String postId;
 
     @Column(name = "user_id", nullable = false)
     private String userId;
 
     @Column(name = "choice", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Choice choice;
 
 }

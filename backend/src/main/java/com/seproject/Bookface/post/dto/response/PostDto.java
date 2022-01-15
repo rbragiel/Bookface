@@ -5,6 +5,7 @@ import com.seproject.Bookface.feedback.reaction.dto.response.ReactionDto;
 import com.seproject.Bookface.post.dao.PostData;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -14,9 +15,9 @@ import java.util.List;
 @Builder
 public class PostDto {
 
-    PostData postData;
-    int comments;
-    List<ReactionDto> reactions;
-    Choice choice;
+    private PostData postData;
+    private int comments;
+    private List<ReactionDto> reactions;
+    private Choice choice;
 
 }
