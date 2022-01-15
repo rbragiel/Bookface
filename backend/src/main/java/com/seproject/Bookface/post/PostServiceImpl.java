@@ -137,11 +137,18 @@ public class PostServiceImpl implements PostService {
                 reactionDtoList.add(new ReactionDto(choice, reactionRepository.countAllByPostIdAndChoice(post, choice)));
             }
 
+            Choice choice = null;
+
+            if (reactionRepository.getReactionEntityByPostIdAndUserId(post, userId) != null
+                        && reactionRepository.getReactionEntityByPostIdAndUserId(post, userId).getChoice() != null) {
+                   choice = reactionRepository.getReactionEntityByPostIdAndUserId(post, userId).getChoice();
+                }
+
             postDtoList.add(PostDto.builder()
                     .postData(post)
                     .comments(commentRepository.countAllByPostId(post))
                     .reactions(reactionDtoList)
-                    .choice(reactionRepository.getReactionEntityByPostIdAndUserId(post, userId).getChoice())
+                    .choice(choice)
                     .build());
         }
 
