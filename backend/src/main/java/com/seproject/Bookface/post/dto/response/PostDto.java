@@ -1,5 +1,6 @@
 package com.seproject.Bookface.post.dto.response;
 
+import com.seproject.Bookface.feedback.reaction.Choice;
 import com.seproject.Bookface.feedback.reaction.dto.response.ReactionDto;
 import com.seproject.Bookface.post.dao.PostData;
 import lombok.*;
@@ -16,5 +17,6 @@ public class PostDto {
     PostData postData;
     int comments;
     List<ReactionDto> reactions;
+    Choice choice;
 
 }

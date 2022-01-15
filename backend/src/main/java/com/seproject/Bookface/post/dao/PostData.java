@@ -28,7 +28,7 @@ public class PostData {
     @Column(name = "user_id", nullable = false)
     private String userId;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content")
     private String content;
 
     @Column(name = "title", nullable = false)
@@ -36,5 +36,8 @@ public class PostData {
 
     @Column(name = "timestamp", nullable = false)
     private Timestamp timestamp;
+
+    @Column(name = "public_id")
+    private String publicId;
 
 }
