@@ -1,5 +1,6 @@
 package com.seproject.Bookface.post;
 
+import com.cloudinary.Cloudinary;
 import com.seproject.Bookface.feedback.comment.CommentRepository;
 import com.seproject.Bookface.feedback.reaction.Choice;
 import com.seproject.Bookface.feedback.reaction.ReactionRepository;
@@ -36,20 +37,23 @@ public class PostServiceImpl implements PostService {
     private final CommentRepository commentRepository;
     private final ReactionRepository reactionRepository;
     private final CloudinaryServiceImpl cloudinaryService;
+    private final Cloudinary cloudinary;
 
     @Override
     public ResponseEntity<String> addPost(CreatePostRequest requestBody, MultipartFile file) {
         MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = me.getUserId();
 
+        String cloudUrl = cloudinary.url().secure(true).format("jpg")
+                .publicId(cloudinaryService.upload(file))
+                .generate();
 
-            String publicId = cloudinaryService.upload(file);
             postRepository.save(PostData.builder()
                     .userId(userId)
                     .title(requestBody.getTitle())
                     .content(requestBody.getContent())
                     .timestamp(Timestamp.valueOf(LocalDateTime.now()))
-                    .publicId(publicId)
+                    .imageUrl(cloudUrl)
                     .build());
             return new ResponseEntity<>("{\"message\": \"Post successfully added\"}", HttpStatus.OK);
         }

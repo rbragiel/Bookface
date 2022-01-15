@@ -24,12 +24,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class PostController {
 
     private final PostServiceImpl postService;
-    private final CloudinaryServiceImpl cloudinaryService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addPost(@RequestPart(name="title") String title,
                                           @RequestPart(name="content") String content,
-                                          @RequestPart(name="file") MultipartFile file) {
+                                          @RequestPart(name="file", required = false) MultipartFile file) {
         try {
             CreatePostRequest requestBody = new CreatePostRequest(title, content);
             ResponseEntity<String> responseEntity = postService.addPost(requestBody, file);
@@ -41,12 +40,6 @@ public class PostController {
         }
     }
 
-
-    @GetMapping(path="/image/{publicId}", consumes=MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ByteArrayResource>  download(@PathVariable("publicId") String publicId) {
-
-        return cloudinaryService.downloadImg(publicId);
-    }
 
     @DeleteMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deletePost(@PathVariable("postId") String postId,
