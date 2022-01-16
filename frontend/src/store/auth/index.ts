@@ -3,6 +3,7 @@ import { LoginBody } from "@api/types";
 import userApi from "@api/user";
 import { User } from "@models/user";
 import { handleError } from "@api/error";
+import { RootState } from "..";
 
 interface AuthState {
   token?: string;
@@ -56,6 +57,23 @@ const activate = createAsyncThunk(
       const userWithToken = await userApi.activate(token);
       saveTokenInLS(userWithToken.token);
       return userWithToken;
+    } catch (error) {
+      return rejectWithValue(handleError(error));
+    }
+  }
+);
+
+const update = createAsyncThunk(
+  `${authSliceName}/update`,
+  async (body: FormData, { dispatch, rejectWithValue, getState }) => {
+    dispatch(startLoading());
+
+    const token = (getState() as RootState).auth.token;
+
+    try {
+      const user = await userApi.update(body, token);
+      console.log(user);
+      return user;
     } catch (error) {
       return rejectWithValue(handleError(error));
     }
@@ -121,6 +139,21 @@ const authSlice = createSlice({
     builder.addCase(me.rejected, (state) => {
       state.initialLoading = false;
     });
+    builder.addCase(update.fulfilled, (state, action) => {
+      state.loading = false;
+      const {
+        payload: { birthday, avatarURL, description },
+      } = action;
+
+      if (state.user) {
+        state.user.birthday = birthday;
+        state.user.avatarURL = avatarURL;
+        state.user.description = description;
+      }
+    });
+    builder.addCase(update.rejected, (state) => {
+      state.loading = false;
+    });
   },
 });
 
@@ -128,4 +161,4 @@ export const { startLoading, logout } = authSlice.actions;
 
 export default authSlice.reducer;
 
-export { login, activate, me };
+export { login, activate, me, update };

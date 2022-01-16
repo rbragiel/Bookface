@@ -91,8 +91,8 @@ public class UserController {
     }
 
     @PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> getUser(@RequestPart(name="title", required = false) String description,
-                                              @RequestPart(name="content", required = false) String birthday,
+    public ResponseEntity<String> getUser(@RequestPart(name="description", required = false) String description,
+                                              @RequestPart(name="birthday", required = false) String birthday,
                                               @RequestPart(name="file", required = false) MultipartFile file) {
         try {
             ResponseEntity<String> response = userServiceImpl.updateUser(description, birthday, file);
@@ -130,6 +130,4 @@ public class UserController {
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage(), exception);
         }
     }
-
-
 }

@@ -76,7 +76,7 @@ const Login = () => {
           name={LoginFormFields.PASSWORD}
           id="password"
           maxWidth="600px"
-          label="Email address"
+          label="Password"
           helperText="A password given at registration proccess."
           type="password"
           placeholder="Your password"

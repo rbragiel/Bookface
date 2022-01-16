@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
         if(file != null) {
             String avatarURL = cloudinary.url().secure(true).format("jpg")
                     .publicId(cloudinaryService.upload(file))
-                    .generate();;
+                    .generate();
             body.put("avatarURL", avatarURL);
         }
 

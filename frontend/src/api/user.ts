@@ -46,6 +46,14 @@ class UserApi implements IUserApi {
 
     return Object.assign(data as unknown as User, { token });
   }
+
+  async update(body: FormData, token?: string): Promise<User> {
+    const { data } = await this.#client.patch("/", body, {
+      headers: { Authorization: token ?? "" },
+    });
+
+    return data.user as User;
+  }
 }
 
 const userApi = new UserApi(

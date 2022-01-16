@@ -51,7 +51,7 @@ const Main = () => {
           </>
         ) : (
           <Center flex={1} justifyContent="center" flexDir="column">
-            <Text>{t("User does not have any posts yet.")}</Text>
+            <Text>{t("Friends have not uploaded any posts yet.")}</Text>
           </Center>
         )}
       </Stack>

@@ -10,7 +10,7 @@ const Profile = () => {
 
   return (
     <ContentWrapper>
-      <Card />
+      <Card user={user} />
       <Posts userId={user.userId} />
     </ContentWrapper>
   );
