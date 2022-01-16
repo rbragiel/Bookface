@@ -1,50 +1,42 @@
 import React from "react";
-import dayjs from "dayjs";
 import {
   Flex,
   Heading,
-  Button,
+  Spacer,
   HStack,
   IconButton,
   Text,
   Image,
-  Spacer,
 } from "@chakra-ui/react";
+import { useReactions } from "@hooks/useReactions";
+import { Choice, Post } from "@store/api/types";
+import dayjs from "dayjs";
 import {
   AiOutlineLike,
   AiOutlineDislike,
   AiOutlineComment,
 } from "react-icons/ai";
-import { Choice, Post } from "@store/api/types";
-import { useDeletePostMutation } from "@store/api";
-import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { useReactions } from "@hooks/useReactions";
+import { Box } from "@chakra-ui/react";
 
-interface PostViewProps {
+interface PostProps {
   post: Post;
-  startEdit: () => void;
-  userId: string;
+  bg: string;
 }
 
-const PostView = ({ post, startEdit, userId }: PostViewProps) => {
-  const [deletePost, { isLoading: isDeleteLoading }] = useDeletePostMutation();
-  const { t } = useTranslation();
-
+const PostView = ({ post, bg }: PostProps) => {
   const {
     reaction: { choice, dislikes, likes },
-    isLoading: isReactionLoading,
+    isLoading,
     dislike,
     like,
     undo,
-  } = useReactions(post, true);
-
-  const isLoading = isDeleteLoading || isReactionLoading;
+  } = useReactions(post, false);
 
   const postId = post.postData.postId;
 
   return (
-    <>
+    <Box bg={bg} p={4} borderRadius={10}>
       <Flex alignItems="center" justifyContent="space-between">
         <Heading as="h4" fontSize="xl">
           {post.postData.title}
@@ -53,26 +45,6 @@ const PostView = ({ post, startEdit, userId }: PostViewProps) => {
           <Text>
             {dayjs(post.postData.timestamp).format("HH:mm DD-MM-YYYY")}
           </Text>
-          <Button
-            colorScheme="teal"
-            size="sm"
-            ml={3}
-            onClick={startEdit}
-            isLoading={isLoading}
-          >
-            {t("Edit")}
-          </Button>
-          <Button
-            colorScheme="red"
-            size="sm"
-            ml={1}
-            isLoading={isLoading}
-            onClick={() => {
-              deletePost({ userId, postId: post.postData.postId });
-            }}
-          >
-            {t("Delete")}
-          </Button>
         </Flex>
       </Flex>
       <Text mt={3}>{post.postData.content}</Text>
@@ -128,7 +100,7 @@ const PostView = ({ post, startEdit, userId }: PostViewProps) => {
           </Link>
         </HStack>
       </Flex>
-    </>
+    </Box>
   );
 };
 

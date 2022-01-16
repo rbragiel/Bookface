@@ -95,10 +95,38 @@ const api = createApi({
     >({
       query: ({ userId, page }) =>
         `${PostsApiEndpoints.postsUrl}/${userId}/?page=${page}`,
-      providesTags: [PostApiTagTypes.POSTS],
+      providesTags: (result) => {
+        if (result) {
+          return [
+            ...result.allPosts.map((post) => ({
+              id: post.postData.postId,
+              type: PostApiTagTypes.POST,
+            })),
+            PostApiTagTypes.POSTS,
+          ];
+        } else {
+          return [PostApiTagTypes.POSTS];
+        }
+      },
     }),
-    getPaginatedFriendsPosts: builder.query<unknown, { page: number }>({
+    getPaginatedFriendsPosts: builder.query<
+      { allPosts: Post[] },
+      { page: number }
+    >({
       query: ({ page }) => `${PostsApiEndpoints.friendsPostsUrl}/?page=${page}`,
+      providesTags: (result) => {
+        if (result) {
+          return [
+            ...result.allPosts.map((post) => ({
+              id: post.postData.postId,
+              type: PostApiTagTypes.POST,
+            })),
+            PostApiTagTypes.POSTS,
+          ];
+        } else {
+          return [PostApiTagTypes.POSTS];
+        }
+      },
     }),
     getUser: builder.query<GetUserResponse, string>({
       query: (userId) => `/user/${userId}`,
@@ -188,6 +216,7 @@ const api = createApi({
       unknown,
       {
         postId: string;
+        shouldUpdateProfile: boolean;
       }
     >({
       query: ({ postId }) => ({
@@ -197,11 +226,20 @@ const api = createApi({
           choice: Choice.LIKE,
         },
       }),
+      invalidatesTags: (_, __, { shouldUpdateProfile, postId }) => [
+        {
+          id: postId,
+          type: shouldUpdateProfile
+            ? PostApiTagTypes.USER_POST
+            : PostApiTagTypes.POST,
+        },
+      ],
     }),
     dislike: builder.mutation<
       unknown,
       {
         postId: string;
+        shouldUpdateProfile: boolean;
       }
     >({
       query: ({ postId }) => ({
@@ -211,17 +249,34 @@ const api = createApi({
           choice: Choice.DISLIKE,
         },
       }),
+      invalidatesTags: (_, __, { shouldUpdateProfile, postId }) => [
+        {
+          id: postId,
+          type: shouldUpdateProfile
+            ? PostApiTagTypes.USER_POST
+            : PostApiTagTypes.POST,
+        },
+      ],
     }),
     undoRection: builder.mutation<
       unknown,
       {
         postId: string;
+        shouldUpdateProfile: boolean;
       }
     >({
       query: ({ postId }) => ({
         method: "DELETE",
         url: `${ReactionsApiEndpoints.reactionsUrl}/${postId}`,
       }),
+      invalidatesTags: (_, __, { shouldUpdateProfile, postId }) => [
+        {
+          id: postId,
+          type: shouldUpdateProfile
+            ? PostApiTagTypes.USER_POST
+            : PostApiTagTypes.POST,
+        },
+      ],
     }),
   }),
 });
@@ -244,6 +299,7 @@ export const {
   useDislikeMutation,
   useLikeMutation,
   useUndoRectionMutation,
+  useGetUserPaginatedPostsQuery,
 } = api;
 
 export { api };

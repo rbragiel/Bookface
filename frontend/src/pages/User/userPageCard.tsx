@@ -60,6 +60,8 @@ const UserCard = ({ user }: UserCardProps) => {
       flexDirection="column"
       borderRadius={10}
       maxWidth="1200px"
+      w="100%"
+      alignSelf="center"
     >
       <Stack w="100%" direction="row" alignItems="center" spacing={6}>
         <Avatar

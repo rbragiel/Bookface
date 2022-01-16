@@ -139,3 +139,14 @@ export class GetUserDto {
   @ApiProperty({ type: GetSingleUser })
   user: GetSingleUser;
 }
+
+export class UpdateSelfDto {
+  @ApiProperty()
+  description: string;
+
+  @ApiProperty()
+  birthday: string;
+
+  @ApiProperty()
+  avatarURL: string;
+}

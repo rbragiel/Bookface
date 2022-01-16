@@ -2,13 +2,27 @@ import React, { useState } from "react";
 import { ContentWrapper } from "@components/contentWrapper";
 import { useGetPaginatedFriendsPostsQuery } from "@store/api";
 import { FullSpaceLoader } from "@components/fullSpaceLoader";
-import { Center } from "@chakra-ui/react";
+import {
+  Center,
+  Heading,
+  Stack,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { PostView } from "@components/postView";
+import { useTranslation } from "react-i18next";
 
 const Main = () => {
   const [page, setPage] = useState(0);
-  const { data, isLoading, isError } = useGetPaginatedFriendsPostsQuery({
-    page,
-  });
+  const bg = useColorModeValue("gray.100", "gray.900");
+  const { data, isLoading, isError } = useGetPaginatedFriendsPostsQuery(
+    {
+      page,
+    },
+    { refetchOnMountOrArgChange: true }
+  );
+
+  const { t } = useTranslation();
 
   if (isLoading) {
     return <FullSpaceLoader />;
@@ -18,7 +32,31 @@ const Main = () => {
     return <Center flex={1}>Error</Center>;
   }
 
-  return <ContentWrapper>{JSON.stringify(data)}</ContentWrapper>;
+  return (
+    <ContentWrapper>
+      <Stack
+        spacing={4}
+        maxWidth="1000px"
+        width="100%"
+        marginY={16}
+        alignSelf="center"
+        height="100%"
+      >
+        <Heading size="lg">{t("Your friends posts")}:</Heading>
+        {data && data.allPosts.length > 0 ? (
+          <>
+            {data.allPosts.map((post) => (
+              <PostView post={post} key={post.postData.postId} bg={bg} />
+            ))}
+          </>
+        ) : (
+          <Center flex={1} justifyContent="center" flexDir="column">
+            <Text>{t("User does not have any posts yet.")}</Text>
+          </Center>
+        )}
+      </Stack>
+    </ContentWrapper>
+  );
 };
 
 export { Main };
