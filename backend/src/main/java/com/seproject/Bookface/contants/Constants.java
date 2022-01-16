@@ -21,6 +21,12 @@ final public class Constants {
     private final String searchUrl = "http://localhost:5000/api/user/search";
     private final String getUserUrl = "http://localhost:5000/api/user/";
 
+    public String getGetUpdateUserUrl() {
+        return getUpdateUserUrl;
+    }
+
+    private final String getUpdateUserUrl = "http://localhost:5000/api/user";
+
     private final String invitedUrl = "/all/invited";
     private final String inviteesUrl = "/all/invitees";
     private final String inviteUrl = "/invite/";

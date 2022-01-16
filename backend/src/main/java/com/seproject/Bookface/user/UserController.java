@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @CrossOrigin
@@ -89,6 +90,35 @@ public class UserController {
         }
     }
 
+    @PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getUser(@RequestPart(name="title", required = false) String description,
+                                              @RequestPart(name="content", required = false) String birthday,
+                                              @RequestPart(name="file", required = false) MultipartFile file) {
+        try {
+            ResponseEntity<String> response = userServiceImpl.updateUser(description, birthday, file);
+            //log.info(String.valueOf(response.getBody()));
+            return response;
+        } catch (HttpClientErrorException exception) {
+            log.info(exception.toString());
+            throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage(), exception);
+        }
+    }
+
+//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<String> addPost(@RequestPart(name="title") String title,
+//                                          @RequestPart(name="content") String content,
+//                                          @RequestPart(name="file", required = false) MultipartFile file) {
+//        try {
+//            CreatePostRequest requestBody = new CreatePostRequest(title, content);
+//            ResponseEntity<String> responseEntity = postService.addPost(requestBody, file);
+//            log.info(responseEntity.getBody());
+//            return responseEntity;
+//        } catch (HttpClientErrorException exception) {
+//            log.info(exception.toString());
+//            throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage());
+//        }
+//    }
+
     @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public GetUserResponse getUser(@PathVariable String userId) {
         try {
@@ -100,4 +130,6 @@ public class UserController {
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage(), exception);
         }
     }
+
+
 }

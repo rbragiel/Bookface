@@ -61,11 +61,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public ResponseEntity<String> removePost(String postId, String userId) {
-        MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String auth = me.getUserId();
-
-        if (Objects.equals(userId, auth)) {
+    public ResponseEntity<String> removePost(String postId) {
             if (postRepository.existsById(postId)) {
                 postRepository.deleteById(postId);
                 reactionRepository.deleteAllByPostId(postId);
@@ -74,36 +70,25 @@ public class PostServiceImpl implements PostService {
             } else {
                 return new ResponseEntity<>("{\"message\": \"Post not found\"}", HttpStatus.BAD_REQUEST);
             }
-        } else {
-            return new ResponseEntity<>("{\"message\": \"Unauthorized access\"}", HttpStatus.UNAUTHORIZED);
         }
-    }
 
     @Override
-    public ResponseEntity<String> modifyPost(String postId, String title, String content, String userId) {
-        MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String auth = me.getUserId();
-
-        if (Objects.equals(userId, auth)) {
+    public ResponseEntity<String> modifyPost(String postId, String title, String content) {
             if (postRepository.existsById(postId)) {
                 postRepository.setUserInfoById(postId, title, content);
                 return new ResponseEntity<>("{\"message\": \"Post successfully modified\"}", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("{\"message\": \"Post not found\"}", HttpStatus.BAD_REQUEST);
             }
-        } else {
-            return new ResponseEntity<>("{\"message\": \"Unauthorized access\"}", HttpStatus.UNAUTHORIZED);
         }
-    }
 
     @Override
-    public ResponseEntity<PostData> getPost(String userId, String postId) {
+    public ResponseEntity<PostData> getPost(String postId) {
         if (postRepository.existsById(postId)) {
-            if (Objects.equals(postRepository.getPostEntityByPostId(postId).getUserId(), userId)) {
-                return new ResponseEntity<>(postRepository.getPostEntityByPostId(postId), HttpStatus.OK);
-            }
+            return new ResponseEntity<>(postRepository.getPostEntityByPostId(postId), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -125,7 +110,7 @@ public class PostServiceImpl implements PostService {
             friendIds.add(friendship.getUserId());
         }
 
-        List<PostData> postDataPage = postRepository.findAllByUserIdIn(friendIds, paging).getContent();
+        List<PostData> postDataPage = postRepository.findAllByUserIdInOrderByTimestampDesc(friendIds, paging).getContent();
         return createPostDto(postDataPage);
     }
 

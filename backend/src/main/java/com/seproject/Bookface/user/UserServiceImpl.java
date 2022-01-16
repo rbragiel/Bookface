@@ -1,11 +1,14 @@
 package com.seproject.Bookface.user;
 
+import com.cloudinary.Cloudinary;
 import com.seproject.Bookface.contants.Constants;
 import com.seproject.Bookface.error.ErrorHandler;
 import com.seproject.Bookface.user.dto.request.ActivateRequest;
 import com.seproject.Bookface.user.dto.request.CreateUserRequest;
 import com.seproject.Bookface.user.dto.request.LoginRequest;
 import com.seproject.Bookface.user.dto.response.*;
+import com.seproject.Bookface.utils.cloudinary.CloudinaryServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -16,21 +19,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final RestTemplate restTemplate;
     private final Constants constants;
+    private final CloudinaryServiceImpl cloudinaryService;
+    private final Cloudinary cloudinary;
 
     @Autowired
-    public UserServiceImpl(RestTemplateBuilder restTemplateBuilder, Constants constants) {
+    public UserServiceImpl(RestTemplateBuilder restTemplateBuilder, Constants constants, CloudinaryServiceImpl cloudinaryService, Cloudinary cloudinary) {
         this.restTemplate = restTemplateBuilder.errorHandler(new ErrorHandler()).build();
         this.constants = constants;
+        this.cloudinaryService = cloudinaryService;
+        this.cloudinary = cloudinary;
     }
 
     private String getBearerTokenHeader() {
@@ -68,6 +79,32 @@ public class UserServiceImpl implements UserService {
         HttpEntity<ActivateRequest> entity = new HttpEntity<>(token, headers);
 
         return restTemplate.postForObject(uriComponents.toString(), entity, LoginResponse.class);
+    }
+
+    @Override
+    public ResponseEntity<String> updateUser(String description, String birthday, MultipartFile file) {
+
+        HttpHeaders headers = constants.getBasicHeaders();
+        headers.set("Authorization", getBearerTokenHeader());
+
+        Map<String, String> body = new HashMap<>();
+        if (description != null)
+            body.put("description", description);
+
+        if (birthday != null)
+            body.put("birthday", birthday);
+
+        if(file != null) {
+            String avatarURL = cloudinary.url().secure(true).format("jpg")
+                    .publicId(cloudinaryService.upload(file))
+                    .generate();;
+            body.put("avatarURL", avatarURL);
+        }
+
+        HttpEntity<?> entity = new HttpEntity<Object>(body, headers);
+        log.info(entity.toString());
+
+        return restTemplate.exchange(constants.getGetUpdateUserUrl(), HttpMethod.PATCH, entity, String.class);
     }
 
     @Override
