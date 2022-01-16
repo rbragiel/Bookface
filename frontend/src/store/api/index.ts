@@ -12,6 +12,7 @@ import {
 import { getTokenFromLS } from "@store/auth";
 import { PostsApiEndpoints } from "@api/posts";
 import { ReactionsApiEndpoints } from "@api/reactions";
+import { CommentsApiEndpoints } from "@api/comments";
 
 enum FriendsApiTagTypes {
   FRIENDS = "FRIENDS",
@@ -278,6 +279,15 @@ const api = createApi({
         },
       ],
     }),
+    getSinglePost: builder.query<unknown, { postId: string }>({
+      query: ({ postId }) => `${PostsApiEndpoints.postsUrl}/${postId}`,
+      providesTags: (_, __, { postId }) => [
+        { type: PostApiTagTypes.POST, id: postId },
+      ],
+    }),
+    getPostComments: builder.query<unknown, { postId: string }>({
+      query: ({ postId }) => `${CommentsApiEndpoints.getUrl}/${postId}`,
+    }),
   }),
 });
 
@@ -300,6 +310,8 @@ export const {
   useLikeMutation,
   useUndoRectionMutation,
   useGetUserPaginatedPostsQuery,
+  useGetPostCommentsQuery,
+  useGetSinglePostQuery,
 } = api;
 
 export { api };
