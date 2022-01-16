@@ -141,12 +141,12 @@ export class GetUserDto {
 }
 
 export class UpdateSelfDto {
-  @ApiProperty()
-  description: string;
+  @ApiPropertyOptional()
+  description?: string;
 
-  @ApiProperty()
-  birthday: string;
+  @ApiPropertyOptional()
+  birthday?: string;
 
-  @ApiProperty()
-  avatarURL: string;
+  @ApiPropertyOptional()
+  avatarURL?: string;
 }
