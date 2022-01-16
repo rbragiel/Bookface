@@ -27,9 +27,9 @@ public class ReactionServiceImpl implements ReactionService {
         MeResponse myUserDetails = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String me = myUserDetails.getUserId();
 
-        if (reactionRepository.existsByPostIdAndUserId(postRepository.getPostEntityByPostId(postId), me)) {
+        if (reactionRepository.existsByPostIdAndUserId(postId, me)) {
             ReactionData reactionEntity = reactionRepository
-                    .getReactionEntityByPostIdAndUserId(postRepository.getPostEntityByPostId(postId), me);
+                    .getReactionEntityByPostIdAndUserId(postId, me);
 
             if (!Objects.equals(reactionEntity.getChoice(), Choice.valueOf(requestBody.getChoice()))) {
                 reactionEntity.setChoice(Choice.valueOf(requestBody.getChoice()));
@@ -40,7 +40,7 @@ public class ReactionServiceImpl implements ReactionService {
             }
         } else {
             reactionRepository.save(ReactionData.builder()
-                    .postId(postRepository.getPostEntityByPostId(postId))
+                    .postId(postId)
                     .userId(me)
                     .choice(Choice.valueOf(requestBody.getChoice()))
                     .build());
@@ -86,8 +86,13 @@ public class ReactionServiceImpl implements ReactionService {
     public ResponseEntity<List<PostReactionsDto>> getAllReactionsByPostId(String postId) {
         List<PostReactionsDto> response = new ArrayList<>();
         List<ReactionData> reactionList = reactionRepository
+<<<<<<< HEAD
                 .getReactionEntitiesByPostId(postRepository.getPostEntityByPostId(postId));
         for (ReactionData reaction : reactionList) {
+=======
+                .getReactionEntitiesByPostId(postId);
+        for (ReactionData reaction: reactionList) {
+>>>>>>> 3157d085b0da4c4d49b159a0972cfcb551b90d31
             response.add(new PostReactionsDto(reaction.getReactionId(), reaction.getUserId(), reaction.getChoice()));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -86,8 +86,7 @@ public class PostController {
                                                              @RequestParam(value = "size", defaultValue = "20") int size) {
         try {
             Pageable paging = PageRequest.of(page, size);
-            PostsResponseDto allPosts = postService.findAllPostsFromUser(userId, paging);
-            return new ResponseEntity<>(allPosts, HttpStatus.OK);
+            return postService.findAllPostsFromUser(userId, paging);
         } catch (HttpClientErrorException exception) {
             log.info(exception.toString());
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage());

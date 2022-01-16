@@ -18,7 +18,7 @@ public interface PostService {
 
     ResponseEntity<String> modifyPost(String postId, String title, String content, String userId);
 
-    PostsResponseDto findAllPostsFromUser(String userId, Pageable paging);
+    ResponseEntity<PostsResponseDto> findAllPostsFromUser(String userId, Pageable paging);
 
     PostsResponseDto findAllPostsFromFriends(Pageable paging);
 
