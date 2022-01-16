@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { MessageReceived } from "@api/chat";
-import { Stack, useColorModeValue, Button } from "@chakra-ui/react";
+import { useColorModeValue, Button, Flex } from "@chakra-ui/react";
 import { Message } from "./message";
 import { useTranslation } from "react-i18next";
 
@@ -30,25 +30,15 @@ const MessageDisplay = ({
   }, []);
 
   return (
-    <Stack flex={1} overflowY="auto" p={4}>
-      {hasMore && (
-        <Button
-          minH={50}
-          onClick={loadMore}
-          isLoading={isLoading}
-          isDisabled={isLoading}
-        >
-          {t("Load more")}
-        </Button>
-      )}
+    <Flex flex={1} overflowY="auto" p={4} flexDir="column-reverse">
       {messages.map((mess, i) =>
-        i === messages.length - 1 ? (
+        i === 0 ? (
           <Message
-            ref={lastElRef}
             key={mess.id}
             message={mess}
             bgMessColor={bgMessColor}
             userId={userId}
+            ref={lastElRef}
           />
         ) : (
           <Message
@@ -59,7 +49,17 @@ const MessageDisplay = ({
           />
         )
       )}
-    </Stack>
+      {hasMore && (
+        <Button
+          minH={50}
+          onClick={loadMore}
+          isLoading={isLoading}
+          isDisabled={isLoading}
+        >
+          {t("Load more")}
+        </Button>
+      )}
+    </Flex>
   );
 };
 

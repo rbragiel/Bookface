@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import language from "./i18n";
 import auth from "./auth";
 import searchbar from "./searchbar";
+import postCreate from "./post";
 import { api } from "./api";
 import { setupListeners } from "@reduxjs/toolkit/query/react";
 
@@ -10,6 +11,7 @@ const store = configureStore({
     language,
     auth,
     searchbar,
+    postCreate,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>

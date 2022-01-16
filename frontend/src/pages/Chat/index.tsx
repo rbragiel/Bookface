@@ -19,13 +19,13 @@ const Chat = () => {
     {
       name: ChatEvents.MESSAGE_RECEIVED,
       cb: (message: MessageReceived) => {
-        setMessages((prev) => [...prev, message]);
+        setMessages((prev) => [message, ...prev]);
       },
     },
   ]);
 
   const updateMessages = useCallback((messages: MessageReceived[]) => {
-    setMessages((prev) => [...messages, ...prev]);
+    setMessages((prev) => [...prev, ...messages]);
   }, []);
 
   const sendMessage = useCallback(

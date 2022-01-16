@@ -4,6 +4,7 @@ import com.seproject.Bookface.feedback.reaction.dao.ReactionData;
 import com.seproject.Bookface.feedback.reaction.dto.request.CreateReactionRequest;
 import com.seproject.Bookface.feedback.reaction.dto.response.PostReactionsDto;
 import com.seproject.Bookface.post.PostRepository;
+import com.seproject.Bookface.post.dao.PostData;
 import com.seproject.Bookface.user.dto.response.MeResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,14 +50,26 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public ResponseEntity<String> removeReaction(String reactionId) {
+    public ResponseEntity<String> removeReaction(String postId) {
+        MeResponse myUserDetails = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String me = myUserDetails.getUserId();
 
-        if (reactionRepository.existsById(reactionId)) {
-            reactionRepository.deleteById(reactionId);
-            return new ResponseEntity<>("{\"message\": \"Reaction successfully removed\"}", HttpStatus.OK);
-        } else {
+        System.out.println(postId + " " + me);
+        var post = postRepository.findById(postId);
+
+        if (post.isEmpty()) {
+            return new ResponseEntity<>("{\"message\": \"Post not found\"}", HttpStatus.BAD_REQUEST);
+        }
+
+        var reaction = reactionRepository.getReactionEntityByPostIdAndUserId(post.get().getPostId(), me);
+
+        if (reaction == null) {
             return new ResponseEntity<>("{\"message\": \"Reaction not found\"}", HttpStatus.BAD_REQUEST);
         }
+
+        reactionRepository.deleteById(reaction.getReactionId());
+
+        return new ResponseEntity<>("{\"message\": \"Reaction successfully removed\"}", HttpStatus.OK);
     }
 
     @Override
@@ -74,7 +87,7 @@ public class ReactionServiceImpl implements ReactionService {
         List<PostReactionsDto> response = new ArrayList<>();
         List<ReactionData> reactionList = reactionRepository
                 .getReactionEntitiesByPostId(postId);
-        for (ReactionData reaction: reactionList) {
+        for (ReactionData reaction : reactionList) {
             response.add(new PostReactionsDto(reaction.getReactionId(), reaction.getUserId(), reaction.getChoice()));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);

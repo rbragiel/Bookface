@@ -13,7 +13,7 @@ export interface MessageReceived {
   roomId: string;
   content: string;
   createdAt: Date;
-  image?: string
+  image?: string;
 }
 
 export interface MessageSend {
@@ -40,7 +40,7 @@ class ChatApi {
       headers: { Authorization: getTokenFromLS() ?? "" },
     });
 
-    return (data.messages as MessageReceived[]).reverse();
+    return data.messages as MessageReceived[];
   }
 }
 
