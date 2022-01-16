@@ -16,7 +16,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<PostData, String> {
 
     Page<PostData> findAllByUserIdOrderByTimestampDesc(String userId, Pageable paging);
-    Page<PostData> findAllByUserIdIn(List<String> userId, Pageable paging);
+    Page<PostData> findAllByUserIdInOrderByTimestampDesc(List<String> userId, Pageable paging);
 
     @Transactional
     @Modifying

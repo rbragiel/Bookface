@@ -12,11 +12,11 @@ public interface PostService {
 
     ResponseEntity<String> addPost(CreatePostRequest requestBody, MultipartFile file);
 
-    ResponseEntity<String> removePost(String postId, String userId);
+    ResponseEntity<String> removePost(String postId);
 
-    ResponseEntity<PostData> getPost(String userId, String postId);
+    ResponseEntity<PostData> getPost(String postId);
 
-    ResponseEntity<String> modifyPost(String postId, String title, String content, String userId);
+    ResponseEntity<String> modifyPost(String postId, String title, String content);
 
     ResponseEntity<PostsResponseDto> findAllPostsFromUser(String userId, Pageable paging);
 

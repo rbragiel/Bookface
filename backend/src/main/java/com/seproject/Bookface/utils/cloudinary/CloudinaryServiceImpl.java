@@ -23,7 +23,6 @@ import java.util.Map;
 public class CloudinaryServiceImpl {
 
     private final Cloudinary cloudinary;
-    private final UserServiceImpl userService;
 
     public String upload(MultipartFile file) {
             try {

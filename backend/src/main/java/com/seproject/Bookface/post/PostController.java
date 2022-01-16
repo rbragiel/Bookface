@@ -41,11 +41,10 @@ public class PostController {
     }
 
 
-    @DeleteMapping(path = "/{userId}/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deletePost(@PathVariable("postId") String postId,
-                                             @PathVariable(value = "userId") String userId) {
+    @DeleteMapping(path = "/single/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deletePost(@PathVariable("postId") String postId) {
         try {
-            ResponseEntity<String> responseEntity = postService.removePost(postId, userId);
+            ResponseEntity<String> responseEntity = postService.removePost(postId);
             log.info(responseEntity.getBody());
             return responseEntity;
         } catch (HttpClientErrorException exception) {
@@ -54,13 +53,12 @@ public class PostController {
         }
     }
 
-    @PutMapping(path = "/{userId}/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/single/{postId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> modifyPost(@PathVariable("postId") String postId,
-                                             @RequestBody CreatePostRequest requestBody,
-                                             @PathVariable(value = "userId") String userId) {
+                                             @RequestBody CreatePostRequest requestBody) {
         try {
             ResponseEntity<String> responseEntity = postService
-                    .modifyPost(postId, requestBody.getTitle(), requestBody.getContent(), userId);
+                    .modifyPost(postId, requestBody.getTitle(), requestBody.getContent());
             log.info(responseEntity.getBody());
             return responseEntity;
         } catch (HttpClientErrorException exception) {
@@ -69,11 +67,10 @@ public class PostController {
         }
     }
 
-    @GetMapping(value = "/{userId}/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<com.seproject.Bookface.post.dao.PostData> getPost(@PathVariable(value = "userId") String userId,
-                                                                            @PathVariable("postId") String postId) {
+    @GetMapping(value = "/single/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<com.seproject.Bookface.post.dao.PostData> getPost(@PathVariable("postId") String postId) {
         try {
-            return postService.getPost(userId, postId);
+            return postService.getPost(postId);
         } catch (HttpClientErrorException exception) {
             log.info(exception.toString());
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage());
