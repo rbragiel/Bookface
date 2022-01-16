@@ -162,4 +162,15 @@ export class UserService {
 
     return { user: new UserDto({ ...user }) };
   }
+
+  async getUsers(userIds: string[]) {
+    const users = await this.userModel.findAll({
+      where: { userid: { [Op.in]: userIds } },
+      attributes: {
+        exclude: this.excludeOptions,
+      },
+    });
+
+    return { users: users.map((user) => user.get({ plain: true })) };
+  }
 }

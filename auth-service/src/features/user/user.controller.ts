@@ -32,6 +32,28 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOkResponse({
+    description: 'User updated',
+    type: UserDto,
+  })
+  @UseAuthGuard()
+  @Patch('/')
+  @UseInterceptors(ClassSerializerInterceptor)
+  updateSelf(@User() user: UserDto, @Body() body: UpdateSelfDto) {
+    return this.userService.updateSelf(user, body);
+  }
+
+  @ApiOkResponse({
+    description: 'Returns all users by ids',
+    type: UsersSearchResultDto,
+  })
+  @UseAuthGuard()
+  @Get('/all')
+  @UseInterceptors(ClassSerializerInterceptor)
+  getAllUsersByIds(@Body() body: { ids: string[] }) {
+    return this.userService.getUsers(body.ids);
+  }
+
+  @ApiOkResponse({
     description: 'List of searched users.',
     type: UsersSearchResultDto,
   })
@@ -58,17 +80,6 @@ export class UserController {
   @Delete('/:id')
   deleteUser(@Param('id') id: string) {
     return this.userService.deleteById(id);
-  }
-
-  @ApiOkResponse({
-    description: 'User updated',
-    type: UserDto,
-  })
-  @UseAuthGuard()
-  @Patch('/')
-  @UseInterceptors(ClassSerializerInterceptor)
-  updateSelf(@User() user: UserDto, @Body() body: UpdateSelfDto) {
-    return this.userService.updateSelf(user, body);
   }
 
   // @UseGuards(AuthGuard, RolesGuard)
