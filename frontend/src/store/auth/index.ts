@@ -3,7 +3,6 @@ import { LoginBody } from "@api/types";
 import userApi from "@api/user";
 import { User } from "@models/user";
 import { handleError } from "@api/error";
-import { RootState } from "..";
 
 interface AuthState {
   token?: string;
@@ -65,14 +64,13 @@ const activate = createAsyncThunk(
 
 const update = createAsyncThunk(
   `${authSliceName}/update`,
-  async (body: FormData, { dispatch, rejectWithValue, getState }) => {
+  async (body: FormData, { dispatch, rejectWithValue }) => {
     dispatch(startLoading());
 
-    const token = (getState() as RootState).auth.token;
+    const token = getTokenFromLS();
 
     try {
       const user = await userApi.update(body, token);
-      console.log(user);
       return user;
     } catch (error) {
       return rejectWithValue(handleError(error));
@@ -110,7 +108,7 @@ const authSlice = createSlice({
       const {
         payload: { token, ...user },
       } = action;
-      state.token = token;
+      state.token = `Bearer ${token}`;
       state.user = user;
       state.loading = false;
     });
