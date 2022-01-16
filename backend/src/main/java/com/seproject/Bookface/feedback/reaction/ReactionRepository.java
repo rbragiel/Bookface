@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReactionRepository extends JpaRepository<ReactionData, String> {
@@ -24,5 +25,9 @@ public interface ReactionRepository extends JpaRepository<ReactionData, String> 
     boolean existsByPostIdAndUserId(String postId, String userId);
 
     ReactionData getReactionEntityByPostIdAndUserId(String postId, String userId);
+
+    @Query("select r from ReactionData r where r.postId = ?1 and r.userId = ?2")
+    Optional<ReactionData> findByPostIdAndUserId(PostData postId, String userId);
+
 
 }

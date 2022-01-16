@@ -2,13 +2,16 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { FriendsApiEndpoints } from "@api/friends";
 import { InvitationApiEndpoints } from "@api/invitations";
 import {
+  Choice,
   GetFriendsResponse,
   GetUserResponse,
   InvitedResponse,
   InviteesResponse,
+  Post,
 } from "./types";
 import { getTokenFromLS } from "@store/auth";
 import { PostsApiEndpoints } from "@api/posts";
+import { ReactionsApiEndpoints } from "@api/reactions";
 
 enum FriendsApiTagTypes {
   FRIENDS = "FRIENDS",
@@ -17,6 +20,13 @@ enum FriendsApiTagTypes {
 enum InvitationsApiTagTypes {
   INVITED = "INVITED",
   INVITEES = "INVITEES",
+}
+
+enum PostApiTagTypes {
+  USER_POSTS = "USER_POSTS",
+  USER_POST = "USER_POST",
+  POST = "POST",
+  POSTS = "POSTS",
 }
 
 const UserRootTag = "User";
@@ -29,7 +39,6 @@ const api = createApi({
     baseUrl,
     prepareHeaders: (headers) => {
       const token = getTokenFromLS();
-
       if (token) {
         headers.set("Authorization", token);
       }
@@ -52,12 +61,42 @@ const api = createApi({
       query: () => InvitationApiEndpoints.invitedUrl,
       providesTags: [InvitationsApiTagTypes.INVITED],
     }),
-    getPaginatedPosts: builder.query<unknown, { userId: string; page: number }>(
-      {
-        query: ({ userId, page }) =>
-          `${PostsApiEndpoints.postsUrl}/${userId}/?page=${page}`,
-      }
-    ),
+    addPost: builder.mutation<unknown, { data: FormData }>({
+      query: ({ data }) => ({
+        method: "POST",
+        url: `/posts`,
+        body: data,
+      }),
+      invalidatesTags: [PostApiTagTypes.USER_POSTS],
+    }),
+    getPaginatedUserProfilePosts: builder.query<
+      { allPosts: Post[] },
+      { userId: string; page: number }
+    >({
+      query: ({ userId, page }) =>
+        `${PostsApiEndpoints.postsUrl}/${userId}/?page=${page}`,
+      providesTags: (result) => {
+        if (result) {
+          return [
+            ...result.allPosts.map((post) => ({
+              id: post.postData.postId,
+              type: PostApiTagTypes.USER_POST,
+            })),
+            PostApiTagTypes.USER_POSTS,
+          ];
+        } else {
+          return [PostApiTagTypes.USER_POSTS];
+        }
+      },
+    }),
+    getUserPaginatedPosts: builder.query<
+      { allPosts: Post[] },
+      { userId: string; page: number }
+    >({
+      query: ({ userId, page }) =>
+        `${PostsApiEndpoints.postsUrl}/${userId}/?page=${page}`,
+      providesTags: [PostApiTagTypes.POSTS],
+    }),
     getPaginatedFriendsPosts: builder.query<unknown, { page: number }>({
       query: ({ page }) => `${PostsApiEndpoints.friendsPostsUrl}/?page=${page}`,
     }),
@@ -113,6 +152,77 @@ const api = createApi({
         url: `${FriendsApiEndpoints.deleteUrl}/${id}`,
       }),
     }),
+    modifyPost: builder.mutation<
+      unknown,
+      {
+        userId: string;
+        postId: string;
+        data: { title: string; content: string };
+      }
+    >({
+      query: ({ userId, postId, data }) => ({
+        method: "PUT",
+        url: `${PostsApiEndpoints.postsUrl}/${userId}/${postId}`,
+        body: data,
+      }),
+      invalidatesTags: (_, __, { postId }) => [
+        { id: postId, type: PostApiTagTypes.USER_POST },
+      ],
+    }),
+    deletePost: builder.mutation<
+      unknown,
+      {
+        userId: string;
+        postId: string;
+      }
+    >({
+      query: ({ userId, postId }) => ({
+        method: "DELETE",
+        url: `${PostsApiEndpoints.postsUrl}/${userId}/${postId}`,
+      }),
+      invalidatesTags: (_, __, { postId }) => [
+        { id: postId, type: PostApiTagTypes.USER_POST },
+      ],
+    }),
+    like: builder.mutation<
+      unknown,
+      {
+        postId: string;
+      }
+    >({
+      query: ({ postId }) => ({
+        method: "POST",
+        url: `${ReactionsApiEndpoints.reactionsUrl}/${postId}`,
+        body: {
+          choice: Choice.LIKE,
+        },
+      }),
+    }),
+    dislike: builder.mutation<
+      unknown,
+      {
+        postId: string;
+      }
+    >({
+      query: ({ postId }) => ({
+        method: "POST",
+        url: `${ReactionsApiEndpoints.reactionsUrl}/${postId}`,
+        body: {
+          choice: Choice.DISLIKE,
+        },
+      }),
+    }),
+    undoRection: builder.mutation<
+      unknown,
+      {
+        postId: string;
+      }
+    >({
+      query: ({ postId }) => ({
+        method: "DELETE",
+        url: `${ReactionsApiEndpoints.reactionsUrl}/${postId}`,
+      }),
+    }),
   }),
 });
 
@@ -126,7 +236,14 @@ export const {
   useRejectMutation,
   useDeleteFriendMutation,
   useInviteMutation,
-  useGetPaginatedPostsQuery,
+  useGetPaginatedFriendsPostsQuery,
+  useAddPostMutation,
+  useGetPaginatedUserProfilePostsQuery,
+  useModifyPostMutation,
+  useDeletePostMutation,
+  useDislikeMutation,
+  useLikeMutation,
+  useUndoRectionMutation,
 } = api;
 
 export { api };

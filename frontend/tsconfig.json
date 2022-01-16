@@ -39,7 +39,9 @@
       "@pages": ["pages"],
       "@pages/*": ["pages/*"],
       "@contants": ["contants"],
-      "@contants/*": ["contants/*"]
+      "@contants/*": ["contants/*"],
+      "@common": ["common"],
+      "@common/*": ["common/*"]
     }
   },
   "include": ["./src"]

@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(path = "/posts")
 @Slf4j
@@ -23,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class PostController {
 
     private final PostServiceImpl postService;
-    private final CloudinaryServiceImpl cloudinaryService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addPost(@RequestPart(name="title") String title,
@@ -40,13 +40,8 @@ public class PostController {
         }
     }
 
-//    @GetMapping(path="/image/{publicId}", consumes=MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<ByteArrayResource>  download(@PathVariable("publicId") String publicId) {
-//
-//        return cloudinaryService.downloadImg(publicId);
-//    }
 
-        @DeleteMapping(path = "/{userId}/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/{userId}/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deletePost(@PathVariable("postId") String postId,
                                              @PathVariable(value = "userId") String userId) {
         try {

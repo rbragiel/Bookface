@@ -5,7 +5,6 @@ import { useGetUserQuery } from "@store/api";
 import { useParams } from "react-router-dom";
 import { UserCard } from "./userPageCard";
 import { FullSpaceLoader } from "@components/fullSpaceLoader";
-import Posts from "../../components/posts";
 
 const User = () => {
   const { userId } = useParams();
@@ -23,7 +22,6 @@ const User = () => {
   return (
     <ContentWrapper mt={4} borderRadius={20}>
       {data && <UserCard user={data.user} />}
-      <Posts userId={userId || ""} />
     </ContentWrapper>
   );
 };

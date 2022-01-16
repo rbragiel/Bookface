@@ -73,13 +73,27 @@ export class User extends Model implements IUser {
   @Column(DataType.TEXT)
   description: string;
 
-  @BelongsToMany(() => User, () => FriendPair, 'userOneId', 'userTwoId')
+  @BelongsToMany(() => User, {
+    through: () => FriendPair,
+    foreignKey: 'userOneId',
+    otherKey: 'userTwoId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   friends: User[];
 
-  @HasMany(() => Invitation, 'inviterId')
+  @HasMany(() => Invitation, {
+    foreignKey: 'inviterId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   reciviedInvites: Invitation[];
 
-  @HasMany(() => Invitation, 'inviteeId')
+  @HasMany(() => Invitation, {
+    foreignKey: 'inviteeId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   sendInvites: Invitation[];
 
   @Column({
