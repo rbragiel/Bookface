@@ -57,17 +57,17 @@ public class ReactionServiceImpl implements ReactionService {
         System.out.println(postId + " " + me);
         var post = postRepository.findById(postId);
 
-        if(post.isEmpty()) {
+        if (post.isEmpty()) {
             return new ResponseEntity<>("{\"message\": \"Post not found\"}", HttpStatus.BAD_REQUEST);
         }
 
-        var reaction = reactionRepository.findByPostIdAndUserId(post.get(), me);
+        var reaction = reactionRepository.getReactionEntityByPostIdAndUserId(post.get().getPostId(), me);
 
-        if (reaction.isEmpty()) {
+        if (reaction == null) {
             return new ResponseEntity<>("{\"message\": \"Reaction not found\"}", HttpStatus.BAD_REQUEST);
         }
 
-        reactionRepository.deleteById(reaction.get().getReactionId());
+        reactionRepository.deleteById(reaction.getReactionId());
 
         return new ResponseEntity<>("{\"message\": \"Reaction successfully removed\"}", HttpStatus.OK);
     }
@@ -86,13 +86,8 @@ public class ReactionServiceImpl implements ReactionService {
     public ResponseEntity<List<PostReactionsDto>> getAllReactionsByPostId(String postId) {
         List<PostReactionsDto> response = new ArrayList<>();
         List<ReactionData> reactionList = reactionRepository
-<<<<<<< HEAD
-                .getReactionEntitiesByPostId(postRepository.getPostEntityByPostId(postId));
-        for (ReactionData reaction : reactionList) {
-=======
                 .getReactionEntitiesByPostId(postId);
-        for (ReactionData reaction: reactionList) {
->>>>>>> 3157d085b0da4c4d49b159a0972cfcb551b90d31
+        for (ReactionData reaction : reactionList) {
             response.add(new PostReactionsDto(reaction.getReactionId(), reaction.getUserId(), reaction.getChoice()));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
