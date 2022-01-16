@@ -1,3 +1,4 @@
+import * as dayjs from 'dayjs';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
@@ -146,11 +147,19 @@ export class UserService {
   }
 
   async updateSelf(user: UserDto, body: UpdateSelfDto) {
-    const [_, returnedUsers] = await this.userModel.update(
+    if (body.birthday) {
+      body.birthday = dayjs(body.birthday).toISOString();
+    }
+
+    await this.userModel.update(
       { ...body },
       { where: { userId: user.userId } },
     );
 
-    return { user: new UserDto({ ...returnedUsers[0] }) };
+    user.birthday = (body.birthday as unknown as Date) || null;
+    user.description = body.description || null;
+    user.avatarURL = body.avatarURL || null;
+
+    return { user: new UserDto({ ...user }) };
   }
 }

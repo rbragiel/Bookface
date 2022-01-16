@@ -60,6 +60,10 @@ export class UserController {
     return this.userService.deleteById(id);
   }
 
+  @ApiOkResponse({
+    description: 'User updated',
+    type: UserDto,
+  })
   @UseAuthGuard()
   @Patch('/')
   @UseInterceptors(ClassSerializerInterceptor)
