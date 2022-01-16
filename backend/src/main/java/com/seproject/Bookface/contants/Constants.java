@@ -18,20 +18,21 @@ final public class Constants {
     @Value("${auth.url}")
     private String authUrl;
 
-    private final String searchUrl = "http://localhost:5000/api/user/search";
-    private final String getUserUrl = "http://localhost:5000/api/user/";
+    private final String searchUrl = "/search";
 
     public String getGetUpdateUserUrl() {
-        return getUpdateUserUrl;
+        return userUrl;
     }
-
-    private final String getUpdateUserUrl = "http://localhost:5000/api/user";
 
     private final String invitedUrl = "/all/invited";
     private final String inviteesUrl = "/all/invitees";
     private final String inviteUrl = "/invite/";
     private final String rejectUrl = "/reject/";
     private final String acceptUrl = "/accept/";
+
+    @Value("${user.url}")
+    private String userUrl;
+
     @Value("${invitations.url}")
     private String invitationsUrl;
 
@@ -75,7 +76,7 @@ final public class Constants {
     }
 
     public String getSearchUrl() {
-        return  searchUrl;
+        return userUrl.concat(searchUrl);
     }
 
     public String getInvitedUrl() {
@@ -114,6 +115,6 @@ final public class Constants {
     }
 
     public String getGetUserUrl() {
-        return getUserUrl;
+        return userUrl.concat("/");
     }
 }

@@ -1,0 +1,16 @@
+FROM node:14.17
+
+WORKDIR /app
+
+COPY package.json .
+COPY yarn.lock .
+
+RUN yarn
+
+COPY . .
+
+EXPOSE 5000
+
+RUN yarn build
+
+CMD node ./dist/main.js
