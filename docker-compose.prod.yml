@@ -1,0 +1,86 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql
+    restart: always
+    env_file: ./.env.prod
+    environment:
+      - MYSQL_ROOT_PASSWORD=$AUTH_PASSWORD
+      - MYSQL_DATABASE=$AUTH_DATABASE
+    ports:
+      - $AUTH_PORT:$AUTH_PORT
+    volumes:
+      - prod-db:/var/lib/mysql
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile.prod
+    env_file: ./.env.prod
+    ports:
+      - $PORT:$PORT
+    depends_on:
+      - db
+  messages-service:
+    build:
+      context: ./messages-service
+      dockerfile: Dockerfile.prod
+    env_file: ./.env.prod
+    ports:
+      - $MESSAGES_PORT:$MESSAGES_PORT
+    depends_on:
+      - messages-db
+  java-db:
+    image: mysql
+    restart: always
+    env_file: ./.env.prod
+    environment:
+      - MYSQL_ROOT_PASSWORD=$JAVA_DB_PASSWORD
+      - MYSQL_DATABASE=$JAVA_DATABASE
+    ports:
+      - $JAVA_DB_EXTERNAL_PORT:$JAVA_DB_INTERNAL_PORT
+    volumes:
+      - prod-java-db:/var/lib/mysql
+  messages-db:
+    image: mongo
+    restart: always
+    env_file: ./.env.prod
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    ports:
+      - $MONGO_PORT:$MONGO_PORT
+    volumes:
+      - prod-messages-db:/data/db
+  mongo-admin:
+    image: mongo-express
+    env_file: ./.env.prod
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=$MONGO_USER
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=$MONGO_PASSWORD
+      - ME_CONFIG_MONGODB_SERVER=messages-db
+    ports:
+      - 8999:8081
+    depends_on:
+      - messages-db
+  auth-mysql-admin:
+    image: phpmyadmin
+    restart: always
+    env_file: ./.env.prod
+    ports:
+      - 3002:80
+    environment:
+      - PMA_PORT=$AUTH_PORT
+      - PMA_HOST=$AUTH_HOST
+  java-mysql-admin:
+    image: adminer
+    restart: always
+    env_file: ./.env.prod
+    ports:
+      - 3001:8080
+    environment:
+      - ADMINER_DEFAULT_SERVER=$JAVA_HOST
+volumes:
+  prod-db:
+  prod-java-db:
+  prod-messages-db:
