@@ -156,11 +156,9 @@ export class UserService {
       { where: { userId: user.userId } },
     );
 
-    user.birthday = (body.birthday as unknown as Date) || null;
-    user.description = body.description || null;
-    user.avatarURL = body.avatarURL || null;
+    const updatedUser = await this.userModel.findByPk(user.userId);
 
-    return { user: new UserDto({ ...user }) };
+    return { user: new UserDto({ ...updatedUser.get({ plain: true }) }) };
   }
 
   async getUsers(userIds: string[]) {

@@ -66,7 +66,7 @@ const UserCard = ({ user }: UserCardProps) => {
       <Stack w="100%" direction="row" alignItems="center" spacing={6}>
         <Avatar
           size="2xl"
-          src="https://images.unsplash.com/photo-1520810627419-35e362c5dc07?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ"
+          src={user.avatarURL || undefined}
           alt="Avatar"
           mb={4}
         />
@@ -102,7 +102,7 @@ const UserCard = ({ user }: UserCardProps) => {
                   onClick={() => deleteFriend({ id: user.userId })}
                   isLoading={isDeleteFriendLoading}
                 >
-                  Delete
+                  {t("Delete")}
                 </Button>
               </>
             ) : (
@@ -115,18 +115,21 @@ const UserCard = ({ user }: UserCardProps) => {
         {user.description && (
           <ListItem display="flex" alignItems="center">
             <ListIcon as={SearchIcon} color="green.500" />
-            About: {user.description}
+            <b style={{ marginRight: "6px" }}>{t("About")}:</b>{" "}
+            {user.description}
           </ListItem>
         )}
         {user.birthday && (
           <ListItem display="flex" alignItems="center">
             <ListIcon as={StarIcon} color="green.500" />
-            Birthday: {user.birthday}
+            <b style={{ marginRight: "6px" }}>{t("Birthday")}:</b>{" "}
+            {user.birthday}
           </ListItem>
         )}
         <ListItem display="flex" alignItems="center">
           <ListIcon as={TimeIcon} color="green.500" />
-          {t("On Bookface since")}: {dayjs(user.joined).format("DD-MM-YYYY")}
+          <b style={{ marginRight: "6px" }}>{t("On Bookface since")}:</b>{" "}
+          {dayjs(user.joined).format("DD-MM-YYYY")}
         </ListItem>
       </List>
     </Flex>

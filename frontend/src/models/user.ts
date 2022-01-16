@@ -9,7 +9,7 @@ export interface User {
   isActivated: boolean;
   joined: Date;
   createdAt: Date;
-  birthday?: Date;
+  birthday?: string;
   avatarURL?: string;
   description?: string;
   role: UserRole;

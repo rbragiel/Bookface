@@ -15,13 +15,14 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useAddPostMutation } from "@store/api";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@chakra-ui/react";
 import { addPostErrorToast, addPostSuccessToast } from "@toasts";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { postSchema } from "@common/schema";
+import { useImageInput } from "@hooks/useImageInput";
 
 interface CreatePostModalProps {
   close: () => void;
@@ -34,7 +35,6 @@ interface FormState {
 }
 
 const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
-  const [image, setImage] = useState<File | null>(null);
   const {
     register,
     handleSubmit,
@@ -45,15 +45,9 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
   const { t } = useTranslation();
   const toast = useToast();
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
-
   const [update, { isLoading, error, isSuccess }] = useAddPostMutation();
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImage(e.target.files[0]);
-    }
-  };
+  const { image, clickInput, inputRef, onChange } = useImageInput();
 
   const onSubmit = handleSubmit(async ({ title, content }) => {
     const formData = new FormData();
@@ -127,9 +121,7 @@ const CreatePostModal = ({ close, isOpen }: CreatePostModalProps) => {
               />
               <Button
                 colorScheme="teal"
-                onClick={() => {
-                  inputRef.current?.click();
-                }}
+                onClick={clickInput}
                 isLoading={isLoading}
               >
                 {t("Upload file")}
