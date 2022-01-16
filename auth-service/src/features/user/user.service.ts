@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { FindOptions, Op } from 'sequelize';
 import { TranslationsKeys } from '../../contants/i18n';
 import {
   GetSingleUser,
+  UpdateSelfDto,
   UserDto,
   UserRegisterDto,
   UserSearchDto,
@@ -141,5 +143,14 @@ export class UserService {
     }
 
     return { user: response };
+  }
+
+  async updateSelf(user: UserDto, body: UpdateSelfDto) {
+    const [_, returnedUsers] = await this.userModel.update(
+      { ...body },
+      { where: { userId: user.userId } },
+    );
+
+    return { user: new UserDto({ ...returnedUsers[0] }) };
   }
 }

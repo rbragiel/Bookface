@@ -21,10 +21,13 @@ interface PostsProps {
 const Posts = ({ userId }: PostsProps) => {
   const [page, setPage] = useState(0);
   const bg = useColorModeValue("gray.100", "gray.900");
-  const { data, isLoading, isError } = useGetPaginatedUserProfilePostsQuery({
-    userId,
-    page,
-  });
+  const { data, isLoading, isError } = useGetPaginatedUserProfilePostsQuery(
+    {
+      userId,
+      page,
+    },
+    { refetchOnMountOrArgChange: true }
+  );
 
   const { t } = useTranslation();
 
