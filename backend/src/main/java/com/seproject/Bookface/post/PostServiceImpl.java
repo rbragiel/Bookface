@@ -117,7 +117,7 @@ public class PostServiceImpl implements PostService {
     private PostsResponseDto createPostDto(List<PostData> postDataPage) {
         List<PostDto> postDtoList = new ArrayList<>();
         List<ReactionDto> reactionDtoList = new ArrayList<>();
-        Map<PostData, List<ReactionDto>> xd = new HashMap<>();
+        Map<PostData, List<ReactionDto>> postDataMap = new HashMap<>();
 
         MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = me.getUserId();
@@ -125,9 +125,9 @@ public class PostServiceImpl implements PostService {
         Choice userChoice = null;
 
         for (PostData post : postDataPage) {
-            xd.put(post, new ArrayList<ReactionDto>());
+            postDataMap.put(post, new ArrayList<ReactionDto>());
             for (Choice choice : Choice.values()) {
-                xd.get(post).add(new ReactionDto(choice, reactionRepository.getAllByPostIdAndChoice(post.getPostId(), choice).size()));
+                postDataMap.get(post).add(new ReactionDto(choice, reactionRepository.getAllByPostIdAndChoice(post.getPostId(), choice).size()));
             }
 
             if (reactionRepository.getReactionEntityByPostIdAndUserId(post.getPostId(), userId) != null
@@ -135,14 +135,14 @@ public class PostServiceImpl implements PostService {
                 userChoice = reactionRepository.getReactionEntityByPostIdAndUserId(post.getPostId(), userId).getChoice();
                 }
 
-            PostDto wtf = PostDto.builder()
+            PostDto postDto = PostDto.builder()
                     .postData(post)
                     .comments(commentRepository.countAllByPostId(post.getPostId()))
-                    .reactions(xd.get(post))
+                    .reactions(postDataMap.get(post))
                     .choice(userChoice)
                     .build();
 
-            postDtoList.add(wtf);
+            postDtoList.add(postDto);
         }
 
         return new PostsResponseDto(postDtoList);
