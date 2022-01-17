@@ -1,6 +1,7 @@
 package com.seproject.Bookface.feedback.comment.dto.response;
 
 import com.seproject.Bookface.feedback.reaction.Choice;
+import com.seproject.Bookface.user.dto.response.ReturnedUser;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -15,7 +16,7 @@ public class PostCommentsDto {
 
     private String commentId;
 
-    private String userId;
+    private ReturnedUser user;
 
     private String content;
 
