@@ -12,7 +12,9 @@ import com.seproject.Bookface.post.dao.PostData;
 import com.seproject.Bookface.post.dto.request.CreatePostRequest;
 import com.seproject.Bookface.post.dto.response.PostDto;
 import com.seproject.Bookface.post.dto.response.PostsResponseDto;
+import com.seproject.Bookface.user.UserServiceImpl;
 import com.seproject.Bookface.user.dto.response.MeResponse;
+import com.seproject.Bookface.user.dto.response.ReturnedUser;
 import com.seproject.Bookface.utils.cloudinary.CloudinaryServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,7 @@ public class PostServiceImpl implements PostService {
     private final ReactionRepository reactionRepository;
     private final CloudinaryServiceImpl cloudinaryService;
     private final Cloudinary cloudinary;
+    private final UserServiceImpl userService;
 
     @Override
     public ResponseEntity<String> addPost(CreatePostRequest requestBody, MultipartFile file) {
@@ -83,9 +86,32 @@ public class PostServiceImpl implements PostService {
         }
 
     @Override
-    public ResponseEntity<PostData> getPost(String postId) {
+    public ResponseEntity<PostDto> getPost(String postId) {
         if (postRepository.existsById(postId)) {
-            return new ResponseEntity<>(postRepository.getPostEntityByPostId(postId), HttpStatus.OK);
+            MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String userId = me.getUserId();
+
+            PostData post = postRepository.getPostEntityByPostId(postId);
+            Map<PostData, List<ReactionDto>> postDataMap = new HashMap<>();
+
+            postDataMap.put(post, new ArrayList<ReactionDto>());
+            for (Choice choice : Choice.values()) {
+                postDataMap.get(post).add(new ReactionDto(choice, reactionRepository.getAllByPostIdAndChoice(post.getPostId(), choice).size()));
+            }
+
+            Choice userChoice = null;
+            if (reactionRepository.getReactionEntityByPostIdAndUserId(post.getPostId(), userId) != null
+                    && reactionRepository.getReactionEntityByPostIdAndUserId(post.getPostId(), userId).getChoice() != null) {
+                userChoice = reactionRepository.getReactionEntityByPostIdAndUserId(post.getPostId(), userId).getChoice();
+            }
+
+            return new ResponseEntity<>(PostDto.builder()
+                    .postData(post)
+                    .comments(commentRepository.countAllByPostId(post.getPostId()))
+                    .reactions(postDataMap.get(post))
+                    .choice(userChoice)
+                    .user(userService.getUser(post.getUserId()).getBody().getUser())
+                    .build(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
@@ -116,7 +142,6 @@ public class PostServiceImpl implements PostService {
 
     private PostsResponseDto createPostDto(List<PostData> postDataPage) {
         List<PostDto> postDtoList = new ArrayList<>();
-        List<ReactionDto> reactionDtoList = new ArrayList<>();
         Map<PostData, List<ReactionDto>> postDataMap = new HashMap<>();
 
         MeResponse me = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -140,6 +165,7 @@ public class PostServiceImpl implements PostService {
                     .comments(commentRepository.countAllByPostId(post.getPostId()))
                     .reactions(postDataMap.get(post))
                     .choice(userChoice)
+                    .user(userService.getUser(post.getUserId()).getBody().getUser())
                     .build();
 
             postDtoList.add(postDto);

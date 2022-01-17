@@ -4,7 +4,9 @@ import com.seproject.Bookface.feedback.comment.dao.CommentData;
 import com.seproject.Bookface.feedback.comment.dto.request.CreateCommentRequest;
 import com.seproject.Bookface.feedback.comment.dto.response.PostCommentsDto;
 import com.seproject.Bookface.post.PostRepository;
+import com.seproject.Bookface.user.UserServiceImpl;
 import com.seproject.Bookface.user.dto.response.MeResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
-        this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
-    }
+    private final UserServiceImpl userService;
 
     public ResponseEntity<String> addComment(CreateCommentRequest requestBody, String postId) {
         MeResponse myUserDetails = (MeResponse) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -86,7 +85,7 @@ public class CommentServiceImpl implements CommentService {
         List<CommentData> commentEntityList = commentRepository
                 .findAllByPostIdOrderByDateDesc(postId, paging).getContent();
         for (CommentData commentEntity: commentEntityList) {
-            response.add(new PostCommentsDto(commentEntity.getCommentId(), commentEntity.getUserId(), commentEntity.getContent(), commentEntity.getDate()));
+            response.add(new PostCommentsDto(commentEntity.getCommentId(), userService.getUser(commentEntity.getUserId()).getBody().getUser(), commentEntity.getContent(), commentEntity.getDate()));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

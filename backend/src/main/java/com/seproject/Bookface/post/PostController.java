@@ -1,6 +1,7 @@
 package com.seproject.Bookface.post;
 
 import com.seproject.Bookface.post.dto.request.CreatePostRequest;
+import com.seproject.Bookface.post.dto.response.PostDto;
 import com.seproject.Bookface.post.dto.response.PostsResponseDto;
 import com.seproject.Bookface.utils.cloudinary.CloudinaryServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +69,7 @@ public class PostController {
     }
 
     @GetMapping(value = "/single/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<com.seproject.Bookface.post.dao.PostData> getPost(@PathVariable("postId") String postId) {
+    public ResponseEntity<PostDto> getPost(@PathVariable("postId") String postId) {
         try {
             return postService.getPost(postId);
         } catch (HttpClientErrorException exception) {
