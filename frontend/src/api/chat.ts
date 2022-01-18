@@ -32,15 +32,18 @@ class ChatApi {
     this.#client = _client;
   }
 
-  async getMessages({
-    receiverId,
-    page,
-  }: GetMesssagesArgs): Promise<MessageReceived[]> {
+  async getMessages({ receiverId, page }: GetMesssagesArgs): Promise<{
+    messages: MessageReceived[];
+    hasMore: boolean;
+  }> {
     const { data } = await this.#client.get(`/${receiverId}/${page}`, {
       headers: { Authorization: getTokenFromLS() ?? "" },
     });
 
-    return data.messages as MessageReceived[];
+    return {
+      messages: data.messages as MessageReceived[],
+      hasMore: data.hasMore,
+    };
   }
 }
 

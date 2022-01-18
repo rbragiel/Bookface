@@ -4,8 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useErrorState } from "./useErrorState";
 import { useMounted } from "./useMounted";
 
-const messagesProperLength = 15;
-
 function useMessages(
   receiverId: string,
   cb: (messages: MessageReceived[]) => void
@@ -28,10 +26,14 @@ function useMessages(
           on();
         }
         try {
-          const messages = await chatApi.getMessages({ receiverId, page });
+          const { messages, hasMore: _hasMore } = await chatApi.getMessages({
+            receiverId,
+            page,
+          });
+
           cb(messages);
 
-          if (messages.length < messagesProperLength) {
+          if (!_hasMore) {
             setHasMoreOff();
           }
         } catch (error) {
