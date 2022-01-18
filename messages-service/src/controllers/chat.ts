@@ -10,7 +10,8 @@ import { HttpErrorStatusCode, HttpStatusCode } from "../common/constants";
 
 const router = Router();
 
-const messageLimit = 15;
+const messagesOffset = 15;
+const messagesLimit = 16;
 
 router.get(
   "/:receiverId/:skip",
@@ -30,19 +31,22 @@ router.get(
       );
     }
 
-    const offset = (parseInt(skip) || 0) * messageLimit;
+    const offset = (parseInt(skip) || 0) * messagesOffset;
 
     const messages = await DI.messageRepository.find(
       { roomId: room.id },
       {
-        limit: messageLimit,
+        limit: messagesLimit,
         offset,
         fields: ["createdAt", "content", "userId", "image"],
         orderBy: { createdAt: QueryOrder.DESC },
       }
     );
 
-    res.status(HttpStatusCode.OK).json({ messages });
+    res.status(HttpStatusCode.OK).json({
+      messages: messages.slice(0, messagesOffset),
+      hasMore: messages.length === messagesLimit,
+    });
   })
 );
 
