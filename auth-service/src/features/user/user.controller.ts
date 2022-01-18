@@ -11,6 +11,7 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
+  Post,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthHeader, LangHeader } from '../../open-api/decorators';
@@ -47,7 +48,7 @@ export class UserController {
     type: UsersSearchResultDto,
   })
   @UseAuthGuard()
-  @Get('/all')
+  @Post('/all')
   getAllUsersByIds(@Body() body: { ids: string[] }) {
     return this.userService.getUsers(body.ids);
   }

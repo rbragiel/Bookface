@@ -81,5 +81,13 @@
   "Your about": "Twój opis",
   "Avatar": "Zdjęcie profilowe",
   "Upload avatar": "Załaduj zdjęcie",
-  "Friends have not uploaded any posts yet.": "Znajomi nie dodali jeszcze żadnych postów."
+  "Friends have not uploaded any posts yet.": "Znajomi nie dodali jeszcze żadnych postów.",
+  "Add comment": "Dodaj komentarz",
+  "Your comment": "Twój komentarz",
+  "Unexpected error occured while loading post.": "Nieoczekiwany błąd wystąpił podczas ładowania posta.",
+  "Unexpected error occured while loading comments.": "Nieoczekiwany błąd wystąpił podczas ładowania komentarzy.",
+  "All comments": "Wszystkie komentarze",
+  "Previous page": "Poprzednia strona",
+  "Next page": "Następna strona",
+  "No comments added to this post.": "Do tego posta nie został dodany żaden komentarz."
 }

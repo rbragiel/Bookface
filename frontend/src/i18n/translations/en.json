@@ -81,5 +81,13 @@
   "Your about": "Your about",
   "Avatar": "Avatar",
   "Upload avatar": "Upload avatar",
-  "Friends have not uploaded any posts yet.": "Friends have not uploaded any posts yet."
+  "Friends have not uploaded any posts yet.": "Friends have not uploaded any posts yet.",
+  "Add comment": "Add comment",
+  "Your comment": "Your comment",
+  "Unexpected error occured while loading posts": "Unexpected error occured while loading posts",
+  "Unexpected error occured while loading comments": "Unexpected error occured while loading comments",
+  "All comments": "All comments",
+  "Previous page": "Previous page",
+  "Next page": "Next page",
+  "No comments added to this post": "No comments added to this post"
 }

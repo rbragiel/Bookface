@@ -8,20 +8,22 @@ import {
 } from "@chakra-ui/react";
 import { useAddCommentMutation } from "@store/api";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface CommentsInputProps {
   postId: string;
-  page: number;
 }
 
-const CommentsInput = ({ postId, page }: CommentsInputProps) => {
+const CommentsInput = ({ postId }: CommentsInputProps) => {
   const [comment, setComment] = useState("");
   const bg = useColorModeValue("gray.100", "gray.900");
 
   const [update, { isLoading }] = useAddCommentMutation();
 
+  const { t } = useTranslation();
+
   const handleUpdate = async () => {
-    update({ body: { content: comment }, postId, page });
+    update({ body: { content: comment }, postId });
     setComment("");
   };
 
@@ -34,13 +36,13 @@ const CommentsInput = ({ postId, page }: CommentsInputProps) => {
       bg={bg}
       isDisabled={isLoading}
     >
-      <FormLabel>Your comment:</FormLabel>
+      <FormLabel>{t("Your comment")}:</FormLabel>
       <Flex>
         <Input
           isDisabled={isLoading}
           type="text"
           name="comment"
-          placeholder="Your comment"
+          placeholder={t("Your comment")}
           max={100}
           resize="none"
           maxW="600px"
@@ -54,7 +56,7 @@ const CommentsInput = ({ postId, page }: CommentsInputProps) => {
           onClick={handleUpdate}
           isDisabled={comment.length === 0}
         >
-          Add comment
+          {t("Add comment")}
         </Button>
       </Flex>
     </FormControl>
