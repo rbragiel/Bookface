@@ -91,5 +91,6 @@
   "Next page": "Następna strona",
   "No comments added to this post.": "Do tego posta nie został dodany żaden komentarz.",
   "No results": "Brak rezultatów",
-  "User does not have any posts yet.": "Użytkownik nie dodał jeszcze żadnego posta."
+  "User does not have any posts yet.": "Użytkownik nie dodał jeszcze żadnego posta.",
+  "Passed password does not match password above.": "Podane hasło nie pasuje do hasła podanego wyżej."
 }

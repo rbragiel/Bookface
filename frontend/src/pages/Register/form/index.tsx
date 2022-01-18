@@ -43,6 +43,8 @@ const RegisterForm = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    setError,
+    clearErrors,
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerFormSchema),
   });
@@ -51,7 +53,17 @@ const RegisterForm = () => {
     onSuccess: () => reset(),
   });
 
-  const handleRegisterSubmit = handleSubmit(handleRegister);
+  const handleRegisterSubmit = handleSubmit((body) => {
+    if (body.password !== body.repeatPassword) {
+      setError("repeatPassword", {
+        message: "Passed password does not match password above.",
+      });
+      return;
+    } else {
+      clearErrors("repeatPassword");
+    }
+    handleRegister(body);
+  });
 
   const registerValue = <T extends RegisterFormFields>(name: T) =>
     register(name);
@@ -117,7 +129,7 @@ const RegisterForm = () => {
           helperText="Pass the same password as given above."
           type="password"
           placeholder="Use +6 characters"
-          error={errors.password}
+          error={errors.repeatPassword}
           register={registerValue}
           isDisabled={loading}
         />
