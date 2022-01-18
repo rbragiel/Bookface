@@ -48,7 +48,6 @@ export class UserController {
   })
   @UseAuthGuard()
   @Get('/all')
-  @UseInterceptors(ClassSerializerInterceptor)
   getAllUsersByIds(@Body() body: { ids: string[] }) {
     return this.userService.getUsers(body.ids);
   }

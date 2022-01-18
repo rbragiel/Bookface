@@ -77,8 +77,8 @@ public class CommentController {
 
     @GetMapping(path = "/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<PostCommentsDto>> getPostComments(@PathVariable("postId") String postId,
-                                                                 @RequestParam("page") int page,
-                                                                 @RequestParam("size") int size) {
+                                                                 @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                 @RequestParam(value = "size", defaultValue = "20") int size) {
         try {
             Pageable paging = PageRequest.of(page, size);
             ResponseEntity<List<PostCommentsDto>> response = commentService.getAllCommentsByPostId(postId, paging);

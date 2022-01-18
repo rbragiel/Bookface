@@ -7,6 +7,7 @@ import {
   IconButton,
   Text,
   Image,
+  Avatar,
 } from "@chakra-ui/react";
 import { useReactions } from "@hooks/useReactions";
 import { Choice, Post } from "@store/api/types";
@@ -22,9 +23,16 @@ import { Box } from "@chakra-ui/react";
 interface PostProps {
   post: Post;
   bg: string;
+  shouldShowAvatar?: boolean;
+  shouldShowCommentsIcon?: boolean;
 }
 
-const PostView = ({ post, bg }: PostProps) => {
+const PostView = ({
+  post,
+  bg,
+  shouldShowAvatar,
+  shouldShowCommentsIcon = true,
+}: PostProps) => {
   const {
     reaction: { choice, dislikes, likes },
     isLoading,
@@ -36,9 +44,17 @@ const PostView = ({ post, bg }: PostProps) => {
   const postId = post.postData.postId;
 
   return (
-    <Box bg={bg} p={4} borderRadius={10}>
+    <Box bg={bg} p={4} borderRadius={10} w="100%">
+      {shouldShowAvatar && (
+        <Flex align="center" mb={4}>
+          <Avatar src={post.user.avatarURL} alt="avatar" />
+          <Text fontSize="lg" ml={2} fontWeight="bold">
+            {post.user.nickname}
+          </Text>
+        </Flex>
+      )}
       <Flex alignItems="center" justifyContent="space-between">
-        <Heading as="h4" fontSize="xl">
+        <Heading as="h4" fontSize="xl" maxW="500px">
           {post.postData.title}
         </Heading>
         <Flex alignItems="center" justifyContent="center">
@@ -47,7 +63,9 @@ const PostView = ({ post, bg }: PostProps) => {
           </Text>
         </Flex>
       </Flex>
-      <Text mt={3}>{post.postData.content}</Text>
+      <Text mt={3} maxW="600px">
+        {post.postData.content}
+      </Text>
       <Flex mt={4}>
         {post.postData.imageUrl && (
           <Image
@@ -85,19 +103,21 @@ const PostView = ({ post, bg }: PostProps) => {
             onClick={choice === Choice.DISLIKE ? undo : dislike}
             isDisabled={choice === Choice.LIKE}
           />
-          <Link to={`/dashboard/posts/${postId}`}>
-            <IconButton
-              colorScheme="blue"
-              aria-label="comments"
-              icon={
-                <>
-                  <Text mr={1}>{post.comments}</Text>
-                  <AiOutlineComment />
-                </>
-              }
-              isLoading={isLoading}
-            />
-          </Link>
+          {shouldShowCommentsIcon && (
+            <Link to={`/dashboard/posts/${postId}`}>
+              <IconButton
+                colorScheme="blue"
+                aria-label="comments"
+                icon={
+                  <>
+                    <Text mr={1}>{post.comments}</Text>
+                    <AiOutlineComment />
+                  </>
+                }
+                isLoading={isLoading}
+              />
+            </Link>
+          )}
         </HStack>
       </Flex>
     </Box>
