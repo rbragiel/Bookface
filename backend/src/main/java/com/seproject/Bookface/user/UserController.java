@@ -15,6 +15,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping(path = "/user")
@@ -104,21 +106,6 @@ public class UserController {
         }
     }
 
-//    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<String> addPost(@RequestPart(name="title") String title,
-//                                          @RequestPart(name="content") String content,
-//                                          @RequestPart(name="file", required = false) MultipartFile file) {
-//        try {
-//            CreatePostRequest requestBody = new CreatePostRequest(title, content);
-//            ResponseEntity<String> responseEntity = postService.addPost(requestBody, file);
-//            log.info(responseEntity.getBody());
-//            return responseEntity;
-//        } catch (HttpClientErrorException exception) {
-//            log.info(exception.toString());
-//            throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage());
-//        }
-//    }
-
     @GetMapping(path = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public GetUserResponse getUser(@PathVariable String userId) {
         try {
@@ -130,4 +117,5 @@ public class UserController {
             throw new ResponseStatusException(exception.getStatusCode(), exception.getMessage(), exception);
         }
     }
+
 }
