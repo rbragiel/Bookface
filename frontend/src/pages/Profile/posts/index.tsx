@@ -6,6 +6,7 @@ import {
   useColorModeValue,
   Button,
   Text,
+  Flex,
 } from "@chakra-ui/react";
 import { FullSpaceLoader } from "@components/fullSpaceLoader";
 import { useGetPaginatedUserProfilePostsQuery } from "@store/api";
@@ -17,6 +18,8 @@ import { useTranslation } from "react-i18next";
 interface PostsProps {
   userId: string;
 }
+
+const postsQuantity = 20;
 
 const Posts = ({ userId }: PostsProps) => {
   const [page, setPage] = useState(0);
@@ -61,6 +64,21 @@ const Posts = ({ userId }: PostsProps) => {
               userId={userId}
             />
           ))}
+          <Flex justifyContent="center" px={6}>
+            <Button
+              onClick={() => setPage((page) => page - 1)}
+              isDisabled={page === 0}
+            >
+              {t("Previous page")}
+            </Button>
+            <Button
+              ml={6}
+              onClick={() => setPage((page) => page + 1)}
+              isDisabled={data.allPosts.length < postsQuantity}
+            >
+              {t("Next page")}
+            </Button>
+          </Flex>
         </>
       ) : (
         <Center flex={1} justifyContent="center" flexDir="column">

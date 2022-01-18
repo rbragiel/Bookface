@@ -3,7 +3,9 @@ import { ContentWrapper } from "@components/contentWrapper";
 import { useGetPaginatedFriendsPostsQuery } from "@store/api";
 import { FullSpaceLoader } from "@components/fullSpaceLoader";
 import {
+  Button,
   Center,
+  Flex,
   Heading,
   Stack,
   Text,
@@ -11,6 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { PostView } from "@components/postView";
 import { useTranslation } from "react-i18next";
+
+const postsQuantity = 20;
 
 const Main = () => {
   const [page, setPage] = useState(0);
@@ -53,6 +57,21 @@ const Main = () => {
                 shouldShowAvatar
               />
             ))}
+            <Flex justifyContent="center" px={6}>
+              <Button
+                onClick={() => setPage((page) => page - 1)}
+                isDisabled={page === 0}
+              >
+                {t("Previous page")}
+              </Button>
+              <Button
+                ml={6}
+                onClick={() => setPage((page) => page + 1)}
+                isDisabled={data.allPosts.length < postsQuantity}
+              >
+                {t("Next page")}
+              </Button>
+            </Flex>
           </>
         ) : (
           <Center flex={1} justifyContent="center" flexDir="column">

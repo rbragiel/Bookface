@@ -151,7 +151,7 @@ const SearchModal = ({ isOpen, close }: SearchModalProps) => {
                 ))}
               </Stack>
             ) : (
-              <Box mt={2}>No results</Box>
+              <Box mt={2}>{t("No results")}</Box>
             ))}
           {error && <Box mt={2}>{error.message}</Box>}
           {loading && (

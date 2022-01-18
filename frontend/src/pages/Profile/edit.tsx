@@ -91,7 +91,7 @@ const Edit = ({ data, off }: EditProps) => {
         <FormLabel>{t("About")}</FormLabel>
         <Textarea
           resize="none"
-          placeholder={t("Your birthday")}
+          placeholder={t("Your about")}
           {...register("description")}
           isDisabled={loading}
         />
