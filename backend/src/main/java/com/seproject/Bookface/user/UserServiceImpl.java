@@ -1,6 +1,8 @@
 package com.seproject.Bookface.user;
 
 import com.cloudinary.Cloudinary;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.seproject.Bookface.contants.Constants;
 import com.seproject.Bookface.error.ErrorHandler;
 import com.seproject.Bookface.user.dto.request.ActivateRequest;
@@ -23,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,6 +149,28 @@ public class UserServiceImpl implements UserService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<GetUserResponse> response = restTemplate.exchange(getUserUrl, HttpMethod.GET,
                 entity, GetUserResponse.class);
+        return response;
+    }
+
+    @Override
+    public ResponseEntity<UsersArrayResponse> getUsers(List<String> ids) {
+        final String getUserUrl = constants.getGetUserUrl() + "all";
+        HttpHeaders headers = constants.getBasicHeaders();
+        headers.set("Authorization", getBearerTokenHeader());
+
+        Map<String, List<String>> request = new HashMap<>();
+        request.put("ids", ids);
+
+        Gson gson = new Gson();
+        Type gsonType = new TypeToken<HashMap>(){}.getType();
+        String gsonString = gson.toJson(request, gsonType);
+
+        HttpEntity<?> entity = new HttpEntity<Object>(gsonString, headers);
+
+        System.out.println(entity);
+
+        ResponseEntity<UsersArrayResponse> response = restTemplate.exchange(getUserUrl, HttpMethod.POST,
+                entity, UsersArrayResponse.class);
         return response;
     }
 }

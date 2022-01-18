@@ -6,6 +6,7 @@ import com.seproject.Bookface.feedback.comment.dto.response.PostCommentsDto;
 import com.seproject.Bookface.post.PostRepository;
 import com.seproject.Bookface.user.UserServiceImpl;
 import com.seproject.Bookface.user.dto.response.MeResponse;
+import com.seproject.Bookface.user.dto.response.UsersArrayResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -84,8 +85,16 @@ public class CommentServiceImpl implements CommentService {
         List<PostCommentsDto> response = new ArrayList<>();
         List<CommentData> commentEntityList = commentRepository
                 .findAllByPostIdOrderByDateDesc(postId, paging).getContent();
+
+        List<String> userIds = new ArrayList<>();
+        for(CommentData commentData : commentEntityList) {
+            userIds.add(commentData.getUserId());
+        }
+
+        UsersArrayResponse usersArray = userService.getUsers(userIds).getBody();
+
         for (CommentData commentEntity: commentEntityList) {
-            response.add(new PostCommentsDto(commentEntity.getCommentId(), userService.getUser(commentEntity.getUserId()).getBody().getUser(), commentEntity.getContent(), commentEntity.getDate()));
+            response.add(new PostCommentsDto(commentEntity.getCommentId(), usersArray.findUser(commentEntity.getUserId()), commentEntity.getContent(), commentEntity.getDate()));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
