@@ -15,8 +15,8 @@ import {
 } from "@chakra-ui/react";
 import { User } from "@models/user";
 import dayjs from "dayjs";
-import { t } from "i18next";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { AiFillEdit, AiOutlineCloseCircle } from "react-icons/ai";
 import { Edit } from "./edit";
 
@@ -26,6 +26,7 @@ interface CardProps {
 
 const Card = ({ user }: CardProps) => {
   const [isEditing, { off, on }] = useBoolean();
+  const { t } = useTranslation();
 
   return (
     <Flex

@@ -8,15 +8,19 @@ import {
   Stack,
   useColorModeValue,
   Text,
+  Button,
+  Flex,
 } from "@chakra-ui/react";
 import { PostView } from "@components/postView";
 import { useTranslation } from "react-i18next";
+
+const postsQuantity = 20;
 
 const Posts = () => {
   const { userId } = useParams();
   const bg = useColorModeValue("gray.100", "gray.900");
   const [page, setPage] = useState(0);
-  const { data, isLoading, error, refetch } = useGetUserPaginatedPostsQuery(
+  const { data, isLoading, error } = useGetUserPaginatedPostsQuery(
     {
       page,
       userId: userId as string,
@@ -49,6 +53,21 @@ const Posts = () => {
           {data.allPosts.map((post) => (
             <PostView post={post} key={post.postData.postId} bg={bg} />
           ))}
+          <Flex justifyContent="center" px={6}>
+            <Button
+              onClick={() => setPage((page) => page - 1)}
+              isDisabled={page === 0}
+            >
+              {t("Previous page")}
+            </Button>
+            <Button
+              ml={6}
+              onClick={() => setPage((page) => page + 1)}
+              isDisabled={data.allPosts.length < postsQuantity}
+            >
+              {t("Next page")}
+            </Button>
+          </Flex>
         </>
       ) : (
         <Center flex={1} justifyContent="center" flexDir="column">
