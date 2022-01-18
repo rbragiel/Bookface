@@ -8,6 +8,7 @@ import {
   InvitedResponse,
   InviteesResponse,
   Post,
+  PostComment,
 } from "./types";
 import { getTokenFromLS } from "@store/auth";
 import { PostsApiEndpoints } from "@api/posts";
@@ -28,6 +29,10 @@ enum PostApiTagTypes {
   USER_POST = "USER_POST",
   POST = "POST",
   POSTS = "POSTS",
+}
+
+enum CommentsApiTags {
+  POST_COMMENTS = "POST_COMMENTS",
 }
 
 const UserRootTag = "User";
@@ -279,14 +284,64 @@ const api = createApi({
         },
       ],
     }),
-    getSinglePost: builder.query<unknown, { postId: string }>({
-      query: ({ postId }) => `${PostsApiEndpoints.postsUrl}/${postId}`,
+    getSinglePost: builder.query<Post, { postId: string }>({
+      query: ({ postId }) => `${PostsApiEndpoints.postsUrl}/single/${postId}`,
       providesTags: (_, __, { postId }) => [
         { type: PostApiTagTypes.POST, id: postId },
       ],
     }),
-    getPostComments: builder.query<unknown, { postId: string }>({
-      query: ({ postId }) => `${CommentsApiEndpoints.getUrl}/${postId}`,
+    getPostComments: builder.query<
+      PostComment[],
+      { postId: string; page: number }
+    >({
+      query: ({ postId, page }) =>
+        `${CommentsApiEndpoints.getUrl}/${postId}?page=${page}`,
+      providesTags: (_, __, { postId, page }) => [
+        { type: CommentsApiTags.POST_COMMENTS, id: `${postId}|${page}` },
+      ],
+    }),
+    addComment: builder.mutation<
+      unknown,
+      { postId: string; page: number; body: { content: string } }
+    >({
+      query: ({ postId, body }) => ({
+        url: `${CommentsApiEndpoints.getUrl}/${postId}`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (_, __, { postId, page }) => [
+        { type: CommentsApiTags.POST_COMMENTS, id: `${postId}|${page}` },
+      ],
+    }),
+    deleteComment: builder.mutation<
+      unknown,
+      { commentId: string; page: number; postId: string }
+    >({
+      query: ({ commentId, postId }) => ({
+        url: `${CommentsApiEndpoints.getUrl}/${postId}/${commentId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_, __, { postId, page }) => [
+        { type: CommentsApiTags.POST_COMMENTS, id: `${postId}|${page}` },
+      ],
+    }),
+    updateComment: builder.mutation<
+      unknown,
+      {
+        commentId: string;
+        page: number;
+        postId: string;
+        body: { content: string };
+      }
+    >({
+      query: ({ commentId, postId, body }) => ({
+        url: `${CommentsApiEndpoints.getUrl}/${postId}/${commentId}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (_, __, { postId, page }) => [
+        { type: CommentsApiTags.POST_COMMENTS, id: `${postId}|${page}` },
+      ],
     }),
   }),
 });
@@ -312,6 +367,9 @@ export const {
   useGetUserPaginatedPostsQuery,
   useGetPostCommentsQuery,
   useGetSinglePostQuery,
+  useAddCommentMutation,
+  useDeleteCommentMutation,
+  useUpdateCommentMutation,
 } = api;
 
 export { api };

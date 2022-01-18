@@ -60,6 +60,7 @@ export interface Post {
   comments: number;
   reactions: Reaction[];
   choice: Choice | null;
+  user: GetUserUser;
 }
 
 export interface PostData {
@@ -79,4 +80,11 @@ export enum Choice {
 export interface Reaction {
   choice: Choice;
   quantity: number;
+}
+
+export interface PostComment {
+  user: GetUserUser;
+  commentId: string;
+  content: string;
+  timestamp: string;
 }

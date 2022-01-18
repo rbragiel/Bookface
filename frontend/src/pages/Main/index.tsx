@@ -46,7 +46,12 @@ const Main = () => {
         {data && data.allPosts.length > 0 ? (
           <>
             {data.allPosts.map((post) => (
-              <PostView post={post} key={post.postData.postId} bg={bg} />
+              <PostView
+                post={post}
+                key={post.postData.postId}
+                bg={bg}
+                shouldShowAvatar
+              />
             ))}
           </>
         ) : (

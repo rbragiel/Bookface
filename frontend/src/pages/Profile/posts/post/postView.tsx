@@ -46,7 +46,7 @@ const PostView = ({ post, startEdit, userId }: PostViewProps) => {
   return (
     <>
       <Flex alignItems="center" justifyContent="space-between">
-        <Heading as="h4" fontSize="xl">
+        <Heading as="h4" fontSize="xl" maxW="500px">
           {post.postData.title}
         </Heading>
         <Flex alignItems="center" justifyContent="center">
@@ -75,7 +75,9 @@ const PostView = ({ post, startEdit, userId }: PostViewProps) => {
           </Button>
         </Flex>
       </Flex>
-      <Text mt={3}>{post.postData.content}</Text>
+      <Text mt={3} maxW="600px">
+        {post.postData.content}
+      </Text>
       <Flex mt={4}>
         {post.postData.imageUrl && (
           <Image
