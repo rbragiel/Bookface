@@ -33,6 +33,7 @@ enum PostApiTagTypes {
 
 enum CommentsApiTags {
   POST_COMMENTS = "POST_COMMENTS",
+  ALL_COMMENTS = "ALL_COMMENTS",
 }
 
 const UserRootTag = "User";
@@ -298,31 +299,34 @@ const api = createApi({
         `${CommentsApiEndpoints.getUrl}/${postId}?page=${page}`,
       providesTags: (_, __, { postId, page }) => [
         { type: CommentsApiTags.POST_COMMENTS, id: `${postId}|${page}` },
+        CommentsApiTags.ALL_COMMENTS,
       ],
     }),
     addComment: builder.mutation<
       unknown,
-      { postId: string; page: number; body: { content: string } }
+      { postId: string; body: { content: string } }
     >({
       query: ({ postId, body }) => ({
         url: `${CommentsApiEndpoints.getUrl}/${postId}`,
         method: "POST",
         body,
       }),
-      invalidatesTags: (_, __, { postId, page }) => [
-        { type: CommentsApiTags.POST_COMMENTS, id: `${postId}|${page}` },
+      invalidatesTags: (_, __, { postId }) => [
+        CommentsApiTags.ALL_COMMENTS,
+        { type: PostApiTagTypes.POST, id: postId },
       ],
     }),
     deleteComment: builder.mutation<
       unknown,
-      { commentId: string; page: number; postId: string }
+      { commentId: string; postId: string }
     >({
       query: ({ commentId, postId }) => ({
         url: `${CommentsApiEndpoints.getUrl}/${postId}/${commentId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (_, __, { postId, page }) => [
-        { type: CommentsApiTags.POST_COMMENTS, id: `${postId}|${page}` },
+      invalidatesTags: (_, __, { postId }) => [
+        CommentsApiTags.ALL_COMMENTS,
+        { type: PostApiTagTypes.POST, id: postId },
       ],
     }),
     updateComment: builder.mutation<

@@ -163,7 +163,7 @@ export class UserService {
 
   async getUsers(userIds: string[]) {
     const users = await this.userModel.findAll({
-      where: { userid: { [Op.in]: userIds } },
+      where: { userId: { [Op.in]: userIds } },
       attributes: {
         exclude: this.excludeOptions,
       },
