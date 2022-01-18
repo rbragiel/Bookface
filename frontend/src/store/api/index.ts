@@ -190,14 +190,13 @@ const api = createApi({
     modifyPost: builder.mutation<
       unknown,
       {
-        userId: string;
         postId: string;
         data: { title: string; content: string };
       }
     >({
-      query: ({ userId, postId, data }) => ({
+      query: ({ postId, data }) => ({
         method: "PUT",
-        url: `${PostsApiEndpoints.postsUrl}/${userId}/${postId}`,
+        url: `${PostsApiEndpoints.postsUrl}/single/${postId}`,
         body: data,
       }),
       invalidatesTags: (_, __, { postId }) => [
@@ -207,13 +206,12 @@ const api = createApi({
     deletePost: builder.mutation<
       unknown,
       {
-        userId: string;
         postId: string;
       }
     >({
-      query: ({ userId, postId }) => ({
+      query: ({ postId }) => ({
         method: "DELETE",
-        url: `${PostsApiEndpoints.postsUrl}/${userId}/${postId}`,
+        url: `${PostsApiEndpoints.postsUrl}/single/${postId}`,
       }),
       invalidatesTags: (_, __, { postId }) => [
         { id: postId, type: PostApiTagTypes.USER_POST },

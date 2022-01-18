@@ -5,8 +5,10 @@ import {
   Input,
   Button,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useAddCommentMutation } from "@store/api";
+import { addCommentErrorToast, addCommentSuccessToast } from "@toasts";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -19,12 +21,18 @@ const CommentsInput = ({ postId }: CommentsInputProps) => {
   const bg = useColorModeValue("gray.100", "gray.900");
 
   const [update, { isLoading }] = useAddCommentMutation();
+  const toast = useToast();
 
   const { t } = useTranslation();
 
   const handleUpdate = async () => {
-    update({ body: { content: comment }, postId });
-    setComment("");
+    try {
+      await update({ body: { content: comment }, postId }).unwrap();
+      toast(addCommentSuccessToast());
+      setComment("");
+    } catch (error) {
+      toast(addCommentErrorToast());
+    }
   };
 
   return (

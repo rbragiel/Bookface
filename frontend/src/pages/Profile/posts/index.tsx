@@ -57,12 +57,7 @@ const Posts = ({ userId }: PostsProps) => {
       {data && data.allPosts.length > 0 ? (
         <>
           {data.allPosts.map((post) => (
-            <Post
-              post={post}
-              key={post.postData.postId}
-              bg={bg}
-              userId={userId}
-            />
+            <Post post={post} key={post.postData.postId} bg={bg} />
           ))}
           <Flex justifyContent="center" px={6}>
             <Button

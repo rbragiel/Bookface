@@ -6,6 +6,7 @@ import {
   Button,
   Textarea,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { useImageInput } from "@hooks/useImageInput";
 import dayjs from "dayjs";
@@ -17,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as zod from "zod";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { update } from "@store/auth";
+import { updateProfileSuccessToast, updateProfileErrorToast } from "@toasts";
 
 type UserEditable = Pick<User, "birthday" | "description">;
 type UserRequiredEditable = Required<UserEditable>;
@@ -46,6 +48,7 @@ const Edit = ({ data, off }: EditProps) => {
   const { loading } = useAppSelector((state) => state.auth);
 
   const { clickInput, inputRef, onChange, image } = useImageInput();
+  const toast = useToast();
 
   const { register, handleSubmit } = useForm<UserRequiredEditable>({
     defaultValues: {
@@ -68,8 +71,9 @@ const Edit = ({ data, off }: EditProps) => {
 
     try {
       await dispatch(update(formData)).unwrap();
+      toast(updateProfileSuccessToast());
     } catch (error) {
-      //
+      toast(updateProfileErrorToast());
     } finally {
       off();
     }
