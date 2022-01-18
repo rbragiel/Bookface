@@ -1,12 +1,21 @@
 import React from "react";
-import { Flex, Spacer } from "@chakra-ui/react";
+import { Flex, Spacer, useMediaQuery } from "@chakra-ui/react";
 import { LeftPanel } from "./leftPanel";
 import { Login } from "./login";
 import { withAllAccess } from "@store/auth/withAllAccess";
+import { Breakpoints } from "@contants/breakpoints";
 
 const _Home = () => {
+  const [isSm] = useMediaQuery(Breakpoints.sm);
+
   return (
-    <Flex w="100%" h="100%" justifyContent="space-between">
+    <Flex
+      w="100%"
+      h="100%"
+      justifyContent="space-between"
+      flexDir={isSm ? "column" : "row"}
+      overflow="auto"
+    >
       <LeftPanel />
       <Spacer />
       <Login />

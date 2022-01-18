@@ -1,13 +1,21 @@
 import React from "react";
-import { useColorModeValue, Image, Flex, Heading } from "@chakra-ui/react";
+import {
+  useColorModeValue,
+  Image,
+  Flex,
+  Heading,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import SocialInteractions from "../../images/social_interactions.svg";
+import { Breakpoints } from "@contants/breakpoints";
 
 const LeftPanel = () => {
   const bg = useColorModeValue("yellow.200", "gray.900");
+  const [isSm] = useMediaQuery(Breakpoints.sm);
 
   return (
     <Flex
-      w={["50%", "50%", "50%", "50%", "30%"]}
+      w={isSm ? "100%" : ["50%", "50%", "50%", "50%", "30%"]}
       h="100%"
       bg={bg}
       justifyContent="center"

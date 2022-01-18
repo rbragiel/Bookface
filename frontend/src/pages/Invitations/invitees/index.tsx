@@ -25,7 +25,9 @@ const Invitees = () => {
         spacing={2}
         paddingY={4}
         w="100%"
-        justify={data.invitees.length > centerPostQuantity ? "center" : "start"}
+        justify={
+          data.invitees.length >= centerPostQuantity ? "center" : "start"
+        }
       >
         {data.invitees.map((invitation) => (
           <InviteeCard key={invitation.invitationId} invitation={invitation} />

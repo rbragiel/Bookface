@@ -1,14 +1,21 @@
 import React from "react";
-import { Heading, useColorModeValue, Flex } from "@chakra-ui/react";
+import {
+  Heading,
+  useColorModeValue,
+  Flex,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import { SearchBar } from "./searchbar";
 import { FriendsList } from "./list";
 import { useTranslation } from "react-i18next";
+import { Breakpoints } from "@contants/breakpoints";
 
 const Friends = () => {
   const borderColor = useColorModeValue("gray.200", "yellow.200");
   const { t } = useTranslation();
+  const [isMd] = useMediaQuery(Breakpoints.md);
 
-  return (
+  return isMd ? null : (
     <Flex
       maxWidth="500px"
       minW="300px"
