@@ -8,18 +8,17 @@ import { PostView } from "./postView";
 interface PostProps {
   post: PostType;
   bg: string;
-  userId: string;
 }
 
-const Post = ({ post, bg, userId }: PostProps) => {
+const Post = ({ post, bg }: PostProps) => {
   const [isEditing, { on, off }] = useBoolean(false);
 
   return (
     <Flex w="100%" p={4} borderRadius={10} flexDir="column" bg={bg}>
       {isEditing ? (
-        <PostEdit stopEditing={off} userId={userId} post={post} />
+        <PostEdit stopEditing={off} post={post} />
       ) : (
-        <PostView startEdit={on} userId={userId} post={post} />
+        <PostView startEdit={on} post={post} />
       )}
     </Flex>
   );

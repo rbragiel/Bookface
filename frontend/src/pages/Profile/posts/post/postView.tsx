@@ -24,10 +24,9 @@ import { useReactions } from "@hooks/useReactions";
 interface PostViewProps {
   post: Post;
   startEdit: () => void;
-  userId: string;
 }
 
-const PostView = ({ post, startEdit, userId }: PostViewProps) => {
+const PostView = ({ post, startEdit }: PostViewProps) => {
   const [deletePost, { isLoading: isDeleteLoading }] = useDeletePostMutation();
   const { t } = useTranslation();
 
@@ -68,7 +67,7 @@ const PostView = ({ post, startEdit, userId }: PostViewProps) => {
             ml={1}
             isLoading={isLoading}
             onClick={() => {
-              deletePost({ userId, postId: post.postData.postId });
+              deletePost({ postId: post.postData.postId });
             }}
           >
             {t("Delete")}

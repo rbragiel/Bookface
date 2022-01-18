@@ -20,11 +20,10 @@ import { useTranslation } from "react-i18next";
 
 interface PostEditProps {
   post: Post;
-  userId: string;
   stopEditing: () => void;
 }
 
-const PostEdit = ({ post, stopEditing, userId }: PostEditProps) => {
+const PostEdit = ({ post, stopEditing }: PostEditProps) => {
   const toast = useToast();
   const [modify, { isLoading, isSuccess, isError }] = useModifyPostMutation();
 
@@ -44,7 +43,7 @@ const PostEdit = ({ post, stopEditing, userId }: PostEditProps) => {
   const { t } = useTranslation();
 
   const onSubmit = handleSubmit(async (data) => {
-    modify({ userId, postId: post.postData.postId, data });
+    modify({ postId: post.postData.postId, data });
   });
 
   useEffect(() => {

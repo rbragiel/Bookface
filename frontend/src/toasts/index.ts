@@ -66,3 +66,35 @@ export const modifyPostErrorToast = (): UseToastOptions => ({
   duration: 5000,
   isClosable: true,
 });
+
+export const addCommentSuccessToast = (): UseToastOptions => ({
+  title: i18n.t("Success"),
+  description: i18n.t("Comment added successfully."),
+  status: "success",
+  duration: 5000,
+  isClosable: true,
+});
+
+export const addCommentErrorToast = (): UseToastOptions => ({
+  title: i18n.t("Error"),
+  description: i18n.t("Error occured while adding the post."),
+  status: "error",
+  duration: 5000,
+  isClosable: true,
+});
+
+export const updateProfileSuccessToast = (): UseToastOptions => ({
+  title: i18n.t("Success"),
+  description: i18n.t("Profile updated successfully."),
+  status: "success",
+  duration: 5000,
+  isClosable: true,
+});
+
+export const updateProfileErrorToast = (): UseToastOptions => ({
+  title: i18n.t("Error"),
+  description: i18n.t("Error occured while updating the profile."),
+  status: "error",
+  duration: 5000,
+  isClosable: true,
+});
