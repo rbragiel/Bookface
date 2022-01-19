@@ -35,7 +35,11 @@ const Posts = () => {
   }
 
   if (error) {
-    return <Center flex={1}>{JSON.stringify(data)}</Center>;
+    return (
+      <Center flex={1} textAlign="center">
+        {t("Unexpected error occured")}
+      </Center>
+    );
   }
 
   return (

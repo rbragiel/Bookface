@@ -29,7 +29,13 @@ const Invited = () => {
   }
 
   if (error) {
-    return <Center flex={1}>{JSON.stringify(error)}</Center>;
+    return (
+      <Center flex={1}>
+        <Center flex={1} textAlign="center">
+          {t("Unexpected error occured")}
+        </Center>
+      </Center>
+    );
   }
 
   if (data && data.invited.length > 0) {

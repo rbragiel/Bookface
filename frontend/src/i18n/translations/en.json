@@ -97,5 +97,14 @@
   "Logout": "Logout",
   "User has invited you to friends": "User has invited you to friends",
   "You have invited this user to friends": "You have invited this user to friends",
-  "Add to friends": "Add to friends"
+  "Add to friends": "Add to friends",
+  "Post created successfully!": "Post created successfully!",
+  "Error occured while adding the post.": "Error occured while adding the post.",
+  "Post modifed successfully!": "Post modifed successfully!",
+  "Error occured while modyfing the post.": "Error occured while modyfing the post.",
+  "Comment added successfully.": "Comment added successfully.",
+  "Error occured while adding the comment.": "Error occured while adding the comment.",
+  "Profile updated successfully.": "Profile updated successfully.",
+  "Error occured while updating the profile.": "Error occured while updating the profile.",
+  "Unexpected error occured": "Unexpected error occured"
 }

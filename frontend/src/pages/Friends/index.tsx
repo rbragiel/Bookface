@@ -35,7 +35,11 @@ const Friends = () => {
   }
 
   if (error) {
-    return <Box>{JSON.stringify(error)}</Box>;
+    return (
+      <Center flex={1} textAlign="center">
+        {t("Unexpected error occured")}
+      </Center>
+    );
   }
 
   if (data) {

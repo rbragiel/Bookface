@@ -61,7 +61,7 @@ export const modifyPostSuccessToast = (): UseToastOptions => ({
 
 export const modifyPostErrorToast = (): UseToastOptions => ({
   title: i18n.t("Error"),
-  description: i18n.t("Error occured while modifed the post."),
+  description: i18n.t("Error occured while modyfing the post."),
   status: "error",
   duration: 5000,
   isClosable: true,
@@ -77,7 +77,7 @@ export const addCommentSuccessToast = (): UseToastOptions => ({
 
 export const addCommentErrorToast = (): UseToastOptions => ({
   title: i18n.t("Error"),
-  description: i18n.t("Error occured while adding the post."),
+  description: i18n.t("Error occured while adding the comment."),
   status: "error",
   duration: 5000,
   isClosable: true,

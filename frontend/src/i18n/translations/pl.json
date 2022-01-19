@@ -97,5 +97,14 @@
   "Logout": "Wyloguj się",
   "User has invited you to friends": "Zostałeś zaproszony przez tego użytkownika",
   "You have invited this user to friends": "Zaprosiłeś tego użytkownika",
-  "Add to friends": "Dodaj do znajomych"
+  "Add to friends": "Dodaj do znajomych",
+  "Post created successfully!": "Post został utworzony!",
+  "Error occured while adding the post.": "Wystąpił bład podczas dodawania posta",
+  "Post modifed successfully!": "Post zmodyfikowany pomyślnie!",
+  "Error occured while modyfing the post.": "Wystąpił bład podczas modyfikacji posta.",
+  "Comment added successfully.": "Pomyślnie dodano komentarz.",
+  "Error occured while adding the comment.": "Wystąpił bład podczas dodawania posta.",
+  "Profile updated successfully.": "Profil zmodyfikowany pomyślnie.",
+  "Error occured while updating the profile.": "Wystąpił bład podczas modyfikacji danych profilu.",
+  "Unexpected error occured": "Wystąpił nieoczekiwany błąd"
 }
