@@ -98,3 +98,35 @@ export const updateProfileErrorToast = (): UseToastOptions => ({
   duration: 5000,
   isClosable: true,
 });
+
+export const deleteCommentSuccessToast = (): UseToastOptions => ({
+  title: i18n.t("Success"),
+  description: i18n.t("Comment deleted successfully."),
+  status: "success",
+  duration: 5000,
+  isClosable: true,
+});
+
+export const deleteCommentErrorToast = (): UseToastOptions => ({
+  title: i18n.t("Error"),
+  description: i18n.t("Error occured while deleting the comment."),
+  status: "error",
+  duration: 5000,
+  isClosable: true,
+});
+
+export const modifyCommentSuccessToast = (): UseToastOptions => ({
+  title: i18n.t("Success"),
+  description: i18n.t("Comment modified successfully."),
+  status: "success",
+  duration: 5000,
+  isClosable: true,
+});
+
+export const modifyCommentErrorToast = (): UseToastOptions => ({
+  title: i18n.t("Error"),
+  description: i18n.t("Error occured while updating the comment."),
+  status: "error",
+  duration: 5000,
+  isClosable: true,
+});

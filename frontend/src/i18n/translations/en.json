@@ -106,5 +106,10 @@
   "Error occured while adding the comment.": "Error occured while adding the comment.",
   "Profile updated successfully.": "Profile updated successfully.",
   "Error occured while updating the profile.": "Error occured while updating the profile.",
-  "Unexpected error occured": "Unexpected error occured"
+  "Unexpected error occured": "Unexpected error occured",
+  "Update comment": "Update comment",
+  "Comment deleted successfully.": "Comment deleted successfully.",
+  "Error occured while deleting the comment.": "Error occured while deleting the comment.",
+  "Comment modified successfully.": "Comment modified successfully.",
+  "Error occured while updating the comment.": "Error occured while updating the comment."
 }

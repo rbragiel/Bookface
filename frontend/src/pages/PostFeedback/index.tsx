@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -13,11 +15,11 @@ import { PostView } from "@components/postView";
 import { useConditionalRedirect } from "@hooks/useConditionalRedirect";
 import { useGetPostCommentsQuery, useGetSinglePostQuery } from "@store/api";
 import { useAppSelector } from "@store/hooks";
-import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import { Comment } from "./comment";
-import { CommentsInput } from "./commentsInput";
+import { Comment } from "./comments/comment";
+import { CommentsInput } from "./comments/commentsInput";
+import { EditableComment } from "./comments/editableComments";
 
 const commentsQuantity = 20;
 
@@ -37,6 +39,7 @@ const PostFeedback = () => {
   });
 
   const [page, setPage] = useState(0);
+  const { userId } = useAppSelector((user) => user.auth.user)!;
 
   const {
     data: commentsData,
@@ -98,9 +101,18 @@ const PostFeedback = () => {
               spacing={8}
               paddingY={4}
             >
-              {commentsData.map((comment) => (
-                <Comment key={comment.commentId} comment={comment} />
-              ))}
+              {commentsData.map((comment) =>
+                userId === comment.user.userId ? (
+                  <EditableComment
+                    key={comment.commentId}
+                    comment={comment}
+                    postId={id as string}
+                    page={page}
+                  />
+                ) : (
+                  <Comment key={comment.commentId} comment={comment} />
+                )
+              )}
               <Flex justifyContent="center" px={6}>
                 <Button
                   onClick={() => setPage((page) => page - 1)}

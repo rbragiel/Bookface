@@ -56,7 +56,6 @@ const CommentsInput = ({ postId }: CommentsInputProps) => {
           name="comment"
           placeholder={t("Your comment")}
           max={100}
-          resize="none"
           maxW="600px"
           value={comment}
           onChange={(e) => setComment(e.target.value)}

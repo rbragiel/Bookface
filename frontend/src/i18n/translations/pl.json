@@ -106,5 +106,10 @@
   "Error occured while adding the comment.": "Wystąpił bład podczas dodawania posta.",
   "Profile updated successfully.": "Profil zmodyfikowany pomyślnie.",
   "Error occured while updating the profile.": "Wystąpił bład podczas modyfikacji danych profilu.",
-  "Unexpected error occured": "Wystąpił nieoczekiwany błąd"
+  "Unexpected error occured": "Wystąpił nieoczekiwany błąd",
+  "Update comment": "Zaktualizuj komentarz",
+  "Comment deleted successfully.": "Komentarz usunięty pomyślnie.",
+  "Error occured while deleting the comment.": "Wystąpił bład podczas usuwania komentarza.",
+  "Comment modified successfully.": "Komentarz zmodyfikowany pomyślnie.",
+  "Error occured while updating the comment.": "Wystąpił bład podczas modyfikacji komentarza."
 }
