@@ -1,29 +1,28 @@
+import React from "react";
 import {
-  Button,
   Flex,
+  Heading,
   HStack,
-  Link,
+  IconButton,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React from "react";
-import { TooltipWrapper } from "@components/tooltip/wrapper";
-import { SunIcon, MoonIcon } from "@chakra-ui/icons";
-import { ColorMode } from "@styles/theme";
-import { Link as RouterLink } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { useAppDispatch } from "@store/hooks";
+import { useAppSelector } from "@store/hooks";
+import { close, open } from "@store/post";
+import { useMediaQuery } from "@chakra-ui/react";
+import { Breakpoints } from "@contants/breakpoints";
+import { FriendsDrawer } from "./mobile/drawer";
+import { DesktopNav } from "./desktopNav";
 import { CreatePostModal } from "./createPostModal";
-import { useAppSelector } from "../../../store/hooks";
-import { open, close } from "@store/post";
-import { AiOutlineLogout, AiOutlineUser } from "react-icons/ai";
-import { logout } from "@store/auth";
+import { MobileModal } from "./mobile/modal";
+import { MdCreate } from "react-icons/md";
 
 interface NavbarLink {
   to: string;
   title: string;
 }
 
-const links: NavbarLink[] = [
+export const links: NavbarLink[] = [
   {
     to: "/dashboard",
     title: "Main",
@@ -41,71 +40,48 @@ const links: NavbarLink[] = [
 const Navbar = () => {
   const bg = useColorModeValue("yellow.200", "gray.900");
   const borderColor = useColorModeValue("gray.200", "yellow.200");
-  const textColor = useColorModeValue("gray.900", "yellow.200");
-  const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const isOpen = useAppSelector((state) => state.postCreate.postCreateOpen);
+  const postCreateOpen = useAppSelector(
+    (state) => state.postCreate.postCreateOpen
+  );
+
+  const [isMd] = useMediaQuery(Breakpoints.md);
 
   return (
     <Flex
       as={"header"}
       bg={bg}
       w="100%"
-      p={[1, 2, 4]}
+      p={isMd ? 3 : [1, 2, 4]}
       borderBottomWidth={3}
       borderBottomStyle="solid"
       borderBottomColor={borderColor}
-      justifyContent="space-evenly"
+      justifyContent={isMd ? "space-between" : "space-evenly"}
       alignItems="center"
     >
-      {links.map((link) => (
-        <Link
-          as={RouterLink}
-          to={link.to}
-          key={link.to}
-          fontWeight={500}
-          color={textColor}
-        >
-          {t(link.title)}
-        </Link>
-      ))}
-      <TooltipWrapper>
-        {({ colorMode, handleLanguageChange, language, toggleColorMode }) => (
-          <HStack spacing="4">
-            <Button onClick={toggleColorMode} color={textColor}>
-              {colorMode === ColorMode.DARK ? <SunIcon /> : <MoonIcon />}
-            </Button>
-            <Button onClick={handleLanguageChange} colorScheme="teal">
-              {language.toUpperCase()}
-            </Button>
-            <Button
-              colorScheme="linkedin"
-              as={RouterLink}
-              to="/dashboard/profile"
-            >
-              <AiOutlineUser />
-            </Button>
-            <Button colorScheme="whatsapp" onClick={() => dispatch(logout())}>
-              <AiOutlineLogout />
-            </Button>
-
-            <Button
-              color={textColor}
-              onClick={() => {
-                dispatch(open());
-              }}
-            >
-              {t("Create new post")}
-            </Button>
+      {isMd ? (
+        <>
+          <Heading>Bookface</Heading>
+          <HStack>
+            <IconButton
+              aria-label="create post"
+              icon={<MdCreate />}
+              onClick={() => dispatch(open())}
+            />
+            <FriendsDrawer />
+            <MobileModal />
           </HStack>
-        )}
-      </TooltipWrapper>
-      {isOpen && (
+        </>
+      ) : (
+        <DesktopNav />
+      )}
+
+      {postCreateOpen && (
         <CreatePostModal
           close={() => {
             dispatch(close());
           }}
-          isOpen={isOpen}
+          isOpen={postCreateOpen}
         />
       )}
     </Flex>

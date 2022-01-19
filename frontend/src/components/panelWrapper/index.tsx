@@ -1,11 +1,14 @@
-import { Grid } from "@chakra-ui/react";
+import { Grid, useMediaQuery } from "@chakra-ui/react";
 import React from "react";
 import { Tooltip } from "../tooltip";
+import { Breakpoints } from "@contants/breakpoints";
 
 const PanelWrapper: React.FC = ({ children }) => {
+  const [isSm] = useMediaQuery(Breakpoints.sm);
+
   return (
     <Grid
-      w={["50%", "50%", "50%", "50%", "60%"]}
+      w={isSm ? "100%" : ["50%", "50%", "50%", "50%", "60%"]}
       p={[4, 6, 8, 10]}
       h="100%"
       gridAutoColumns="100%"

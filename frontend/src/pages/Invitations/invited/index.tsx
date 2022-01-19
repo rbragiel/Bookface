@@ -1,11 +1,19 @@
 import React from "react";
-import { Center, Wrap, Button, Flex, Text } from "@chakra-ui/react";
+import {
+  Center,
+  Wrap,
+  Button,
+  Flex,
+  Text,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import { useGetAllInvitedQuery } from "@store/api";
 import { useAppDispatch } from "@store/hooks";
 import { open } from "@store/searchbar";
 import { useTranslation } from "react-i18next";
 import { InvitedCard } from "./invitedCard";
 import { FullSpaceLoader } from "@components/fullSpaceLoader";
+import { Breakpoints } from "@contants/breakpoints";
 
 const centerPostQuantity = 2;
 
@@ -13,6 +21,8 @@ const Invited = () => {
   const { data, isLoading, error } = useGetAllInvitedQuery();
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+
+  const [isXs] = useMediaQuery(Breakpoints.xs);
 
   if (isLoading) {
     return <FullSpaceLoader />;
@@ -27,7 +37,10 @@ const Invited = () => {
       <Wrap
         spacing={2}
         paddingY={4}
-        justify={data.invited.length > centerPostQuantity ? "center" : "start"}
+        justify={
+          data.invited.length >= centerPostQuantity || isXs ? "center" : "start"
+        }
+        alignItems="center"
       >
         {data.invited.map((invitation) => (
           <InvitedCard key={invitation.invitationId} invitation={invitation} />

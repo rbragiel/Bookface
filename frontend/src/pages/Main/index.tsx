@@ -37,7 +37,7 @@ const Main = () => {
   }
 
   return (
-    <ContentWrapper>
+    <ContentWrapper w="100%" mb={4}>
       <Stack
         spacing={4}
         maxWidth="1000px"

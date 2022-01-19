@@ -21,8 +21,7 @@ const ProfileCard = React.memo(({ user, children }: ProfileCardProps) => {
   const { t } = useTranslation();
   return (
     <Box
-      maxW="350px"
-      w="full"
+      width="350px"
       bg={useColorModeValue("gray.100", "gray.900")}
       rounded="lg"
       p={6}

@@ -18,7 +18,8 @@ import {
   AiOutlineComment,
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import { Box } from "@chakra-ui/react";
+import { Box, useMediaQuery } from "@chakra-ui/react";
+import { Breakpoints } from "@contants/breakpoints";
 
 interface PostProps {
   post: Post;
@@ -33,6 +34,8 @@ const PostView = ({
   shouldShowAvatar,
   shouldShowCommentsIcon = true,
 }: PostProps) => {
+  const [isSm] = useMediaQuery(Breakpoints.sm);
+
   const {
     reaction: { choice, dislikes, likes },
     isLoading,
@@ -44,7 +47,7 @@ const PostView = ({
   const postId = post.postData.postId;
 
   return (
-    <Box bg={bg} p={4} borderRadius={10} w="100%">
+    <Box bg={bg} p={4} borderRadius={10} width="full">
       {shouldShowAvatar && (
         <Flex align="center" mb={4}>
           <Avatar src={post.user.avatarURL} alt="avatar" />
@@ -53,8 +56,12 @@ const PostView = ({
           </Text>
         </Flex>
       )}
-      <Flex alignItems="center" justifyContent="space-between">
-        <Heading as="h4" fontSize="xl" maxW="500px">
+      <Flex
+        alignItems={isSm ? "start" : "center"}
+        justifyContent="space-between"
+        flexDir={isSm ? "column" : "row"}
+      >
+        <Heading as="h4" fontSize="xl" maxW="500px" wordBreak="break-word">
           {post.postData.title}
         </Heading>
         <Flex alignItems="center" justifyContent="center">
@@ -63,20 +70,26 @@ const PostView = ({
           </Text>
         </Flex>
       </Flex>
-      <Text mt={3} maxW="600px">
+      <Text mt={3} maxW="600px" wordBreak="break-word">
         {post.postData.content}
       </Text>
-      <Flex mt={4}>
+      <Flex mt={4} flexDir={isSm ? "column" : "row"} alignSelf={"flex-start"}>
         {post.postData.imageUrl && (
           <Image
             src={post.postData.imageUrl}
             alt="post-image"
             maxW="500px"
             maxH="300px"
+            objectFit="contain"
+            objectPosition="left"
           />
         )}
         <Spacer />
-        <HStack alignItems="flex-end" justifyContent="flex-end">
+        <HStack
+          alignItems="flex-end"
+          justifyContent={isSm ? "column" : "flex-end"}
+          mt={isSm ? 4 : 0}
+        >
           <IconButton
             colorScheme="teal"
             aria-label="like"

@@ -11,6 +11,8 @@ import { useAddCommentMutation } from "@store/api";
 import { addCommentErrorToast, addCommentSuccessToast } from "@toasts";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useMediaQuery } from "@chakra-ui/react";
+import { Breakpoints } from "@contants/breakpoints";
 
 interface CommentsInputProps {
   postId: string;
@@ -22,6 +24,8 @@ const CommentsInput = ({ postId }: CommentsInputProps) => {
 
   const [update, { isLoading }] = useAddCommentMutation();
   const toast = useToast();
+
+  const [isXs] = useMediaQuery(Breakpoints.xs);
 
   const { t } = useTranslation();
 
@@ -45,7 +49,7 @@ const CommentsInput = ({ postId }: CommentsInputProps) => {
       isDisabled={isLoading}
     >
       <FormLabel>{t("Your comment")}:</FormLabel>
-      <Flex>
+      <Flex flexDir={isXs ? "column" : "row"}>
         <Input
           isDisabled={isLoading}
           type="text"
@@ -58,8 +62,9 @@ const CommentsInput = ({ postId }: CommentsInputProps) => {
           onChange={(e) => setComment(e.target.value)}
         />
         <Button
+          mt={isXs ? 4 : 0}
           colorScheme="linkedin"
-          ml={4}
+          ml={isXs ? 0 : 4}
           isLoading={isLoading}
           onClick={handleUpdate}
           isDisabled={comment.length === 0}

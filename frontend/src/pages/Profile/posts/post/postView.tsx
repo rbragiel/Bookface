@@ -9,6 +9,7 @@ import {
   Text,
   Image,
   Spacer,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import {
   AiOutlineLike,
@@ -20,6 +21,7 @@ import { useDeletePostMutation } from "@store/api";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { useReactions } from "@hooks/useReactions";
+import { Breakpoints } from "@contants/breakpoints";
 
 interface PostViewProps {
   post: Post;
@@ -29,6 +31,8 @@ interface PostViewProps {
 const PostView = ({ post, startEdit }: PostViewProps) => {
   const [deletePost, { isLoading: isDeleteLoading }] = useDeletePostMutation();
   const { t } = useTranslation();
+
+  const [isXs] = useMediaQuery(Breakpoints.xs);
 
   const {
     reaction: { choice, dislikes, likes },
@@ -44,34 +48,45 @@ const PostView = ({ post, startEdit }: PostViewProps) => {
 
   return (
     <>
-      <Flex alignItems="center" justifyContent="space-between">
-        <Heading as="h4" fontSize="xl" maxW="500px">
+      <Flex
+        alignItems={isXs ? "flex-start" : "center"}
+        justifyContent="space-between"
+        flexDir={isXs ? "column" : "row"}
+      >
+        <Heading as="h4" fontSize="xl" maxW="500px" wordBreak="break-word">
           {post.postData.title}
         </Heading>
-        <Flex alignItems="center" justifyContent="center">
+        <Flex
+          alignItems="center"
+          justifyContent="space-between"
+          marginTop={isXs ? 4 : 0}
+          width={isXs ? "100%" : "auto"}
+        >
           <Text>
             {dayjs(post.postData.timestamp).format("HH:mm DD-MM-YYYY")}
           </Text>
-          <Button
-            colorScheme="teal"
-            size="sm"
-            ml={3}
-            onClick={startEdit}
-            isLoading={isLoading}
-          >
-            {t("Edit")}
-          </Button>
-          <Button
-            colorScheme="red"
-            size="sm"
-            ml={1}
-            isLoading={isLoading}
-            onClick={() => {
-              deletePost({ postId: post.postData.postId });
-            }}
-          >
-            {t("Delete")}
-          </Button>
+          <Flex>
+            <Button
+              colorScheme="teal"
+              size="sm"
+              ml={3}
+              onClick={startEdit}
+              isLoading={isLoading}
+            >
+              {t("Edit")}
+            </Button>
+            <Button
+              colorScheme="red"
+              size="sm"
+              ml={1}
+              isLoading={isLoading}
+              onClick={() => {
+                deletePost({ postId: post.postData.postId });
+              }}
+            >
+              {t("Delete")}
+            </Button>
+          </Flex>
         </Flex>
       </Flex>
       <Text mt={3} maxW="600px">

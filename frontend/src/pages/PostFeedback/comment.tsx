@@ -1,19 +1,35 @@
-import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { PostComment } from "@store/api/types";
 import dayjs from "dayjs";
 import React from "react";
+import { Breakpoints } from "@contants/breakpoints";
 
 interface CommentProps {
   comment: PostComment;
 }
 
 const Comment = ({ comment }: CommentProps) => {
+  const [isXs] = useMediaQuery(Breakpoints.xs);
+
   return (
     <Box paddingX={4}>
-      <Flex alignItems="center" justifyContent="space-between" mb={4}>
-        <Flex justifyContent="center" alignItems="center">
+      <Flex
+        alignItems={isXs ? "flex-start" : "center"}
+        justifyContent="space-between"
+        mb={4}
+      >
+        <Flex
+          justifyContent="center"
+          alignItems={isXs ? "flex-start" : "center"}
+          flexDir={isXs ? "column" : "row"}
+        >
           <Avatar src={comment.user.avatarURL} alt="avatar" />
-          <Text fontSize="md" ml={4} fontWeight="semibold">
+          <Text
+            fontSize="md"
+            ml={isXs ? 0 : 4}
+            mt={isXs ? 4 : 0}
+            fontWeight="semibold"
+          >
             {comment.user.nickname}
           </Text>
         </Flex>

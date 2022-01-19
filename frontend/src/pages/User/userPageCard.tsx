@@ -12,11 +12,13 @@ import {
   List,
   ListItem,
   ListIcon,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { DeleteIcon, SearchIcon, StarIcon, TimeIcon } from "@chakra-ui/icons";
 import { useDeleteFriendMutation, useInviteMutation } from "@store/api";
 import { useTranslation } from "react-i18next";
+import { Breakpoints } from "@contants/breakpoints";
 
 interface UserCardProps {
   user: GetUserUser;
@@ -27,19 +29,20 @@ const UserCard = ({ user }: UserCardProps) => {
     useDeleteFriendMutation();
   const [invite, { isLoading: isInviteFriendLoading }] = useInviteMutation();
   const { t } = useTranslation();
+  const [isXs] = useMediaQuery(Breakpoints.xs);
 
   const renderButtons = () => {
     if (user.isInviter) {
       return (
         <Text maxW="150px" textAlign="center">
-          User has invited you to friends
+          {t("User has invited you to friends")}
         </Text>
       );
     }
     if (user.isInvitee) {
       return (
         <Text maxW="150px" textAlign="center">
-          You have invited this user to friends
+          {t("You have invited this user to friends")}
         </Text>
       );
     }
@@ -47,8 +50,9 @@ const UserCard = ({ user }: UserCardProps) => {
       <Button
         onClick={() => invite({ id: user.userId })}
         isLoading={isInviteFriendLoading}
+        textAlign="center"
       >
-        Add to friends
+        {t("Add to friends")}
       </Button>
     );
   };
@@ -70,12 +74,25 @@ const UserCard = ({ user }: UserCardProps) => {
           alt="Avatar"
           mb={4}
         />
-        <Flex justifyContent="space-between" alignItems="center" flex={1}>
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          flex={1}
+          flexDirection={isXs ? "column" : "row"}
+        >
           <Box>
-            <Heading fontSize="2xl" fontFamily="body">
+            <Heading
+              fontSize="2xl"
+              fontFamily="body"
+              textAlign={isXs ? "center" : "left"}
+            >
               {user.nickname}
             </Heading>
-            <Text fontWeight={600} color="gray.500">
+            <Text
+              fontWeight={600}
+              color="gray.500"
+              textAlign={isXs ? "center" : "left"}
+            >
               {user.email}
             </Text>
           </Box>
@@ -83,7 +100,7 @@ const UserCard = ({ user }: UserCardProps) => {
             flexDirection="column"
             justifyContent="center"
             alignItems="center"
-            marginRight={4}
+            marginRight={isXs ? 0 : 4}
           >
             {user.areFriends ? (
               <>
@@ -111,7 +128,7 @@ const UserCard = ({ user }: UserCardProps) => {
           </Flex>
         </Flex>
       </Stack>
-      <List spacing={3} fontSize={16}>
+      <List spacing={3} fontSize={16} mt={isXs ? 6 : 0}>
         {user.description && (
           <ListItem display="flex" alignItems="center">
             <ListIcon as={SearchIcon} color="green.500" />
